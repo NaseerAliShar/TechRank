@@ -8,7 +8,7 @@ const Logout = ({navigation}) => {
 
   useEffect(() => {
     setVisible(true);
-  }, []);
+  }, [visible]);
 
   const hideModal = () => {
     setVisible(false);

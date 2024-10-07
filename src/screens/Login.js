@@ -18,7 +18,7 @@ const Login = ({navigation}) => {
       )
       .then(res => {
         AsyncStorage.setItem('token', res.data.token).then(() => {
-          navigation.replace('Home');
+          navigation.replace('Drawer');
           console.log(res.data.token);
         });
       })
@@ -31,7 +31,7 @@ const Login = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../../assets/techrank1.png')}
+        source={require('../../assets/images/techrank1.png')}
         style={{height: 250, width: 300}}
         resizeMode="contain"
       />
@@ -97,21 +97,21 @@ const Login = ({navigation}) => {
           style={{flexDirection: 'row', justifyContent: 'center', padding: 20}}>
           <TouchableOpacity>
             <Image
-              source={require('../../assets/google.png')}
+              source={require('../../assets/images/google.png')}
               style={styles.icon}
             />
           </TouchableOpacity>
 
           <TouchableOpacity>
             <Image
-              source={require('../../assets/facebook.png')}
+              source={require('../../assets/images/facebook.png')}
               style={styles.icon}
             />
           </TouchableOpacity>
 
           <TouchableOpacity>
             <Image
-              source={require('../../assets/linkedin.png')}
+              source={require('../../assets/images/linkedin.png')}
               style={styles.icon}
             />
           </TouchableOpacity>

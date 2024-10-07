@@ -11,7 +11,7 @@ const Splash = ({navigation}) => {
       if (!token) {
         navigation.replace('Login');
       } else {
-        navigation.replace('Home');
+        navigation.replace('Drawer');
       }
     }, 3000);
   }, []);
@@ -24,7 +24,7 @@ const Splash = ({navigation}) => {
       <Animatable.View animation="fadeInUp" duration={2000}>
         <Image
           style={styles.techrank}
-          source={require('../../assets/techrank1.png')}
+          source={require('../../assets/images/techrank1.png')}
         />
       </Animatable.View>
 
@@ -38,7 +38,7 @@ const Splash = ({navigation}) => {
 
       <Animatable.View animation="zoomIn" delay={1500}>
         <Image
-          source={require('../../assets/innovador1.png')}
+          source={require('../../assets/images/innovador1.png')}
           style={styles.innovador}
         />
       </Animatable.View>
