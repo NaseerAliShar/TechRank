@@ -6,25 +6,24 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {Card} from 'react-native-paper';
 import instance from '../services/api';
+import {Card} from 'react-native-paper';
+import {useEffect, useState} from 'react';
+import {height, width} from '../styles/sizes';
 
 const Quizzes = ({navigation}) => {
   const [exams, setExams] = useState([]);
-
   useEffect(() => {
     const getExams = async () => {
       try {
         const response = await instance.get('/quizzes');
-        // console.log('Fetched exams:', response.data);
         setExams(response.data);
       } catch (error) {
         console.error('Error fetching exams:', error);
       }
     };
     getExams();
-  }, []);
+  }, [exams]);
 
   const renderItem = ({item}) => (
     <TouchableOpacity
@@ -60,17 +59,17 @@ const styles = StyleSheet.create({
   },
   card: {
     margin: 5,
-    width: 160,
     padding: 10,
     elevation: 2,
+    width: width * 0.45,
     shadowRadius: 10,
     borderRadius: 10,
     shadowOpacity: 0.1,
     backgroundColor: '#fff',
   },
   image: {
-    width: 80,
-    height: 80,
+    width: width * 0.2,
+    height: height * 0.1,
     marginBottom: 10,
     borderRadius: 50,
     resizeMode: 'cover',

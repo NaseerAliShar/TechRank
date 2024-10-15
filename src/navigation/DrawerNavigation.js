@@ -20,9 +20,9 @@ export const DrawerNavigation = () => {
         },
       }}>
       <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="Profile" component={Profile} />
       <Drawer.Screen name="Quizzes" component={Exams} />
       <Drawer.Screen name="Logout" component={Logout} />
+      <Drawer.Screen name="Profile" component={Profile} />
     </Drawer.Navigator>
   );
 };

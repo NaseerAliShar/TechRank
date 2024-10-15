@@ -1,6 +1,8 @@
 import axios from 'axios';
 import {Formik} from 'formik';
 import {useState} from 'react';
+import {width, height} from '../styles/sizes';
+import {primary, secondary} from '../styles/colors';
 import {TextInput, Button} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TouchableOpacity, ScrollView, Image, Text, View} from 'react-native';
@@ -32,9 +34,10 @@ const Login = ({navigation}) => {
     <View style={styles.container}>
       <Image
         source={require('../../assets/images/techrank1.png')}
-        style={{height: 250, width: 300}}
+        style={{height: height * 0.35, width: width * 0.9}}
         resizeMode="contain"
       />
+
       <ScrollView style={{width: '100%'}} showsVerticalScrollIndicator={false}>
         <Formik
           initialValues={{email: '', password: ''}}
@@ -47,7 +50,7 @@ const Login = ({navigation}) => {
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
                 value={values.email}
-                style={{backgroundColor: '#fff', marginBottom: 20}}
+                style={{backgroundColor: secondary, marginBottom: 20}}
                 activeUnderlineColor="#379237"
                 underlineColor="transparent"
                 placeholderTextColor="#000"
@@ -60,7 +63,7 @@ const Login = ({navigation}) => {
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 value={values.password}
-                style={{backgroundColor: '#fff', marginBottom: 20}}
+                style={{backgroundColor: secondary, marginBottom: 20}}
                 activeUnderlineColor="#379237"
                 underlineColor="transparent"
                 placeholderTextColor="#000"
@@ -78,7 +81,7 @@ const Login = ({navigation}) => {
                 onPress={handleSubmit}
                 buttonColor="#4B56D2"
                 textColor="#fff">
-                {loading ? 'Signing...' : 'Sign In'}
+                {loading ? '' : 'Sign In'}
               </Button>
             </>
           )}
@@ -126,13 +129,14 @@ export default Login;
 const styles = {
   container: {
     flex: 1,
-    padding: 25,
-    backgroundColor: '#000',
+    padding: 30,
+    alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: primary,
   },
   icon: {
-    width: 40,
-    height: 40,
+    width: width * 0.1,
+    height: height * 0.1,
     marginHorizontal: 10,
     resizeMode: 'contain',
   },

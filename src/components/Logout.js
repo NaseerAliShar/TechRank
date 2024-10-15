@@ -1,7 +1,8 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Modal, Portal, Text, Provider} from 'react-native-paper';
+import {height} from '../styles/sizes';
+import {useState, useEffect} from 'react';
 import {View, TouchableOpacity} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import {Modal, Portal, Text, Provider} from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Logout = ({navigation}) => {
   const [visible, setVisible] = useState(false);
@@ -60,11 +61,11 @@ const Logout = ({navigation}) => {
 
 const styles = {
   modalContainer: {
-    padding: 30,
     shadowRadius: 4,
     borderRadius: 15,
     shadowOpacity: 0.25,
     marginHorizontal: 20,
+    height: height * 0.2,
     shadowColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
@@ -81,7 +82,7 @@ const styles = {
     paddingVertical: 10,
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
   },
   cancelButton: {
     borderRadius: 10,
