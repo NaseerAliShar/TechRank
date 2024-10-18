@@ -1,10 +1,12 @@
-import React, {useEffect} from 'react';
-import {Divider} from 'react-native-paper';
+import React, { useEffect } from 'react';
 import * as Animatable from 'react-native-animatable';
-import {Image, StyleSheet, Text, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { width } from '../styles/sizes';
+import { Divider } from 'react-native-paper';
+import { black, white } from '../styles/colors';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
-const Splash = ({navigation}) => {
+const Splash = ({ navigation }) => {
   useEffect(() => {
     setTimeout(async () => {
       const token = await AsyncStorage.getItem('token');
@@ -23,15 +25,15 @@ const Splash = ({navigation}) => {
       style={styles.container}>
       <Animatable.View animation="fadeInUp" duration={2000}>
         <Image
-          style={styles.techrank}
+          style={styles.techrankLogo}
           source={require('../../assets/images/techrank1.png')}
         />
       </Animatable.View>
 
       <Animatable.View animation="fadeInUp" delay={1000}>
-        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
           <Divider horizontal={true} style={styles.divider} />
-          <Text style={{color: '#eee', marginHorizontal: 10}}>Powered by</Text>
+          <Text style={{ color: white, marginHorizontal: 10 }}>Powered by</Text>
           <Divider horizontal={true} style={styles.divider} />
         </View>
       </Animatable.View>
@@ -39,7 +41,7 @@ const Splash = ({navigation}) => {
       <Animatable.View animation="zoomIn" delay={1500}>
         <Image
           source={require('../../assets/images/innovador1.png')}
-          style={styles.innovador}
+          style={styles.innovadorLogo}
         />
       </Animatable.View>
     </Animatable.View>
@@ -53,22 +55,23 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#000',
+    backgroundColor: black,
   },
-  techrank: {
-    width: 400,
-    height: 300,
+  techrankLogo: {
+    width: width,
+    height: width * 0.8,
     resizeMode: 'contain',
   },
-  innovador: {
-    height: 50,
-    width: 120,
+  innovadorLogo: {
+    marginTop: 5,
+    width: width * 0.3,
+    height: width * 0.1,
     resizeMode: 'contain',
   },
   divider: {
-    height: 1,
-    width: '30%',
     marginTop: 10,
-    backgroundColor: '#eee',
+    width: width * 0.3,
+    height: width * 0.001,
+    backgroundColor: white,
   },
 });

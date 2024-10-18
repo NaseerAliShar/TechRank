@@ -1,48 +1,48 @@
 import axios from 'axios';
-import {Formik} from 'formik';
-import {useState} from 'react';
-import {width, height} from '../styles/sizes';
-import {primary, secondary} from '../styles/colors';
-import {TextInput, Button} from 'react-native-paper';
+import React, { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {TouchableOpacity, ScrollView, Image, Text, View} from 'react-native';
+import { Formik } from 'formik';
+import { width } from '../styles/sizes';
+import { TextInput, Button } from 'react-native-paper';
+import { black, white, primary } from '../styles/colors';
+import { TouchableOpacity, ScrollView, Image, Text, View } from 'react-native';
 
-const Login = ({navigation}) => {
+const Login = ({ navigation }) => {
   const [eye, setEye] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = values => {
+  const handleLogin = async values => {
     setLoading(true);
-    axios
-      .post(
+    try {
+      const response = await axios.post(
         'https://p3x08xsn-3000.inc1.devtunnels.ms/api/v1/auth/login',
         values,
-      )
-      .then(res => {
-        AsyncStorage.setItem('token', res.data.token).then(() => {
-          navigation.replace('Drawer');
-          console.log(res.data.token);
-        });
-      })
-      .catch(err => {
-        console.error(err.message);
-      })
-      .finally(() => setLoading(false));
+      );
+      await AsyncStorage.setItem('token', response.data.token);
+      await AsyncStorage.setItem('user', JSON.stringify(response.data.user));
+      navigation.replace('Drawer');
+      setLoading(false);
+    } catch (error) {
+      console.error('Error logging in:', error);
+      setLoading(false);
+    }
   };
 
   return (
     <View style={styles.container}>
       <Image
         source={require('../../assets/images/techrank1.png')}
-        style={{height: height * 0.35, width: width * 0.9}}
+        style={{ height: width * 0.6, width: width }}
         resizeMode="contain"
       />
 
-      <ScrollView style={{width: '100%'}} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={{ width: '100%' }}
+        showsVerticalScrollIndicator={false}>
         <Formik
-          initialValues={{email: '', password: ''}}
+          initialValues={{ email: '', password: '' }}
           onSubmit={values => handleLogin(values)}>
-          {({handleChange, handleBlur, handleSubmit, values}) => (
+          {({ handleChange, handleBlur, handleSubmit, values }) => (
             <>
               <TextInput
                 mode="flat"
@@ -50,10 +50,9 @@ const Login = ({navigation}) => {
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
                 value={values.email}
-                style={{backgroundColor: secondary, marginBottom: 20}}
+                style={{ backgroundColor: white, marginVertical: 10 }}
                 activeUnderlineColor="#379237"
                 underlineColor="transparent"
-                placeholderTextColor="#000"
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
@@ -63,10 +62,11 @@ const Login = ({navigation}) => {
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 value={values.password}
-                style={{backgroundColor: secondary, marginBottom: 20}}
+                style={{ backgroundColor: white, marginVertical: 10 }}
                 activeUnderlineColor="#379237"
                 underlineColor="transparent"
-                placeholderTextColor="#000"
+                keyboardType="default"
+                autoCapitalize="none"
                 secureTextEntry={eye}
                 right={
                   <TextInput.Icon
@@ -79,9 +79,10 @@ const Login = ({navigation}) => {
                 mode="contained"
                 loading={loading}
                 onPress={handleSubmit}
-                buttonColor="#4B56D2"
-                textColor="#fff">
-                {loading ? '' : 'Sign In'}
+                style={{ marginVertical: 10 }}
+                buttonColor={primary}
+                textColor={white}>
+                {!loading && 'Login'}
               </Button>
             </>
           )}
@@ -91,13 +92,17 @@ const Login = ({navigation}) => {
           style={{
             justifyContent: 'center',
             flexDirection: 'row',
-            marginVertical: 30,
+            marginVertical: 20,
           }}>
-          <Text style={{fontSize: 15, color: 'gray'}}>or sign in with</Text>
+          <Text style={{ fontSize: 16, color: 'gray' }}>or sign in with</Text>
         </View>
 
         <View
-          style={{flexDirection: 'row', justifyContent: 'center', padding: 20}}>
+          style={{
+            padding: 20,
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}>
           <TouchableOpacity>
             <Image
               source={require('../../assets/images/google.png')}
@@ -129,14 +134,14 @@ export default Login;
 const styles = {
   container: {
     flex: 1,
-    padding: 30,
+    padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: primary,
+    backgroundColor: black,
   },
   icon: {
     width: width * 0.1,
-    height: height * 0.1,
+    height: width * 0.2,
     marginHorizontal: 10,
     resizeMode: 'contain',
   },

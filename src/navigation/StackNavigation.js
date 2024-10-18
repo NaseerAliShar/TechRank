@@ -1,10 +1,10 @@
 import Quiz from '../screens/Quiz';
-import Login from '../screens/Login';
+import Login from '../auth/Login';
 import Splash from '../screens/Splash';
-import {DrawerNavigation} from './DrawerNavigation';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Result from '../screens/Result';
-import Answers from '../screens/Answers';
+import Analytics from '../screens/Analytics';
+import { DrawerNavigation } from './DrawerNavigation';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +19,7 @@ export const StackNavigation = () => {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Result" component={Result} />
       <Stack.Screen name="Splash" component={Splash} />
-      <Stack.Screen name="Answers" component={Answers} />
+      <Stack.Screen name="Analytics" component={Analytics} />
       <Stack.Screen name="Drawer" component={DrawerNavigation} />
     </Stack.Navigator>
   );

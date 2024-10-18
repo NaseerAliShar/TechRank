@@ -1,10 +1,11 @@
-import {height} from '../styles/sizes';
-import {useState, useEffect} from 'react';
-import {View, TouchableOpacity} from 'react-native';
-import {Modal, Portal, Text, Provider} from 'react-native-paper';
+import { height } from '../styles/sizes';
+import { useState, useEffect } from 'react';
+import { View, TouchableOpacity } from 'react-native';
+import { Modal, Portal, Text, Provider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { light } from '../styles/colors';
 
-const Logout = ({navigation}) => {
+const Logout = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ const Logout = ({navigation}) => {
           flex: 1,
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#f5f5f5',
+          backgroundColor: light,
         }}>
         <Portal>
           <Modal
@@ -66,7 +67,6 @@ const styles = {
     shadowOpacity: 0.25,
     marginHorizontal: 20,
     height: height * 0.2,
-    shadowColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
@@ -74,12 +74,11 @@ const styles = {
   modalText: {
     fontSize: 20,
     marginBottom: 20,
-    color: '#333',
     fontWeight: 'bold',
     textAlign: 'center',
   },
   buttonRow: {
-    paddingVertical: 10,
+    padding: 10,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
@@ -96,7 +95,7 @@ const styles = {
     paddingVertical: 10,
     marginHorizontal: 10,
     paddingHorizontal: 25,
-    backgroundColor: '#ff5e57',
+    backgroundColor: '#212529',
   },
   cancelButtonText: {
     fontSize: 15,

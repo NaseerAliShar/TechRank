@@ -3,29 +3,30 @@ import {
   Button,
   Checkbox,
   RadioButton,
-  ActivityIndicator,
   ProgressBar,
+  ActivityIndicator,
 } from 'react-native-paper';
+import Result from './Result';
 import instance from '../services/api';
-import {View, Text, FlatList, StyleSheet} from 'react-native';
-import {useEffect, useState, useCallback, useMemo} from 'react';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 
-const Quiz = ({navigation, route}) => {
-  const {quizId} = route.params;
+const Quiz = ({ route }) => {
+  const { quizId } = route.params;
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState([]);
-  const [quizStarted, setQuizStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [wrongAnswers, setWrongAnswers] = useState(0);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [wrongAnswers, setWrongAnswers] = useState([]);
+  const [correctAnswers, setCorrectAnswers] = useState([]);
+  const [quizFinished, setQuizFinished] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState([]);
-
+  const [userSelections, setUserSelections] = useState([]);
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const {data} = await instance.get(`quizzes/${quizId}`);
+        const { data } = await instance.get(`quizzes/${quizId}`);
         setQuestions(data.questions);
       } catch (error) {
         console.log('Error fetching quizzes', error);
@@ -36,61 +37,56 @@ const Quiz = ({navigation, route}) => {
     fetchQuestions();
   }, [quizId]);
 
-  const currentQuestion = questions[currentIndex];
   const progress = useMemo(
     () => currentIndex / questions.length,
     [currentIndex, questions.length],
   );
 
   const handleNext = useCallback(() => {
-    let isCorrect = false;
-    let updatedScore = score;
-    let updatedWrongAnswers = wrongAnswers;
-    let updatedCorrectAnswers = correctAnswers;
+    const currentQuestion = questions[currentIndex];
+    const isMultiChoice = currentQuestion.questionType === 'MultiChoice';
 
-    if (currentIndex + 1 >= questions.length) {
-      navigation.navigate('Result', {
-        score: updatedScore,
-        totalQuestions: questions.length,
-        wrongAnswers: updatedWrongAnswers,
-        correctAnswers: updatedCorrectAnswers,
-      });
-      return;
-    }
+    // Determine if the answer is correct
+    const isCorrect = isMultiChoice
+      ? selectedOption?.isCorrect
+      : selectedOptions.every(option => option.isCorrect) &&
+        selectedOptions.length ===
+          currentQuestion.options.filter(option => option.isCorrect).length;
 
-    if (currentQuestion.questionType === 'MultiChoice' && selectedOption) {
-      isCorrect = selectedOption.isCorrect;
-      if (isCorrect) updatedScore += 1;
-    } else if (currentQuestion.questionType === 'MultiSelect') {
-      const correctOptions = currentQuestion.options.filter(
-        option => option.isCorrect,
-      );
-      isCorrect =
-        selectedOptions.every(option => option.isCorrect) &&
-        selectedOptions.length === correctOptions.length;
-      if (isCorrect) updatedScore += 1;
-    }
-
+    // Update the score and the lists of correct or wrong answers
     if (isCorrect) {
-      updatedCorrectAnswers += 1;
+      setScore(prevScore => prevScore + 1);
+      setCorrectAnswers(prev => [...prev, currentQuestion]);
     } else {
-      updatedWrongAnswers += 1;
+      setWrongAnswers(prev => [...prev, currentQuestion]);
     }
 
-    setScore(updatedScore);
+    // Save user selections for the current question
+    const updatedSelections = [...userSelections];
+    updatedSelections[currentIndex] = isMultiChoice
+      ? [selectedOption] // Store the selected option as an array
+      : selectedOptions; // Store selected options for multi-select
+    setUserSelections(updatedSelections);
+
+    // Move to the next question or navigate to the results if it was the last question
+    if (currentIndex + 1 >= questions.length) {
+      setQuizFinished(true);
+    } else {
+      setCurrentIndex(prevIndex => prevIndex + 1);
+    }
+
+    // Reset selected options
     setSelectedOptions([]);
     setSelectedOption(null);
-    setWrongAnswers(updatedWrongAnswers);
-    setCorrectAnswers(updatedCorrectAnswers);
-    setCurrentIndex(prevIndex => prevIndex + 1);
   }, [
     score,
+    questions,
     currentIndex,
-    currentQuestion,
     selectedOption,
     selectedOptions,
-    wrongAnswers,
     correctAnswers,
+    wrongAnswers,
+    userSelections,
   ]);
 
   const handleMultiSelect = useCallback(
@@ -104,79 +100,94 @@ const Quiz = ({navigation, route}) => {
     [selectedOptions],
   );
 
-  const renderItem = ({item}) => (
-    <Card style={styles.optionCard}>
-      {currentQuestion.questionType === 'MultiChoice' && (
-        <RadioButton.Group
-          onValueChange={option => setSelectedOption(option)}
-          value={selectedOption}>
-          <View style={styles.optionContainer}>
-            <RadioButton value={item} />
-            <Text style={styles.optionText}>{item.text}</Text>
-          </View>
-        </RadioButton.Group>
-      )}
+  const renderItem = ({ item }) => {
+    const isMultiChoice =
+      questions[currentIndex].questionType === 'MultiChoice';
+    const isSelected = isMultiChoice
+      ? selectedOption === item
+      : selectedOptions.includes(item);
 
-      {currentQuestion.questionType === 'MultiSelect' && (
-        <Checkbox.Item
-          label={item.text}
-          position="leading"
-          labelStyle={{textAlign: 'left', marginHorizontal: 10}}
-          onPress={() => handleMultiSelect(item)}
-          status={selectedOptions.includes(item) ? 'checked' : 'unchecked'}
-        />
-      )}
-    </Card>
-  );
+    return (
+      <Card style={styles.optionCard}>
+        {isMultiChoice ? (
+          <RadioButton.Group
+            onValueChange={option => setSelectedOption(option)}
+            value={selectedOption}>
+            <View style={styles.optionContainer}>
+              <RadioButton value={item} />
+              <Text style={styles.optionText}>{item.text}</Text>
+            </View>
+          </RadioButton.Group>
+        ) : (
+          <Checkbox.Item
+            label={item.text}
+            position="leading"
+            labelStyle={{ textAlign: 'left', marginHorizontal: 10 }}
+            onPress={() => handleMultiSelect(item)}
+            status={isSelected ? 'checked' : 'unchecked'}
+          />
+        )}
+      </Card>
+    );
+  };
 
   if (loading) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator animating={true} size={60} color="#6200ea" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator animating={true} size={50} color="#000" />
         <Text style={styles.loadingText}>Loading...</Text>
       </View>
     );
   }
 
-  if (!quizStarted) {
+  if (!questions.length) {
     return (
-      <View style={styles.container}>
-        <Button
-          mode="contained"
-          onPress={() => setQuizStarted(true)}
-          style={{backgroundColor: '#6200ea'}}>
-          Start Quiz
-        </Button>
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>No questions found</Text>
       </View>
+    );
+  }
+
+  if (quizFinished) {
+    return (
+      <Result
+        score={score}
+        questions={questions}
+        wrongAnswers={wrongAnswers}
+        correctAnswers={correctAnswers}
+        userSelections={userSelections}
+      />
     );
   }
 
   return (
     <View style={styles.container}>
-      {currentQuestion && (
+      {questions.length > 0 && (
         <View style={styles.quizContent}>
-          <Text style={{textAlign: 'center'}}>
+          <Text style={styles.progressText}>
             {currentIndex + 1}/{questions.length}
           </Text>
           <ProgressBar
-            color="#6200ea"
+            color="#000"
             progress={progress}
             style={styles.progressBar}
           />
           <Text style={styles.questionText}>
-            {currentQuestion.questionText}
+            {questions[currentIndex].questionText}
           </Text>
           <FlatList
-            data={currentQuestion.options}
+            data={questions[currentIndex].options}
             keyExtractor={(_, index) => index.toString()}
             renderItem={renderItem}
           />
           <Button
             icon="arrow-right"
             mode="contained"
-            style={{backgroundColor: '#6200ea'}}
-            onPress={handleNext}>
-            {currentIndex + 1 >= questions.length ? 'Finish' : 'Next'}{' '}
+            loading={loading}
+            onPress={handleNext}
+            style={styles.nextButton}
+            disabled={!selectedOption && !selectedOptions.length}>
+            {currentIndex + 1 >= questions.length ? 'Finish' : 'Next'}
           </Button>
         </View>
       )}
@@ -191,40 +202,64 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 30,
     paddingHorizontal: 20,
+    backgroundColor: '#f1f1f1',
+  },
+  loadingContainer: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  questionText: {
-    fontSize: 20,
-    marginBottom: 20,
-    color: '#333',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  optionContainer: {
-    padding: 5,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  optionCard: {
-    borderRadius: 25,
-    marginVertical: 10,
-    backgroundColor: '#fff',
-  },
-  optionText: {
-    fontSize: 18,
-    marginLeft: 10,
-    color: '#333',
   },
   loadingText: {
     fontSize: 15,
     marginTop: 15,
-    color: '#6200ea',
+    color: '#000',
+  },
+  quizContent: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  progressText: {
+    textAlign: 'center',
+    fontSize: 16,
+    marginBottom: 10,
+    color: '#000',
   },
   progressBar: {
     height: 10,
     borderRadius: 5,
     marginVertical: 15,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#fff',
+  },
+  questionText: {
+    fontSize: 18,
+    marginBottom: 20,
+    color: '#000',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  optionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 8,
+  },
+  optionCard: {
+    borderRadius: 30,
+    marginVertical: 5,
+    backgroundColor: '#fff',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  optionText: {
+    fontSize: 16,
+    marginLeft: 10,
+    color: '#000',
+  },
+  nextButton: {
+    backgroundColor: '#000',
+    marginTop: 20,
+    borderRadius: 25,
   },
 });
