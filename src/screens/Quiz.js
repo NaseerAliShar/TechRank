@@ -26,8 +26,8 @@ const Quiz = ({ route }) => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const { data } = await instance.get(`quizzes/${quizId}`);
-        setQuestions(data.questions);
+        const { data } = await instance.get(`questions`);
+        setQuestions(data);
       } catch (error) {
         console.log('Error fetching quizzes', error);
       } finally {

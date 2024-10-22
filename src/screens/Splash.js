@@ -3,7 +3,6 @@ import * as Animatable from 'react-native-animatable';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { width } from '../styles/sizes';
 import { Divider } from 'react-native-paper';
-import { black, white } from '../styles/colors';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 const Splash = ({ navigation }) => {
@@ -13,7 +12,7 @@ const Splash = ({ navigation }) => {
       if (!token) {
         navigation.replace('Login');
       } else {
-        navigation.replace('Drawer');
+        navigation.replace('Tab');
       }
     }, 3000);
   }, []);
@@ -33,7 +32,9 @@ const Splash = ({ navigation }) => {
       <Animatable.View animation="fadeInUp" delay={1000}>
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
           <Divider horizontal={true} style={styles.divider} />
-          <Text style={{ color: white, marginHorizontal: 10 }}>Powered by</Text>
+          <Text style={{ color: '#fff', marginHorizontal: 10 }}>
+            Powered by
+          </Text>
           <Divider horizontal={true} style={styles.divider} />
         </View>
       </Animatable.View>
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: black,
+    backgroundColor: '#000',
   },
   techrankLogo: {
     width: width,
@@ -63,15 +64,14 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   innovadorLogo: {
-    marginTop: 5,
     width: width * 0.3,
-    height: width * 0.1,
+    height: width * 0.15,
     resizeMode: 'contain',
   },
   divider: {
     marginTop: 10,
-    width: width * 0.3,
-    height: width * 0.001,
-    backgroundColor: white,
+    width: width * 0.25,
+    height: width * 0.002,
+    backgroundColor: '#fff',
   },
 });

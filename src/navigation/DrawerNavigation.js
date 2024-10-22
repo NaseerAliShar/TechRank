@@ -1,35 +1,19 @@
 import Home from '../screens/Home';
-import Logout from '../components/Logout';
+import Help from '../components/Help';
 import Profile from '../components/Profile';
 import Leaderboard from '../screens/Leaderboard';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { Image, View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 const Drawer = createDrawerNavigator();
-export const DrawerNavigation = () => {
+export default function DrawerNavigation() {
   return (
     <Drawer.Navigator
       initialRouteName="Home"
       screenOptions={{
         headerShown: true,
-        headerStyle: {
-          height: 100,
-          backgroundColor: '#000',
-          borderBottomEndRadius: 25,
-          borderBottomStartRadius: 25,
-        },
-        headerTintColor: '#fff',
         headerTitleAlign: 'center',
-        headerTitle: () => (
-          <View>
-            <Image
-              source={require('../../assets/images/techrank1.png')}
-              style={styles.logo}
-            />
-          </View>
-        ),
       }}>
       <Drawer.Screen
         name="Home"
@@ -40,22 +24,6 @@ export const DrawerNavigation = () => {
               name="home"
               size={size}
               color={focused ? '#007AFF' : '#8e8e93'}
-              style={focused ? styles.drawerActive : styles.drawerInActive}
-            />
-          ),
-        }}
-      />
-
-      <Drawer.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          drawerIcon: ({ focused, size }) => (
-            <FontAwesome
-              name="user"
-              size={size}
-              color={focused ? '#007AFF' : '#8e8e93'}
-              style={focused ? styles.drawerActive : styles.drawerInActive}
             />
           ),
         }}
@@ -69,34 +37,36 @@ export const DrawerNavigation = () => {
               name="leaderboard"
               size={size}
               color={focused ? '#007AFF' : '#8e8e93'}
-              style={focused ? styles.drawerActive : styles.drawerInActive}
             />
           ),
         }}
       />
       <Drawer.Screen
-        name="Logout"
-        component={Logout}
+        name="Profile"
+        component={Profile}
         options={{
           drawerIcon: ({ focused, size }) => (
             <FontAwesome
-              name="power-off"
+              name="user"
               size={size}
               color={focused ? '#007AFF' : '#8e8e93'}
-              style={focused ? styles.drawerActive : styles.drawerInActive}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Help"
+        component={Help}
+        options={{
+          drawerIcon: ({ focused, size }) => (
+            <MaterialIcons
+              name="help"
+              size={size}
+              color={focused ? '#007AFF' : '#8e8e93'}
             />
           ),
         }}
       />
     </Drawer.Navigator>
   );
-};
-
-const styles = {
-  logo: {
-    width: 280,
-    height: 80,
-    alignSelf: 'center',
-    resizeMode: 'cover',
-  },
-};
+}

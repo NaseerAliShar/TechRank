@@ -20,7 +20,7 @@ const Login = ({ navigation }) => {
       );
       await AsyncStorage.setItem('token', response.data.token);
       await AsyncStorage.setItem('user', JSON.stringify(response.data.user));
-      navigation.replace('Drawer');
+      navigation.replace('Tab');
       setLoading(false);
     } catch (error) {
       console.error('Error logging in:', error);

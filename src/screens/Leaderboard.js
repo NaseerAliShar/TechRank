@@ -1,159 +1,195 @@
-import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
+  Image,
   FlatList,
   StyleSheet,
-  Image,
-  ActivityIndicator,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
-import {Card} from 'react-native-paper';
-import Animated, {FadeInUp} from 'react-native-reanimated';
+import { useState, useMemo, useEffect } from 'react';
+import { usersList } from '../utils/usersList';
+import { countriesList } from '../utils/countriesList';
+import { SelectList } from 'react-native-dropdown-select-list';
+import LinearGradient from 'react-native-linear-gradient';
+import axios from 'axios';
 
 const Leaderboard = () => {
-  const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState([]);
+  const [activeTab, setActiveTab] = useState('All');
+  const [selectedBadge, setSelectedBadge] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('');
+
+  const [countries, setCountries] = useState([]);
+
+  const getCountries = async () => {
+    try {
+      const response = await axios.get('https://restcountries.com/v3.1/all');
+      setCountries(response.data);
+      console.log('newdatat', response.data[110].name.common);
+    } catch (error) {
+      console.log('error fetching countries');
+    }
+  };
+
+  const filteredUsers = useMemo(() => {
+    let users = usersList;
+    if (selectedCountry) {
+      users = users.filter(user => user.country === selectedCountry);
+    }
+    if (selectedBadge) {
+      users = users.filter(user =>
+        user.badges.some(badge => badge.badge === selectedBadge),
+      );
+    }
+    return users.sort((a, b) => b.badges.length - a.badges.length);
+  }, [selectedBadge, selectedCountry]);
 
   useEffect(() => {
-    // Simulating an API call
-    setTimeout(() => {
-      const mockData = [
-        {
-          id: '1',
-          name: 'Alice',
-          score: 95,
-          avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-        },
-        {
-          id: '2',
-          name: 'Bob',
-          score: 89,
-          avatar: 'https://randomuser.me/api/portraits/men/2.jpg',
-        },
-        {
-          id: '3',
-          name: 'Charlie',
-          score: 85,
-          avatar: 'https://randomuser.me/api/portraits/men/3.jpg',
-        },
-        {
-          id: '4',
-          name: 'Diana',
-          score: 80,
-          avatar: 'https://randomuser.me/api/portraits/women/4.jpg',
-        },
-        {
-          id: '5',
-          name: 'Edward',
-          score: 78,
-          avatar: 'https://randomuser.me/api/portraits/men/5.jpg',
-        },
-      ];
-      setUsers(mockData);
-      setLoading(false);
-    }, 2000); // Simulated delay
+    getCountries();
   }, []);
-
-  const renderItem = ({item, index}) => (
-    <Animated.View entering={FadeInUp.delay(index * 100)}>
-      <Card style={styles.card}>
-        <View style={styles.cardContent}>
-          <Text style={styles.rank}>{index + 1}</Text>
-          <Image source={{uri: item.avatar}} style={styles.avatar} />
-          <View style={styles.userInfo}>
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.score}>{item.score} pts</Text>
-          </View>
-        </View>
-      </Card>
-    </Animated.View>
-  );
-
-  if (loading) {
-    return (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size={50} color="#0000ff" />
-        <Text style={styles.loadingText}>Loading...</Text>
-      </View>
-    );
-  }
+  const resetFilters = () => {
+    setSelectedBadge('');
+    setSelectedCountry('');
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Leaderboard</Text>
+    <LinearGradient colors={['#cfd9df', '#e2ebf0']} style={styles.container}>
+      <View style={styles.wrapper}>
+        {['All', 'Badge', 'Country'].map(tab => (
+          <TouchableOpacity
+            key={tab}
+            style={[
+              styles.card,
+              activeTab === tab ? styles.active : styles.inActive,
+            ]}
+            onPress={() => {
+              resetFilters();
+              setActiveTab(tab);
+            }}
+            activeOpacity={0.6}>
+            <Text style={styles.text}>{tab}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      {activeTab === 'Badge' && (
+        <SelectList
+          setSelected={val => setSelectedBadge(val)}
+          dropdownStyles={styles.dropdown}
+          boxStyles={styles.dropdown}
+          data={['Gold', 'Silver', 'Bronze', 'Diamond'].map(badge => ({
+            key: badge,
+            value: badge,
+          }))}
+          save="value"
+        />
+      )}
+      {activeTab === 'Country' && (
+        <SelectList
+          setSelected={val => setSelectedCountry(val)}
+          dropdownStyles={styles.dropdown}
+          boxStyles={styles.dropdown}
+          data={countries.map(country => ({
+            key: country.name.common,
+            value: country.name.common,
+          }))}
+          save="value"
+        />
+      )}
       <FlatList
-        data={users}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+        data={filteredUsers}
+        renderItem={({ item, index }) => (
+          <View style={styles.itemContainer}>
+            <View style={styles.userInfo}>
+              <Text>{index + 1}</Text>
+              <Image
+                source={{ uri: 'https://via.placeholder.com/50' }}
+                style={styles.profileImage}
+                resizeMode="contain"
+              />
+              <View style={{ width: '60%' }}>
+                <Text style={styles.userName}>{item.name}</Text>
+                <Text style={styles.userDetails}>
+                  {item.country}, {item.city}
+                </Text>
+              </View>
+              <Text style={styles.badgesCount}>{item.badges.length}</Text>
+            </View>
+          </View>
+        )}
+        keyExtractor={(_, index) => index.toString()}
+        contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 20 }}
       />
-    </View>
+    </LinearGradient>
   );
 };
 
+export default Leaderboard;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f9',
-    padding: 20,
+    backgroundColor: 'skyblue',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#333',
+  wrapper: {
+    marginBottom: 10,
+    paddingVertical: 20,
+    borderBottomEndRadius: 20,
+    borderBottomStartRadius: 20,
+    flexDirection: 'row',
+    backgroundColor: '#f0f0f0',
+    justifyContent: 'space-around',
   },
   card: {
-    marginVertical: 8,
     borderRadius: 10,
-    backgroundColor: '#fff',
-    elevation: 3,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
   },
-  cardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 15,
+  active: {
+    backgroundColor: '#40798c',
   },
-  rank: {
-    fontSize: 20,
+  inActive: {
+    backgroundColor: '#70a1a1',
+  },
+  text: {
+    fontSize: 16,
+    color: '#ffffff',
     fontWeight: 'bold',
-    color: '#555',
-    width: 40,
-    textAlign: 'center',
   },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 15,
+  dropdown: {
+    marginHorizontal: 20,
+  },
+  itemContainer: {
+    padding: 10,
+    elevation: 2,
+    shadowRadius: 5,
+    marginBottom: 10,
+    borderRadius: 15,
+    shadowOpacity: 0.2,
+    shadowColor: '#000',
+    backgroundColor: '#fff',
   },
   userInfo: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  score: {
-    fontSize: 16,
-    color: '#888',
-  },
-  loaderContainer: {
-    flex: 1,
-    justifyContent: 'center',
+    paddingHorizontal: 10,
+    flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f4f4f9',
+    justifyContent: 'space-between',
   },
-  loadingText: {
+  profileImage: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
+    borderRadius: 25,
+  },
+  userName: {
     fontSize: 16,
-    color: '#666',
-    marginTop: 10,
+    fontWeight: 'bold',
   },
-  listContent: {
-    paddingBottom: 20,
+  userDetails: {
+    fontSize: 12,
+    color: '#555',
+  },
+  badgesCount: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
-
-export default Leaderboard;
