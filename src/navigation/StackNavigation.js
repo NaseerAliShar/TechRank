@@ -1,5 +1,4 @@
 import Tab from './TabNavigation';
-import Drawer from './DrawerNavigation';
 import Login from '../auth/Login';
 import Register from '../auth/Register';
 import Splash from '../screens/Splash';
@@ -19,7 +18,6 @@ export default function StackNavigation() {
         headerShown: false,
       }}>
       <Stack.Screen name="Tab" component={Tab} />
-      <Stack.Screen name="Drawer" component={Drawer} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="Splash" component={Splash} />

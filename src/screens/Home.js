@@ -4,32 +4,36 @@ import {
   Image,
   FlatList,
   StyleSheet,
+  ImageBackground,
   TouchableOpacity,
   ActivityIndicator,
-  RefreshControl,
 } from 'react-native';
 import instance from '../services/api';
-import React, { useEffect, useState } from 'react';
+import LinearGradient from 'react-native-linear-gradient';
+import React, { useEffect, useState, useCallback } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { width } from '../styles/sizes';
+import { backgroundColor, primaryColor, secondaryColor } from '../styles/colors';
 
-const Exams = ({ navigation }) => {
-  const [exams, setExams] = useState([]);
-  const [loading, setLoading] = useState(true);
- const getExams = async () => {
-      try {
-        const response = await instance.get('/technologies');
-        setExams(response.data);
-      } catch (error) {
-        console.error('Error fetching exams:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+const Technologies = ({ navigation }) => {
+  const [technologies, setTechnologies] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchTechnologies = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await instance.get('/technologies');
+      setTechnologies(response.data);
+    } catch (error) {
+      console.error('Error fetching exams:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-   
-    getExams();
-  }, [exams]);
+    fetchTechnologies();
+  }, []);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -49,12 +53,12 @@ const Exams = ({ navigation }) => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size={50} color="blue" />
-        <Text style={styles.loadingText}>Loading...</Text>
+        <Text>Loading...</Text>
       </View>
     );
   }
 
-  if (!exams.length) {
+  if (!loading && !technologies.length) {
     return (
       <View style={styles.loadingContainer}>
         <Text style={styles.loadingText}>No technologies found</Text>
@@ -63,33 +67,40 @@ const Exams = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>All Technologies</Text>
-      <FlatList
-        refreshControl={
-          <RefreshControl
-            refreshing={loading}
-            onRefresh={() => getExams()}          />
-        }
-        data={exams}
-        numColumns={4}
-        renderItem={renderItem}
-        keyExtractor={item => item._id.toString()}
-        showsVerticalScrollIndicator={false}
-        columnWrapperStyle={styles.columnWrapper}
-      />
-    </View>
+    <LinearGradient colors={backgroundColor} style={{ flex: 1 }}>
+      <ImageBackground
+        source={require('../../assets/images/bgImage.png')}
+        imageStyle={{ transform: [{ scale: 1.5 }] }}
+        style={{ flex: 1 }}>
+        <Text style={styles.title}>All Technologies</Text>
+        <FlatList
+          data={technologies}
+          numColumns={4}
+          renderItem={renderItem}
+          keyExtractor={item => item._id.toString()}
+          showsVerticalScrollIndicator={false}
+          columnWrapperStyle={styles.columnWrapper}
+          contentContainerStyle={styles.container}
+        />
+      </ImageBackground>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingHorizontal: 10,
+    // flex: 1,
+    alignItems: 'center',
+    backgroundColor: secondaryColor,
+    padding: 10,
+    margin: 10,
+    borderTopEndRadius: 20,
+    borderTopStartRadius: 20,
+    height: '100%',
   },
   columnWrapper: {
-    justifyContent: 'space-around',
     marginBottom: 10,
+    justifyContent: 'space-evenly',
   },
   loadingContainer: {
     flex: 1,
@@ -99,19 +110,17 @@ const styles = StyleSheet.create({
   title: {
     margin: 10,
     fontSize: 20,
+    color: primaryColor,
     textAlign: 'center',
   },
-  loadingText: {
-    fontSize: 16,
-    marginTop: 10,
-    color: 'blue',
-  },
+
   card: {
+    margin: 5,
     borderRadius: 50,
     width: (width - 40) / 4.5,
     height: (width - 40) / 4.5,
     justifyContent: 'center',
-    backgroundColor: 'skyblue',
+    backgroundColor: '#000',
   },
   image: {
     borderRadius: 50,
@@ -121,4 +130,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Exams;
+export default Technologies;

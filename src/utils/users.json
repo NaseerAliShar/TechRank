@@ -1,0 +1,244 @@
+[
+  {
+    "name": "Alice Johnson",
+    "country": "United States of America",
+    "city": "New York",
+    "badges": [
+      {
+        "badge": "Bronze",
+        "technology": "React"
+      },
+      {
+        "badge": "Gold",
+        "technology": "JavaScript"
+      },
+      {
+        "badge": "Silver",
+        "technology": "Python"
+      },
+      {
+        "badge": "Diamond",
+        "technology": "HTML"
+      },
+      {
+        "badge": "Diamond",
+        "technology": "JavaScript"
+      }
+    ]
+  },
+  {
+    "name": "Bob Smith",
+    "country": "Canada",
+    "city": "Toronto",
+    "badges": [
+      {
+        "badge": "Silver",
+        "technology": "HTML"
+      },
+      {
+        "badge": "Bronze",
+        "technology": "React"
+      },
+      {
+        "badge": "Gold",
+        "technology": "JavaScript"
+      }
+    ]
+  },
+  {
+    "name": "Charlie Brown",
+    "country": "United Kingdom",
+    "city": "London",
+    "badges": [
+      {
+        "badge": "Gold",
+        "technology": "Python"
+      },
+      {
+        "badge": "Diamond",
+        "technology": "React"
+      },
+      {
+        "badge": "Silver",
+        "technology": "JavaScript"
+      },
+      {
+        "badge": "Bronze",
+        "technology": "HTML"
+      },
+      {
+        "badge": "Diamond",
+        "technology": "Python"
+      },
+      {
+        "badge": "Gold",
+        "technology": "HTML"
+      },
+      {
+        "badge": "Silver",
+        "technology": "React"
+      }
+    ]
+  },
+  {
+    "name": "Diana Prince",
+    "country": "Australia",
+    "city": "Sydney",
+    "badges": [
+      {
+        "badge": "Bronze",
+        "technology": "JavaScript"
+      },
+      {
+        "badge": "Silver",
+        "technology": "HTML"
+      }
+    ]
+  },
+  {
+    "name": "Edward Wang",
+    "country": "China",
+    "city": "Beijing",
+    "badges": [
+      {
+        "badge": "Gold",
+        "technology": "React"
+      },
+      {
+        "badge": "Diamond",
+        "technology": "JavaScript"
+      },
+      {
+        "badge": "Silver",
+        "technology": "Python"
+      },
+      {
+        "badge": "Bronze",
+        "technology": "HTML"
+      }
+    ]
+  },
+  {
+    "name": "Fiona Lee",
+    "country": "United States of America",
+    "city": "Los Angeles",
+    "badges": [
+      {
+        "badge": "Silver",
+        "technology": "JavaScript"
+      }
+    ]
+  },
+  {
+    "name": "George Clark",
+    "country": "Canada",
+    "city": "Vancouver",
+    "badges": [
+      {
+        "badge": "Diamond",
+        "technology": "Python"
+      },
+      {
+        "badge": "Gold",
+        "technology": "React"
+      },
+      {
+        "badge": "Silver",
+        "technology": "JavaScript"
+      },
+      {
+        "badge": "Bronze",
+        "technology": "HTML"
+      },
+      {
+        "badge": "Diamond",
+        "technology": "HTML"
+      },
+      {
+        "badge": "Gold",
+        "technology": "JavaScript"
+      }
+    ]
+  },
+  {
+    "name": "Hannah Kim",
+    "country": "South Korea",
+    "city": "Seoul",
+    "badges": [
+      {
+        "badge": "Silver",
+        "technology": "Python"
+      },
+      {
+        "badge": "Gold",
+        "technology": "HTML"
+      }
+    ]
+  },
+  {
+    "name": "Isaac Newton",
+    "country": "United Kingdom",
+    "city": "Manchester",
+    "badges": [
+      {
+        "badge": "Gold",
+        "technology": "Python"
+      },
+      {
+        "badge": "Diamond",
+        "technology": "JavaScript"
+      },
+      {
+        "badge": "Silver",
+        "technology": "React"
+      },
+      {
+        "badge": "Bronze",
+        "technology": "HTML"
+      },
+      {
+        "badge": "Diamond",
+        "technology": "React"
+      },
+      {
+        "badge": "Gold",
+        "technology": "HTML"
+      },
+      {
+        "badge": "Silver",
+        "technology": "JavaScript"
+      },
+      {
+        "badge": "Bronze",
+        "technology": "Python"
+      }
+    ]
+  },
+  {
+    "name": "Julia Roberts",
+    "country": "United States of America",
+    "city": "Chicago",
+    "badges": [
+      {
+        "badge": "Diamond",
+        "technology": "React"
+      },
+      {
+        "badge": "Gold",
+        "technology": "JavaScript"
+      },
+      {
+        "badge": "Silver",
+        "technology": "Python"
+      },
+      {
+        "badge": "Bronze",
+        "technology": "HTML"
+      },
+      {
+        "badge": "Diamond",
+        "technology": "JavaScript"
+      }
+    ]
+  }
+]

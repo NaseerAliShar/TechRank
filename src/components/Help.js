@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { List, Text, Appbar } from 'react-native-paper';
+import { List, Text } from 'react-native-paper';
 
 const Help = () => {
   const [expanded, setExpanded] = useState(false);

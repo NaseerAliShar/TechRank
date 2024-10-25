@@ -22,7 +22,7 @@ const Badges = () => {
     },
     {
       name: 'Diamond',
-      source: require('../../assets/images/diamond.jpg'),
+      source: require('../../assets/images/bronze.png'),
       disabled: true,
     },
   ];
