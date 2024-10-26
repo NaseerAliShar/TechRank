@@ -26,12 +26,12 @@ const Register = ({ navigation }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://yourapiurl.com/api/v1/auth/register',
+        'https://p3x08xsn-3000.inc1.devtunnels.ms/api/v1/auth/register',
         values,
       );
       await AsyncStorage.setItem('token', response.data.token);
       await AsyncStorage.setItem('user', JSON.stringify(response.data.user));
-      navigation.replace('Login'); // Replace 'Tab' with the correct screen after registration
+      navigation.replace('Login');
     } catch (error) {
       if (error.response && error.response.data) {
         Alert.alert(
@@ -61,24 +61,19 @@ const Register = ({ navigation }) => {
   });
 
   return (
-    <LinearGradient
-      colors={backgroundColor}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={{ flex: 1 }}>
+    <LinearGradient colors={backgroundColor} style={styles.container}>
       <ImageBackground
         source={require('../../assets/images/bgImage.png')}
-        style={styles.container}
-        imageStyle={{ transform: [{ scale: 1.5 }] }}>
+        imageStyle={{ transform: [{ scale: 1.5 }] }}
+        style={styles.container}>
         <Image
           source={require('../../assets/images/techrank1.png')}
-          style={{ width: width * 0.7, height: width * 0.4 }}
-          resizeMode="contain"
+          style={styles.logo}
         />
         <ScrollView
-          style={{ width: width * 0.9 }}
           showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled">
+          keyboardShouldPersistTaps="handled"
+          style={{ marginHorizontal: 20 }}>
           <Formik
             initialValues={{
               fullName: '',
@@ -186,26 +181,22 @@ const Register = ({ navigation }) => {
                   underlineColor="transparent"
                   autoCapitalize="words"
                   secureTextEntry={eye}
+                  error={touched.password && errors.password}
                   right={
                     <TextInput.Icon
                       icon={eye ? 'eye' : 'eye-off'}
                       onPress={() => setEye(!eye)}
                     />
                   }
-                  error={touched.password && errors.password}
                 />
                 {touched.password && errors.password && (
                   <Text style={styles.errorText}>{errors.password}</Text>
                 )}
-
                 <Button
                   mode="contained"
                   loading={loading}
                   onPress={handleSubmit}
-                  style={{
-                    borderRadius: 30,
-                    marginTop: 10,
-                  }}
+                  style={{ marginVertical: 10 }}
                   labelStyle={{ fontWeight: 'bold', fontSize: 18 }}
                   buttonColor={primaryColor}
                   textColor={textColor}>
@@ -215,8 +206,8 @@ const Register = ({ navigation }) => {
             )}
           </Formik>
 
-          <TouchableOpacity style={{ alignSelf: 'center', paddingTop: 10 }}>
-            <Text style={{ color: 'gray' }}>
+          <TouchableOpacity style={styles.textContainer}>
+            <Text style={styles.text}>
               Already have an account?{' '}
               <Text
                 style={{ color: primaryColor }}
@@ -236,8 +227,12 @@ export default Register;
 const styles = {
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+  logo: {
+    width: width * 0.8,
+    height: width * 0.4,
+    alignSelf: 'center',
+    resizeMode: 'contain',
   },
   input: {
     marginVertical: 10,
@@ -247,5 +242,13 @@ const styles = {
     color: 'red',
     fontSize: 10,
     marginBottom: 5,
+  },
+  textContainer: {
+    marginBottom: 20,
+    alignSelf: 'center',
+  },
+  text: {
+    fontSize: 15,
+    color: 'gray',
   },
 };

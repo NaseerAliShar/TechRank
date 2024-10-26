@@ -10,6 +10,7 @@ import Result from './Result';
 import instance from '../services/api';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useEffect, useState, useCallback, useMemo } from 'react';
+import { primaryColor, secondaryColor } from '../styles/colors';
 
 const Quiz = ({ route }) => {
   const { quizId } = route.params;
@@ -168,7 +169,7 @@ const Quiz = ({ route }) => {
             {currentIndex + 1}/{questions.length}
           </Text>
           <ProgressBar
-            color="#000"
+            color={primaryColor}
             progress={progress}
             style={styles.progressBar}
           />
@@ -183,6 +184,8 @@ const Quiz = ({ route }) => {
           <Button
             icon="arrow-right"
             mode="contained"
+            textColor="#000"
+            buttonColor={primaryColor}
             loading={loading}
             onPress={handleNext}
             style={styles.nextButton}
@@ -228,7 +231,7 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     marginVertical: 15,
-    backgroundColor: '#fff',
+    backgroundColor: secondaryColor,
   },
   questionText: {
     fontSize: 18,
@@ -240,17 +243,17 @@ const styles = StyleSheet.create({
   optionContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 8,
+    padding: 5,
   },
   optionCard: {
     borderRadius: 30,
     marginVertical: 5,
-    backgroundColor: '#fff',
+    backgroundColor: primaryColor,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 2,
   },
   optionText: {
     fontSize: 16,
@@ -258,8 +261,6 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   nextButton: {
-    backgroundColor: '#000',
-    marginTop: 20,
-    borderRadius: 25,
+    borderRadius: 30,
   },
 });

@@ -8,12 +8,16 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
+import { width } from '../styles/sizes';
+import {
+  primaryColor,
+  secondaryColor,
+  backgroundColor,
+} from '../styles/colors';
 import instance from '../services/api';
 import LinearGradient from 'react-native-linear-gradient';
 import React, { useEffect, useState, useCallback } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { width } from '../styles/sizes';
-import { backgroundColor, primaryColor, secondaryColor } from '../styles/colors';
 
 const Technologies = ({ navigation }) => {
   const [technologies, setTechnologies] = useState([]);
@@ -67,11 +71,11 @@ const Technologies = ({ navigation }) => {
   }
 
   return (
-    <LinearGradient colors={backgroundColor} style={{ flex: 1 }}>
+    <LinearGradient colors={backgroundColor} style={styles.container}>
       <ImageBackground
         source={require('../../assets/images/bgImage.png')}
         imageStyle={{ transform: [{ scale: 1.5 }] }}
-        style={{ flex: 1 }}>
+        style={styles.container}>
         <Text style={styles.title}>All Technologies</Text>
         <FlatList
           data={technologies}
@@ -80,7 +84,7 @@ const Technologies = ({ navigation }) => {
           keyExtractor={item => item._id.toString()}
           showsVerticalScrollIndicator={false}
           columnWrapperStyle={styles.columnWrapper}
-          contentContainerStyle={styles.container}
+          contentContainerStyle={styles.cardContainer}
         />
       </ImageBackground>
     </LinearGradient>
@@ -89,18 +93,18 @@ const Technologies = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    alignItems: 'center',
-    backgroundColor: secondaryColor,
+    flex: 1,
+  },
+  cardContainer: {
+    flex: 1,
     padding: 10,
-    margin: 10,
+    marginHorizontal: 20,
     borderTopEndRadius: 20,
     borderTopStartRadius: 20,
-    height: '100%',
+    backgroundColor: secondaryColor,
   },
   columnWrapper: {
-    marginBottom: 10,
-    justifyContent: 'space-evenly',
+    justifyContent: 'flex-start',
   },
   loadingContainer: {
     flex: 1,
@@ -113,14 +117,13 @@ const styles = StyleSheet.create({
     color: primaryColor,
     textAlign: 'center',
   },
-
   card: {
     margin: 5,
     borderRadius: 50,
-    width: (width - 40) / 4.5,
-    height: (width - 40) / 4.5,
+    width: (width - 40) / 5,
+    height: (width - 40) / 5,
     justifyContent: 'center',
-    backgroundColor: '#000',
+    backgroundColor: 'white',
   },
   image: {
     borderRadius: 50,

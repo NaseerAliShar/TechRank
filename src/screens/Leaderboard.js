@@ -11,7 +11,11 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { SelectList } from 'react-native-dropdown-select-list';
-import { backgroundColor, primaryColor } from '../styles/colors';
+import {
+  backgroundColor,
+  primaryColor,
+  secondaryColor,
+} from '../styles/colors';
 import { width } from '../styles/sizes';
 
 const users = [
@@ -261,72 +265,18 @@ const users = [
 
 const countries = [
   'Afghanistan',
-  'Albania',
-  'Algeria',
-  'Andorra',
-  'Angola',
-  'Antigua',
-  'Argentina',
-  'Armenia',
   'Australia',
   'Austria',
   'Azerbaijan',
-  'Bahamas',
-  'Bahrain',
   'Bangladesh',
-  'Barbados',
-  'Belarus',
   'Belgium',
-  'Belize',
-  'Benin',
-  'Bhutan',
-  'Bolivia',
-  'Bosnia',
-  'Botswana',
-  'Brazil',
-  'Brunei',
-  'Bulgaria',
-  'Burundi',
-  'Cambodia',
-  'Cameroon',
   'Canada',
-  'Chad',
-  'Chile',
   'China',
-  'Colombia',
-  'Comoros',
-  'Congo',
-  'Costa Rica',
-  'Croatia',
-  'Cuba',
-  'Cyprus',
-  'Czech',
   'Denmark',
-  'Djibouti',
-  'Dominica',
-  'Ecuador',
-  'Egypt',
-  'Eritrea',
-  'Estonia',
-  'Eswatini',
-  'Ethiopia',
-  'Fiji',
   'Finland',
   'France',
-  'Gabon',
-  'Gambia',
   'Georgia',
   'Germany',
-  'Ghana',
-  'Greece',
-  'Grenada',
-  'Guatemala',
-  'Guinea',
-  'Guyana',
-  'Haiti',
-  'Honduras',
-  'Hungary',
-  'Iceland',
   'India',
   'Indonesia',
   'Iran',
@@ -334,101 +284,29 @@ const countries = [
   'Ireland',
   'Israel',
   'Italy',
-  'Jamaica',
-  'Japan',
-  'Jordan',
-  'Kazakhstan',
-  'Kenya',
-  'Kiribati',
-  'Korea',
-  'Kuwait',
-  'Kyrgyzstan',
-  'Laos',
-  'Latvia',
-  'Lebanon',
-  'Lesotho',
-  'Liberia',
-  'Libya',
-  'Lithuania',
-  'Luxembourg',
-  'Madagascar',
-  'Malawi',
   'Malaysia',
   'Maldives',
-  'Mali',
-  'Malta',
-  'Mauritania',
-  'Mauritius',
-  'Mexico',
-  'Micronesia',
-  'Moldova',
-  'Monaco',
-  'Mongolia',
-  'Montenegro',
-  'Morocco',
-  'Mozambique',
-  'Myanmar',
-  'Namibia',
-  'Nauru',
   'Nepal',
   'Netherlands',
   'New Zealand',
-  'Nicaragua',
-  'Niger',
-  'Nigeria',
-  'North Macedonia',
   'Norway',
   'Oman',
   'Pakistan',
   'Palau',
   'Palestine',
-  'Panama',
-  'Paraguay',
-  'Peru',
-  'Philippines',
-  'Poland',
-  'Portugal',
   'Qatar',
   'Romania',
   'Russia',
-  'Rwanda',
-  'Samoa',
   'Saudi Arabia',
-  'Senegal',
-  'Serbia',
-  'Seychelles',
-  'Singapore',
-  'Slovakia',
-  'Slovenia',
-  'Somalia',
-  'South Africa',
-  'South Sudan',
-  'Spain',
   'Sri Lanka',
   'Sudan',
-  'Suriname',
   'Sweden',
   'Switzerland',
-  'Tajikistan',
-  'Tanzania',
-  'Thailand',
-  'Tunisia',
-  'Turkey',
-  'Turkmenistan',
-  'Tuvalu',
-  'Uganda',
   'Ukraine',
   'United Arab Emirates',
   'United Kingdom',
   'United States of America',
-  'Uruguay',
   'Uzbekistan',
-  'Vanuatu',
-  'Vatican City',
-  'Venezuela',
-  'Vietnam',
-  'Yemen',
-  'Zambia',
   'Zimbabwe',
 ];
 
@@ -513,8 +391,9 @@ const Leaderboard = () => {
         {activeTab === 'Badge' && (
           <SelectList
             setSelected={setSelectedBadge}
-            dropdownStyles={styles.dropdownText}
             boxStyles={styles.dropdown}
+            dropdownStyles={styles.dropdownText}
+            inputStyles={{ color: secondaryColor }}
             dropdownTextStyles={{ color: primaryColor }}
             data={['Gold', 'Silver', 'Bronze', 'Diamond'].map(badge => ({
               key: badge,
@@ -526,8 +405,9 @@ const Leaderboard = () => {
         {activeTab === 'Country' && (
           <SelectList
             setSelected={setSelectedCountry}
-            dropdownStyles={styles.dropdownText}
             boxStyles={styles.dropdown}
+            dropdownStyles={styles.dropdownText}
+            inputStyles={{ color: secondaryColor }}
             dropdownTextStyles={{ color: primaryColor }}
             data={countries.map(country => ({
               key: country,
@@ -536,85 +416,84 @@ const Leaderboard = () => {
             save="value"
           />
         )}
-        <ScrollView style={{ paddingVertical: 10 }}>
-          <View
-            style={{
-              marginHorizontal: 20,
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-            }}>
-            <View style={[styles.topContainer, { marginTop: 40 }]}>
-              <Image
-                source={{
-                  uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
-                }}
-                style={styles.profileImageTop}
-              />
-              <Text style={styles.inactiveText}>
-                {filteredUsers[1].name.substring(0, 3)}
-              </Text>
-              <Text
-                style={[
-                  styles.activeText,
-                  {
-                    backgroundColor: primaryColor,
-                    paddingHorizontal: 25,
-                    borderRadius: 10,
-                  },
-                ]}>
-                {filteredUsers[1].badges.length}
-              </Text>
+        
+          <View style={{ position: 'relative' }}>
+            <View
+              style={{
+                width: '80%',
+                alignSelf: 'center',
+                position: 'absolute',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <View
+                  style={[
+                    styles.topContainer,
+                    { justifyContent: 'flex-end', bottom: 20 },
+                  ]}>
+                  <Image
+                    source={{
+                      uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
+                    }}
+                    style={styles.profileImageTop}
+                  />
+                  <Text style={styles.inactiveText}>
+                    {filteredUsers[1].name.substring(0, 3)}
+                  </Text>
+                  <Text style={[styles.activeText, styles.rankText]}>
+                    {filteredUsers[1].badges.length}
+                  </Text>
+                </View>
+                <View style={styles.topContainer}>
+                  <Image
+                    source={{
+                      uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
+                    }}
+                    style={styles.profileImageTop}
+                  />
+                  <Text style={styles.inactiveText}>
+                    {filteredUsers[0].name.substring(0, 5)}
+                  </Text>
+                  <Text style={[styles.activeText, styles.rankText]}>
+                    {filteredUsers[0].badges.length}
+                  </Text>
+                </View>
+                <View
+                  style={[styles.topContainer, { justifyContent: 'flex-end' }]}>
+                  <Image
+                    source={{
+                      uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
+                    }}
+                    style={styles.profileImageTop}
+                  />
+                  <Text style={styles.inactiveText}>
+                    {filteredUsers[2].name.substring(0, 7)}
+                  </Text>
+                  <Text style={[styles.activeText, styles.rankText]}>
+                    {filteredUsers[2].badges.length}
+                  </Text>
+                </View>
+              </View>
             </View>
-            <View style={[styles.topContainer]}>
+            <View
+              style={{
+                height: width * 0.8,
+                justifyContent: 'flex-end',
+              }}>
               <Image
-                source={{
-                  uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
+                source={require('../../assets/images/boxes.png')}
+                style={{
+                  width: width,
+                  height: width * 0.4,
+                  resizeMode: 'contain',
                 }}
-                style={styles.profileImageTop}
               />
-              <Text style={styles.inactiveText}>
-                {filteredUsers[0].name.substring(0, 5)}
-              </Text>
-              <Text
-                style={[
-                  styles.activeText,
-                  {
-                    backgroundColor: primaryColor,
-                    paddingHorizontal: 25,
-                    borderRadius: 10,
-                  },
-                ]}>
-                {filteredUsers[0].badges.length}
-              </Text>
-            </View>
-            <View style={[styles.topContainer, { marginTop: 40 }]}>
-              <Image
-                source={{
-                  uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
-                }}
-                style={styles.profileImageTop}
-              />
-              <Text style={styles.inactiveText}>
-                {filteredUsers[2].name.substring(0, 7)}
-              </Text>
-              <Text
-                style={[
-                  styles.activeText,
-                  {
-                    backgroundColor: primaryColor,
-                    paddingHorizontal: 25,
-                    borderRadius: 10,
-                  },
-                ]}>
-                {filteredUsers[2].badges.length}
-              </Text>
             </View>
           </View>
-          <Image
-            source={require('../../assets/images/boxes.png')}
-            style={{ width: width, height: width * 0.4, resizeMode: 'contain' }}
-          />
-
+          <ScrollView style={{marginVertical:10}}> 
           <FlatList
             showsVerticalScrollIndicator={false}
             data={filteredUsers.slice(3, 10)}
@@ -648,11 +527,11 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
   },
   inactive: {
-    backgroundColor: 'transparent',
+    backgroundColor: secondaryColor,
   },
   activeText: {
     fontSize: 16,
-    color: '#000',
+    color: secondaryColor,
     fontWeight: 'bold',
   },
   inactiveText: {
@@ -661,11 +540,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   dropdown: {
+    marginBottom: 10,
     marginHorizontal: 20,
     backgroundColor: primaryColor,
   },
   dropdownText: {
+    marginBottom: 10,
     marginHorizontal: 20,
+    backgroundColor: secondaryColor,
   },
   itemContainer: {
     paddingVertical: 10,
@@ -694,16 +576,21 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   profileImageTop: {
-    width: 70,
-    height: 70,
-    marginRight: 10,
+    width: 80,
+    height: 80,
+    borderWidth: 2,
     borderRadius: 40,
-    borderColor: primaryColor,
-    borderWidth: 1,
     resizeMode: 'contain',
+    borderColor: primaryColor,
   },
   topContainer: {
+    height: width / 2,
     alignItems: 'center',
+  },
+  topText: {
+    fontSize: 16,
+    color: primaryColor,
+    fontWeight: 'bold',
   },
   userName: {
     fontSize: 16,
@@ -714,10 +601,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#555',
   },
-  badgesCount: {
+  rankText: {
     fontSize: 16,
     fontWeight: '900',
     color: '#fff',
+    backgroundColor: primaryColor,
+    paddingHorizontal: 25,
+    borderRadius: 10,
   },
   listContent: {
     paddingHorizontal: 10,

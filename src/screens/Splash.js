@@ -17,47 +17,40 @@ const Splash = ({ navigation }) => {
       } else {
         navigation.replace('Tab');
       }
-    }, 3000);
+    }, 5000);
   }, []);
 
   return (
-    <LinearGradient
-      colors={backgroundColor}
-      style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}>
+    <LinearGradient colors={backgroundColor} style={styles.container}>
       <ImageBackground
         source={require('../../assets/images/bgImage.png')}
-        style={styles.container}
-        imageStyle={{ transform: [{ scale: 1.5 }] }}>
+        imageStyle={{ transform: [{ scale: 1.5 }] }}
+        style={styles.container}>
         <Animatable.View
           animation="fadeIn"
           duration={2000}
           style={styles.container}>
-          <View style={styles.techrankContainer}>
-            <Animatable.View animation="fadeInUp" duration={2000}>
-              <Image
-                style={styles.techrankLogo}
-                source={require('../../assets/images/techrank1.png')}
-                resizeMode="contain"
-              />
-            </Animatable.View>
-          </View>
-
-          <View style={styles.footerContainer}>
+          <Animatable.View
+            animation="fadeInUp"
+            duration={2000}
+            style={styles.topContainer}>
+            <Image
+              style={styles.techrankLogo}
+              source={require('../../assets/images/techrank1.png')}
+            />
+          </Animatable.View>
+          <View style={styles.bottomContainer}>
             <Animatable.View animation="fadeInUp" delay={1000}>
-              <View style={styles.poweredByContainer}>
+              <View style={styles.textContainer}>
                 <Divider style={styles.divider} />
-                <Text style={{ color: '#fff' }}>Powered by</Text>
+                <Text style={styles.text}>Powered by</Text>
                 <Divider style={styles.divider} />
               </View>
             </Animatable.View>
-
             <Animatable.View animation="zoomIn" delay={1500}>
               <Image
                 source={require('../../assets/images/innovador1.png')}
                 style={styles.innovadorLogo}
-                resizeMode="contain"
               />
             </Animatable.View>
           </View>
@@ -72,28 +65,32 @@ export default Splash;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
   },
-  techrankContainer: {
+  topContainer: {
     flex: 1,
     justifyContent: 'center',
   },
   techrankLogo: {
     width: width,
     height: width,
+    resizeMode: 'contain',
   },
-  footerContainer: {
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  poweredByContainer: {
-    flexDirection: 'row',
+  bottomContainer: {
+    marginBottom: 20,
     alignItems: 'center',
   },
   innovadorLogo: {
     width: width * 0.2,
     height: width * 0.1,
+    resizeMode: 'contain',
+  },
+  textContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  text: {
+    color: '#fff',
+    fontSize: 16,
   },
   divider: {
     width: width * 0.3,

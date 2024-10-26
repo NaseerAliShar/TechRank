@@ -1,66 +1,66 @@
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient';
+import { colors } from '../styles/colors';
+import { sizes } from '../styles/sizes';
 
 const Badges = () => {
   const navigation = useNavigation();
   const badges = [
-    {
-      name: 'Gold',
-      source: require('../../assets/images/gold.png'),
-      disabled: false,
-    },
-    {
-      name: 'Silver',
-      source: require('../../assets/images/silver.png'),
-      disabled: true,
-    },
-    {
-      name: 'Bronze',
-      source: require('../../assets/images/bronze.png'),
-      disabled: true,
-    },
-    {
-      name: 'Diamond',
-      source: require('../../assets/images/bronze.png'),
-      disabled: true,
-    },
+    { name: 'Bronze', source: require('../../assets/images/bronze.png'), disabled: false },
+    { name: 'Silver', source: require('../../assets/images/silver.png'), disabled: true },
+    { name: 'Gold', source: require('../../assets/images/gold.png'), disabled: true },
+    { name: 'Diamond', source: require('../../assets/images/diamond.png'), disabled: true },
   ];
 
   return (
-    <View style={styles.container}>
-      <View style={styles.grid}>
-        {badges.map((badge, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.card,
-              badge.disabled ? styles.disabled : styles.enabled,
-            ]}
-            activeOpacity={0.8}
-            onPress={() =>
-              !badge.disabled && navigation.navigate('Quiz', { badge })
-            }
-            disabled={badge.disabled}>
-            <View style={styles.imageContainer}>
-              {badge.disabled && (
-                <MaterialIcons
-                  name="lock"
-                  size={50}
-                  color="#000"
-                  style={styles.lockIcon}
-                />
-              )}
-              <Image
-                source={badge.source}
-                style={[styles.image, badge.disabled && styles.disabledImage]}
-              />
-            </View>
-            <Text style={styles.title}>{badge.name}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
+    <LinearGradient colors={colors.backgroundColor} style={styles.container}>
+      <ImageBackground
+        source={require('../../assets/images/bgImage.png')}
+        imageStyle={styles.backgroundImage}
+        style={styles.container}>
+        <View style={styles.cardContainer}>
+          <Text style={styles.title}>Badges</Text>
+          <View style={styles.grid}>
+            {badges.map((badge, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.card,
+                  badge.disabled ? styles.disabled : styles.enabled,
+                ]}
+                activeOpacity={0.8}
+                onPress={() => !badge.disabled && navigation.navigate('Quiz', { badge })}
+                disabled={badge.disabled}>
+                <View>
+                  {badge.disabled && (
+                    <MaterialIcons
+                      name="lock"
+                      size={sizes.iconSizeLarge}
+                      color={colors.iconColor}
+                      style={styles.lockIcon}
+                    />
+                  )}
+                  <Image
+                    source={badge.source}
+                    style={[styles.image, badge.disabled && styles.disabledImage]}
+                  />
+                </View>
+                <Text style={styles.badgeName}>{badge.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </ImageBackground>
+    </LinearGradient>
   );
 };
 
@@ -69,51 +69,66 @@ export default Badges;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+  },
+  backgroundImage: {
+    transform: [{ scale: 1.5 }],
+  },
+  cardContainer: {
+    backgroundColor: colors.secondaryBackground,
+    marginHorizontal: sizes.spacingLarge,
+    marginTop: sizes.spacingExtraLarge,
+    padding: sizes.spacingLarge,
+    borderRadius: sizes.borderRadiusLarge,
+    flex: 1,
+  },
+  title: {
+    fontSize: sizes.fontSizeTitle,
+    color: colors.primaryText,
+    textAlign: 'center',
+    marginBottom: sizes.spacingMedium,
+    fontWeight: 'bold',
   },
   grid: {
-    flexWrap: 'wrap',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
   card: {
     width: '48%',
-    shadowColor: 'green',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBackground,
     elevation: 4,
-    shadowRadius: 10,
-    borderRadius: 80,
-    marginVertical: 10,
-    paddingVertical: 20,
-    paddingHorizontal: 30,
+    borderRadius: sizes.borderRadiusMedium,
+    marginVertical: sizes.spacingSmall,
+    paddingVertical: sizes.spacingMedium,
+    paddingHorizontal: sizes.spacingMedium,
   },
   enabled: {
     borderWidth: 1,
-    borderColor: '#fff',
+    borderColor: colors.cardBorder,
   },
   disabled: {
-    opacity: 0.8,
-    backgroundColor: '#f1f1f1',
+    opacity: 0.7,
+    backgroundColor: colors.disabledBackground,
   },
   image: {
-    width: 80,
-    height: 80,
-    marginBottom: 10,
+    width: sizes.imageSizeLarge,
+    height: sizes.imageSizeLarge,
+    marginBottom: sizes.spacingSmall,
     resizeMode: 'contain',
   },
   disabledImage: {
-    opacity: 0.2,
+    opacity: 0.3,
   },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  badgeName: {
+    fontSize: sizes.fontSizeText,
+    color: colors.primaryText,
     textAlign: 'center',
   },
   lockIcon: {
-    top: '50%',
-    left: '40%',
     position: 'absolute',
+    top: '50%',
+    left: '50%',
     transform: [{ translateX: -25 }, { translateY: -25 }],
   },
 });

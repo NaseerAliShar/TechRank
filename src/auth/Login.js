@@ -5,8 +5,9 @@ import {
   Alert,
   Keyboard,
   ScrollView,
-  TouchableOpacity,
   ImageBackground,
+  TouchableOpacity,
+  KeyboardAvoidingView,
 } from 'react-native';
 import axios from 'axios';
 import * as Yup from 'yup';
@@ -55,24 +56,19 @@ const Login = ({ navigation }) => {
   });
 
   return (
-    <LinearGradient
-      colors={backgroundColor}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={{ flex: 1 }}>
+    <LinearGradient colors={backgroundColor} style={styles.container}>
       <ImageBackground
         source={require('../../assets/images/bgImage.png')}
-        style={styles.container}
-        imageStyle={{ transform: [{ scale: 1.5 }] }}>
+        imageStyle={{ transform: [{ scale: 1.5 }] }}
+        style={styles.container}>
         <Image
           source={require('../../assets/images/techrank1.png')}
-          style={{ width: width * 0.7, height: width * 0.7 }}
-          resizeMode="contain"
+          style={styles.logo}
         />
         <ScrollView
-          style={{ width: width * 0.9 }}
           showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled">
+          keyboardShouldPersistTaps="handled"
+          style={{ marginHorizontal: 20 }}>
           <Formik
             initialValues={{ email: '', password: '' }}
             validationSchema={loginValidationSchema}
@@ -116,13 +112,13 @@ const Login = ({ navigation }) => {
                   underlineColor="transparent"
                   autoCapitalize="words"
                   secureTextEntry={eye}
+                  error={touched.password && errors.password}
                   right={
                     <TextInput.Icon
                       icon={eye ? 'eye' : 'eye-off'}
                       onPress={() => setEye(!eye)}
                     />
                   }
-                  error={touched.password && errors.password}
                 />
                 {touched.password && errors.password && (
                   <Text style={styles.errorText}>{errors.password}</Text>
@@ -134,20 +130,18 @@ const Login = ({ navigation }) => {
                   mode="contained"
                   loading={loading}
                   onPress={handleSubmit}
-                  style={{
-                    borderRadius: 30,
-                    marginTop: 15,
-                  }}
-                  labelStyle={{ fontWeight: 'bold', fontSize: 18 }}
+                  textColor={textColor}
                   buttonColor={primaryColor}
-                  textColor={textColor}>
+                  style={{ marginVertical: 10 }}
+                  labelStyle={{ fontWeight: 'bold', fontSize: 18 }}>
                   {!loading && 'Login'}
                 </Button>
               </View>
             )}
           </Formik>
-          <TouchableOpacity style={{ alignSelf: 'center', paddingTop: 10 }}>
-            <Text style={{ color: 'gray' }}>
+
+          <TouchableOpacity style={styles.textContainer}>
+            <Text style={styles.text}>
               Don't have an account?{' '}
               <Text
                 style={{ color: primaryColor }}
@@ -157,11 +151,11 @@ const Login = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
 
-          <View style={styles.socialLoginContainer}>
-            <Text style={styles.socialLoginText}>or sign in with</Text>
+          <View style={styles.textContainer}>
+            <Text style={styles.text}>or sign in with</Text>
           </View>
 
-          <View style={styles.socialIconsContainer}>
+          <View style={styles.iconsContainer}>
             <TouchableOpacity>
               <Image
                 source={require('../../assets/images/google.png')}
@@ -192,8 +186,12 @@ export default Login;
 const styles = {
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+  logo: {
+    width: width * 0.8,
+    height: width * 0.8,
+    alignSelf: 'center',
+    resizeMode: 'contain',
   },
   input: {
     marginVertical: 10,
@@ -204,16 +202,15 @@ const styles = {
     fontSize: 10,
     marginBottom: 5,
   },
-  socialLoginContainer: {
-    marginVertical: 20,
-    flexDirection: 'row',
-    justifyContent: 'center',
+  textContainer: {
+    marginBottom: 20,
+    alignSelf: 'center',
   },
-  socialLoginText: {
-    fontSize: 16,
+  text: {
+    fontSize: 15,
     color: 'gray',
   },
-  socialIconsContainer: {
+  iconsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
   },
