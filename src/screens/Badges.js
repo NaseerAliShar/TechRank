@@ -1,66 +1,71 @@
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ImageBackground,
-} from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import LinearGradient from 'react-native-linear-gradient';
-import { colors } from '../styles/colors';
-import { sizes } from '../styles/sizes';
+import { primaryColor } from '../styles/colors';
+import Container from '../components/Container';
 
 const Badges = () => {
   const navigation = useNavigation();
   const badges = [
-    { name: 'Bronze', source: require('../../assets/images/bronze.png'), disabled: false },
-    { name: 'Silver', source: require('../../assets/images/silver.png'), disabled: true },
-    { name: 'Gold', source: require('../../assets/images/gold.png'), disabled: true },
-    { name: 'Diamond', source: require('../../assets/images/diamond.png'), disabled: true },
+    {
+      name: 'Bronze',
+      source: require('../../assets/images/bronze.png'),
+      disabled: false,
+    },
+    {
+      name: 'Silver',
+      source: require('../../assets/images/silver.png'),
+      disabled: true,
+    },
+    {
+      name: 'Gold',
+      source: require('../../assets/images/gold.png'),
+      disabled: true,
+    },
+    {
+      name: 'Diamond',
+      source: require('../../assets/images/diamond.png'),
+      disabled: true,
+    },
   ];
 
   return (
-    <LinearGradient colors={colors.backgroundColor} style={styles.container}>
-      <ImageBackground
-        source={require('../../assets/images/bgImage.png')}
-        imageStyle={styles.backgroundImage}
-        style={styles.container}>
-        <View style={styles.cardContainer}>
-          <Text style={styles.title}>Badges</Text>
-          <View style={styles.grid}>
-            {badges.map((badge, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.card,
-                  badge.disabled ? styles.disabled : styles.enabled,
-                ]}
-                activeOpacity={0.8}
-                onPress={() => !badge.disabled && navigation.navigate('Quiz', { badge })}
-                disabled={badge.disabled}>
-                <View>
-                  {badge.disabled && (
-                    <MaterialIcons
-                      name="lock"
-                      size={sizes.iconSizeLarge}
-                      color={colors.iconColor}
-                      style={styles.lockIcon}
-                    />
-                  )}
-                  <Image
-                    source={badge.source}
-                    style={[styles.image, badge.disabled && styles.disabledImage]}
+    <Container>
+      <Text style={styles.title}>All Badges</Text>
+      <View style={styles.container}>
+        <View style={styles.grid}>
+          {badges.map((badge, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.card,
+                badge.disabled ? styles.disabled : styles.enabled,
+              ]}
+              activeOpacity={0.8}
+              onPress={() =>
+                !badge.disabled && navigation.navigate('Quiz', { badge })
+              }
+              disabled={badge.disabled}>
+              <View>
+                {badge.disabled && (
+                  <MaterialIcons
+                    name="lock"
+                    size={50}
+                    color="#000"
+                    style={styles.lockIcon}
                   />
-                </View>
+                )}
+                <Image
+                  source={badge.source}
+                  style={[styles.image, badge.disabled && styles.disabledImage]}
+                />
                 <Text style={styles.badgeName}>{badge.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+              </View>
+            </TouchableOpacity>
+          ))}
         </View>
-      </ImageBackground>
-    </LinearGradient>
+      </View>
+    </Container>
   );
 };
 
@@ -69,66 +74,57 @@ export default Badges;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  backgroundImage: {
-    transform: [{ scale: 1.5 }],
-  },
-  cardContainer: {
-    backgroundColor: colors.secondaryBackground,
-    marginHorizontal: sizes.spacingLarge,
-    marginTop: sizes.spacingExtraLarge,
-    padding: sizes.spacingLarge,
-    borderRadius: sizes.borderRadiusLarge,
-    flex: 1,
+    padding: 10,
+    marginHorizontal: 20,
+    borderTopEndRadius: 20,
+    borderTopStartRadius: 20,
+    backgroundColor: primaryColor,
   },
   title: {
-    fontSize: sizes.fontSizeTitle,
-    color: colors.primaryText,
+    margin: 10,
+    fontSize: 20,
     textAlign: 'center',
-    marginBottom: sizes.spacingMedium,
-    fontWeight: 'bold',
+    color: primaryColor,
   },
   grid: {
-    flexDirection: 'row',
     flexWrap: 'wrap',
+    flexDirection: 'row',
     justifyContent: 'space-between',
   },
   card: {
-    width: '48%',
+    width: '46%',
     alignItems: 'center',
-    backgroundColor: colors.cardBackground,
-    elevation: 4,
-    borderRadius: sizes.borderRadiusMedium,
-    marginVertical: sizes.spacingSmall,
-    paddingVertical: sizes.spacingMedium,
-    paddingHorizontal: sizes.spacingMedium,
+    backgroundColor: '#fff',
+    elevation: 10,
+    borderRadius: 70,
+    marginVertical: 10,
+    paddingVertical: 18,
   },
   enabled: {
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#fff',
   },
   disabled: {
-    opacity: 0.7,
-    backgroundColor: colors.disabledBackground,
+    opacity: 0.6,
+    backgroundColor: '#e0e0e0',
   },
   image: {
-    width: sizes.imageSizeLarge,
-    height: sizes.imageSizeLarge,
-    marginBottom: sizes.spacingSmall,
+    width: 80,
+    height: 80,
     resizeMode: 'contain',
   },
   disabledImage: {
-    opacity: 0.3,
+    opacity: 0.2,
   },
   badgeName: {
-    fontSize: sizes.fontSizeText,
-    color: colors.primaryText,
+    fontSize: 15,
+    color: '#000',
     textAlign: 'center',
   },
   lockIcon: {
+    top: '40%',
+    left: '29%',
     position: 'absolute',
-    top: '50%',
-    left: '50%',
     transform: [{ translateX: -25 }, { translateY: -25 }],
   },
 });

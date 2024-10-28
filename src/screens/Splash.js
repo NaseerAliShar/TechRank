@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
+import Container from '../components/Container';
 import * as Animatable from 'react-native-animatable';
-import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { width } from '../styles/sizes';
 import { Divider } from 'react-native-paper';
-import { backgroundColor } from '../styles/colors';
-import { Image, StyleSheet, Text, View, ImageBackground } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 const Splash = ({ navigation }) => {
   useEffect(() => {
@@ -21,42 +20,37 @@ const Splash = ({ navigation }) => {
   }, []);
 
   return (
-    <LinearGradient colors={backgroundColor} style={styles.container}>
-      <ImageBackground
-        source={require('../../assets/images/bgImage.png')}
-        imageStyle={{ transform: [{ scale: 1.5 }] }}
+    <Container>
+      <Animatable.View
+        animation="fadeIn"
+        duration={2000}
         style={styles.container}>
         <Animatable.View
-          animation="fadeIn"
+          animation="fadeInUp"
           duration={2000}
-          style={styles.container}>
-          <Animatable.View
-            animation="fadeInUp"
-            duration={2000}
-            style={styles.topContainer}>
+          style={styles.topContainer}>
+          <Image
+            style={styles.techrankLogo}
+            source={require('../../assets/images/techrank1.png')}
+          />
+        </Animatable.View>
+        <View style={styles.bottomContainer}>
+          <Animatable.View animation="fadeInUp" delay={1000}>
+            <View style={styles.textContainer}>
+              <Divider style={styles.divider} />
+              <Text style={styles.text}>Powered by</Text>
+              <Divider style={styles.divider} />
+            </View>
+          </Animatable.View>
+          <Animatable.View animation="zoomIn" delay={1500}>
             <Image
-              style={styles.techrankLogo}
-              source={require('../../assets/images/techrank1.png')}
+              source={require('../../assets/images/innovador1.png')}
+              style={styles.innovadorLogo}
             />
           </Animatable.View>
-          <View style={styles.bottomContainer}>
-            <Animatable.View animation="fadeInUp" delay={1000}>
-              <View style={styles.textContainer}>
-                <Divider style={styles.divider} />
-                <Text style={styles.text}>Powered by</Text>
-                <Divider style={styles.divider} />
-              </View>
-            </Animatable.View>
-            <Animatable.View animation="zoomIn" delay={1500}>
-              <Image
-                source={require('../../assets/images/innovador1.png')}
-                style={styles.innovadorLogo}
-              />
-            </Animatable.View>
-          </View>
-        </Animatable.View>
-      </ImageBackground>
-    </LinearGradient>
+        </View>
+      </Animatable.View>
+    </Container>
   );
 };
 
@@ -90,7 +84,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 14,
   },
   divider: {
     width: width * 0.3,

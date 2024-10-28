@@ -5,19 +5,17 @@ import {
   Alert,
   Keyboard,
   ScrollView,
-  ImageBackground,
   TouchableOpacity,
-  KeyboardAvoidingView,
 } from 'react-native';
 import axios from 'axios';
 import * as Yup from 'yup';
 import React, { useState } from 'react';
-import LinearGradient from 'react-native-linear-gradient';
+import Container from '../components/Container';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Formik } from 'formik';
 import { width } from '../styles/sizes';
 import { TextInput, Button } from 'react-native-paper';
-import { primaryColor, textColor, backgroundColor } from '../styles/colors';
+import { primaryColor, secondaryColor } from '../styles/colors';
 
 const Login = ({ navigation }) => {
   const [eye, setEye] = useState(true);
@@ -34,15 +32,8 @@ const Login = ({ navigation }) => {
       await AsyncStorage.setItem('user', JSON.stringify(response.data.user));
       navigation.replace('Tab');
     } catch (error) {
-      if (error.response && error.response.data) {
-        Alert.alert('Error', error.response.data.message || 'Login failed', [
-          { text: 'OK' },
-        ]);
-      } else {
-        Alert.alert('Error', 'An error occurred. Please try again later.', [
-          { text: 'OK' },
-        ]);
-      }
+      const message = error.response?.data?.message || 'Login failed';
+      Alert.alert('Error', message, [{ text: 'OK' }]);
     } finally {
       setLoading(false);
     }
@@ -56,137 +47,131 @@ const Login = ({ navigation }) => {
   });
 
   return (
-    <LinearGradient colors={backgroundColor} style={styles.container}>
-      <ImageBackground
-        source={require('../../assets/images/bgImage.png')}
-        imageStyle={{ transform: [{ scale: 1.5 }] }}
-        style={styles.container}>
-        <Image
-          source={require('../../assets/images/techrank1.png')}
-          style={styles.logo}
-        />
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          style={{ marginHorizontal: 20 }}>
-          <Formik
-            initialValues={{ email: '', password: '' }}
-            validationSchema={loginValidationSchema}
-            onSubmit={values => {
-              Keyboard.dismiss();
-              handleLogin(values);
-            }}>
-            {({
-              handleChange,
-              handleSubmit,
-              handleBlur,
-              touched,
-              values,
-              errors,
-            }) => (
-              <View>
-                <TextInput
-                  mode="flat"
-                  label="Email"
-                  onChangeText={handleChange('email')}
-                  onBlur={handleBlur('email')}
-                  value={values.email}
-                  style={styles.input}
-                  activeUnderlineColor="#379237"
-                  underlineColor="transparent"
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  error={touched.email && errors.email}
-                />
-                {touched.email && errors.email && (
-                  <Text style={styles.errorText}>{errors.email}</Text>
-                )}
-                <TextInput
-                  mode="flat"
-                  label="Password"
-                  onChangeText={handleChange('password')}
-                  onBlur={handleBlur('password')}
-                  value={values.password}
-                  style={styles.input}
-                  activeUnderlineColor="#379237"
-                  underlineColor="transparent"
-                  autoCapitalize="words"
-                  secureTextEntry={eye}
-                  error={touched.password && errors.password}
-                  right={
-                    <TextInput.Icon
-                      icon={eye ? 'eye' : 'eye-off'}
-                      onPress={() => setEye(!eye)}
-                    />
-                  }
-                />
-                {touched.password && errors.password && (
-                  <Text style={styles.errorText}>{errors.password}</Text>
-                )}
-                <TouchableOpacity style={{ alignSelf: 'flex-end' }}>
-                  <Text style={{ color: primaryColor }}>Forget Password</Text>
-                </TouchableOpacity>
-                <Button
-                  mode="contained"
-                  loading={loading}
-                  onPress={handleSubmit}
-                  textColor={textColor}
-                  buttonColor={primaryColor}
-                  style={{ marginVertical: 10 }}
-                  labelStyle={{ fontWeight: 'bold', fontSize: 18 }}>
-                  {!loading && 'Login'}
-                </Button>
+    <Container>
+      <Image
+        source={require('../../assets/images/techrank1.png')}
+        style={styles.logo}
+      />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ paddingHorizontal: 20 }}>
+        <Formik
+          initialValues={{ email: '', password: '' }}
+          validationSchema={loginValidationSchema}
+          onSubmit={values => {
+            Keyboard.dismiss();
+            handleLogin(values);
+          }}>
+          {({
+            handleChange,
+            handleSubmit,
+            handleBlur,
+            touched,
+            values,
+            errors,
+          }) => (
+            <View>
+              <TextInput
+                label="Email"
+                value={values.email}
+                onBlur={handleBlur('email')}
+                onChangeText={handleChange('email')}
+                mode="flat"
+                activeUnderlineColor={primaryColor}
+                style={styles.input}
+                error={touched.email && errors.email}
+              />
+              {touched.email && errors.email && (
+                <Text style={styles.errorText}>{errors.email}</Text>
+              )}
+              <TextInput
+                label="Password"
+                value={values.password}
+                onBlur={handleBlur('password')}
+                onChangeText={handleChange('password')}
+                mode="flat"
+                activeUnderlineColor={primaryColor}
+                style={styles.input}
+                secureTextEntry={eye}
+                error={touched.password && errors.password}
+                right={
+                  <TextInput.Icon
+                    icon={eye ? 'eye' : 'eye-off'}
+                    onPress={() => setEye(!eye)}
+                  />
+                }
+              />
+              {touched.password && errors.password && (
+                <Text style={styles.errorText}>{errors.password}</Text>
+              )}
+              <TouchableOpacity style={styles.forgotPassword}>
+                <Text style={{ color: primaryColor }}>Forgot Password?</Text>
+              </TouchableOpacity>
+              <Button
+                mode="contained"
+                loading={loading}
+                onPress={handleSubmit}
+                textColor={secondaryColor}
+                buttonColor={primaryColor}
+                style={styles.button}
+                labelStyle={styles.buttonLabel}>
+                {!loading && 'Login'}
+              </Button>
+              <View style={styles.textContainer}>
+                <Text style={styles.text}>
+                  Don't have an account?{' '}
+                  <Text
+                    style={{ color: primaryColor }}
+                    onPress={() => navigation.navigate('Register')}>
+                    Register
+                  </Text>
+                </Text>
               </View>
-            )}
-          </Formik>
-
-          <TouchableOpacity style={styles.textContainer}>
-            <Text style={styles.text}>
-              Don't have an account?{' '}
-              <Text
-                style={{ color: primaryColor }}
-                onPress={() => navigation.navigate('Register')}>
-                Register
-              </Text>
-            </Text>
+              <View style={styles.textContainer}>
+                <Text style={styles.text}>or sign in with</Text>
+                <View style={styles.iconsContainer}>
+                  <TouchableOpacity>
+                    <Image
+                      source={require('../../assets/images/google.png')}
+                      style={styles.icon}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity>
+                    <Image
+                      source={require('../../assets/images/facebook.png')}
+                      style={styles.icon}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity>
+                    <Image
+                      source={require('../../assets/images/linkedin.png')}
+                      style={styles.icon}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          )}
+        </Formik>
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>By continuing, you agree to our</Text>
+          <TouchableOpacity>
+            <Text style={{ color: primaryColor }}>Terms and Conditions</Text>
           </TouchableOpacity>
-
-          <View style={styles.textContainer}>
-            <Text style={styles.text}>or sign in with</Text>
-          </View>
-
-          <View style={styles.iconsContainer}>
-            <TouchableOpacity>
-              <Image
-                source={require('../../assets/images/google.png')}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                source={require('../../assets/images/facebook.png')}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                source={require('../../assets/images/linkedin.png')}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </ImageBackground>
-    </LinearGradient>
+          <Text style={styles.text}>and</Text>
+          <TouchableOpacity>
+            <Text style={{ color: primaryColor }}>Privacy Policy</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </Container>
   );
 };
 
 export default Login;
 
 const styles = {
-  container: {
-    flex: 1,
-  },
   logo: {
     width: width * 0.8,
     height: width * 0.8,
@@ -194,23 +179,34 @@ const styles = {
     resizeMode: 'contain',
   },
   input: {
-    marginVertical: 10,
+    marginTop: 15,
     backgroundColor: '#fff',
   },
   errorText: {
     color: 'red',
-    fontSize: 10,
-    marginBottom: 5,
+    fontSize: 12,
+  },
+  forgotPassword: {
+    marginVertical: 10,
+    alignSelf: 'flex-end',
   },
   textContainer: {
-    marginBottom: 20,
-    alignSelf: 'center',
+    marginBottom: 10,
+    alignItems: 'center',
   },
   text: {
     fontSize: 15,
     color: 'gray',
   },
+  button: {
+    marginVertical: 10,
+  },
+  buttonLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   iconsContainer: {
+    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'center',
   },

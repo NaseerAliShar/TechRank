@@ -4,24 +4,23 @@ import {
   Image,
   FlatList,
   StyleSheet,
-  ImageBackground,
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
 import { width } from '../styles/sizes';
 import {
+  backgroundColor,
   primaryColor,
   secondaryColor,
-  backgroundColor,
 } from '../styles/colors';
 import instance from '../services/api';
-import LinearGradient from 'react-native-linear-gradient';
+import Container from '../components/Container';
 import React, { useEffect, useState, useCallback } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 const Technologies = ({ navigation }) => {
-  const [technologies, setTechnologies] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [technologies, setTechnologies] = useState([]);
 
   const fetchTechnologies = useCallback(async () => {
     setLoading(true);
@@ -42,7 +41,7 @@ const Technologies = ({ navigation }) => {
   const renderItem = ({ item }) => (
     <TouchableOpacity
       activeOpacity={0.8}
-      onPress={() => navigation.navigate('Badges', { quizId: item._id })}>
+      onPress={() => navigation.navigate('Badges')}>
       <Animated.View entering={FadeIn} exiting={FadeOut}>
         <View style={styles.card}>
           <View style={{ alignItems: 'center' }}>
@@ -55,67 +54,59 @@ const Technologies = ({ navigation }) => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size={50} color="blue" />
-        <Text>Loading...</Text>
-      </View>
+      <Container>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size={50} color={primaryColor} />
+          <Text style={styles.loadingText}>Loading...</Text>
+        </View>
+      </Container>
     );
   }
 
   if (!loading && !technologies.length) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>No technologies found</Text>
-      </View>
+      <Container>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>No technologies found</Text>
+        </View>
+      </Container>
     );
   }
 
   return (
-    <LinearGradient colors={backgroundColor} style={styles.container}>
-      <ImageBackground
-        source={require('../../assets/images/bgImage.png')}
-        imageStyle={{ transform: [{ scale: 1.5 }] }}
-        style={styles.container}>
-        <Text style={styles.title}>All Technologies</Text>
-        <FlatList
-          data={technologies}
-          numColumns={4}
-          renderItem={renderItem}
-          keyExtractor={item => item._id.toString()}
-          showsVerticalScrollIndicator={false}
-          columnWrapperStyle={styles.columnWrapper}
-          contentContainerStyle={styles.cardContainer}
-        />
-      </ImageBackground>
-    </LinearGradient>
+    <Container>
+      <Text style={styles.title}>All Technologies</Text>
+      <FlatList
+        data={technologies}
+        numColumns={4}
+        renderItem={renderItem}
+        keyExtractor={item => item._id.toString()}
+        showsVerticalScrollIndicator={false}
+        columnWrapperStyle={styles.cards}
+        contentContainerStyle={styles.container}
+      />
+    </Container>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  cardContainer: {
-    flex: 1,
     padding: 10,
     marginHorizontal: 20,
     borderTopEndRadius: 20,
     borderTopStartRadius: 20,
-    backgroundColor: secondaryColor,
-  },
-  columnWrapper: {
-    justifyContent: 'flex-start',
-  },
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: primaryColor,
   },
   title: {
     margin: 10,
     fontSize: 20,
-    color: primaryColor,
     textAlign: 'center',
+    color: primaryColor,
+  },
+  cards: {
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
   },
   card: {
     margin: 5,
@@ -126,10 +117,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   image: {
+    width: '100%',
+    height: '100%',
     borderRadius: 50,
-    width: (width - 40) / 5,
-    height: (width - 40) / 5,
     resizeMode: 'contain',
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    margin: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: primaryColor,
   },
 });
 

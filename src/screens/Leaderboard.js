@@ -1,22 +1,17 @@
-import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
   Image,
   FlatList,
   StyleSheet,
-  ImageBackground,
-  TouchableOpacity,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { SelectList } from 'react-native-dropdown-select-list';
-import {
-  backgroundColor,
-  primaryColor,
-  secondaryColor,
-} from '../styles/colors';
+import React, { useState, useMemo, useEffect } from 'react';
+import Container from '../components/Container';
 import { width } from '../styles/sizes';
+import { SelectList } from 'react-native-dropdown-select-list';
+import { primaryColor, secondaryColor } from '../styles/colors';
 
 const users = [
   {
@@ -335,23 +330,14 @@ const Leaderboard = () => {
 
   const renderItem = ({ item, index }) => (
     <View style={styles.itemContainer}>
-      <Text
-        style={{
-          color: primaryColor,
-          backgroundColor: '#000',
-          paddingHorizontal: 10,
-          paddingVertical: 5,
-          borderRadius: 20,
-          fontWeight: '900',
-        }}>
-        {index + 4}
-      </Text>
+      <Text style={styles.indexText}>{index + 4}</Text>
 
       <View style={styles.userInfo}>
         <Image
-          source={{ uri: 'https://via.placeholder.com/50' }}
+          source={{
+            uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
+          }}
           style={styles.profileImage}
-          resizeMode="contain"
         />
         <View>
           <Text style={styles.userName}>{item.name}</Text>
@@ -364,146 +350,140 @@ const Leaderboard = () => {
   );
 
   return (
-    <LinearGradient colors={backgroundColor} style={styles.container}>
-      <ImageBackground
-        source={require('../../assets/images/bgImage.png')}
-        style={styles.container}
-        imageStyle={{ transform: [{ scale: 1.5 }] }}>
-        <View style={styles.wrapper}>
-          {['All', 'Badge', 'Country'].map(tab => (
-            <TouchableOpacity
-              key={tab}
+    <Container>
+      <View style={styles.container}>
+        {['All', 'Badge', 'Country'].map(tab => (
+          <TouchableOpacity
+            key={tab}
+            style={[
+              styles.tabTitle,
+              activeTab === tab ? styles.active : styles.inactive,
+            ]}
+            onPress={() => setActiveTab(tab)}
+            activeOpacity={0.6}>
+            <Text
+              style={
+                activeTab === tab ? styles.activeText : styles.inactiveText
+              }>
+              {tab}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      {activeTab === 'Badge' && (
+        <SelectList
+          setSelected={setSelectedBadge}
+          boxStyles={styles.dropdown}
+          dropdownStyles={styles.dropdownText}
+          inputStyles={{ color: secondaryColor }}
+          dropdownTextStyles={{ color: primaryColor }}
+          data={['Gold', 'Silver', 'Bronze', 'Diamond'].map(badge => ({
+            key: badge,
+            value: badge,
+          }))}
+          save="value"
+        />
+      )}
+      {activeTab === 'Country' && (
+        <SelectList
+          setSelected={setSelectedCountry}
+          boxStyles={styles.dropdown}
+          dropdownStyles={styles.dropdownText}
+          inputStyles={{ color: secondaryColor }}
+          dropdownTextStyles={{ color: primaryColor }}
+          data={countries.map(country => ({
+            key: country,
+            value: country,
+          }))}
+          save="value"
+        />
+      )}
+
+      <View style={{ position: 'relative' }}>
+        <View
+          style={{
+            width: '85%',
+            alignSelf: 'center',
+            position: 'absolute',
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <View
               style={[
-                styles.card,
-                activeTab === tab ? styles.active : styles.inactive,
-              ]}
-              onPress={() => setActiveTab(tab)}
-              activeOpacity={0.6}>
-              <Text
-                style={
-                  activeTab === tab ? styles.activeText : styles.inactiveText
-                }>
-                {tab}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        {activeTab === 'Badge' && (
-          <SelectList
-            setSelected={setSelectedBadge}
-            boxStyles={styles.dropdown}
-            dropdownStyles={styles.dropdownText}
-            inputStyles={{ color: secondaryColor }}
-            dropdownTextStyles={{ color: primaryColor }}
-            data={['Gold', 'Silver', 'Bronze', 'Diamond'].map(badge => ({
-              key: badge,
-              value: badge,
-            }))}
-            save="value"
-          />
-        )}
-        {activeTab === 'Country' && (
-          <SelectList
-            setSelected={setSelectedCountry}
-            boxStyles={styles.dropdown}
-            dropdownStyles={styles.dropdownText}
-            inputStyles={{ color: secondaryColor }}
-            dropdownTextStyles={{ color: primaryColor }}
-            data={countries.map(country => ({
-              key: country,
-              value: country,
-            }))}
-            save="value"
-          />
-        )}
-        
-          <View style={{ position: 'relative' }}>
-            <View
-              style={{
-                width: '80%',
-                alignSelf: 'center',
-                position: 'absolute',
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View
-                  style={[
-                    styles.topContainer,
-                    { justifyContent: 'flex-end', bottom: 20 },
-                  ]}>
-                  <Image
-                    source={{
-                      uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
-                    }}
-                    style={styles.profileImageTop}
-                  />
-                  <Text style={styles.inactiveText}>
-                    {filteredUsers[1].name.substring(0, 3)}
-                  </Text>
-                  <Text style={[styles.activeText, styles.rankText]}>
-                    {filteredUsers[1].badges.length}
-                  </Text>
-                </View>
-                <View style={styles.topContainer}>
-                  <Image
-                    source={{
-                      uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
-                    }}
-                    style={styles.profileImageTop}
-                  />
-                  <Text style={styles.inactiveText}>
-                    {filteredUsers[0].name.substring(0, 5)}
-                  </Text>
-                  <Text style={[styles.activeText, styles.rankText]}>
-                    {filteredUsers[0].badges.length}
-                  </Text>
-                </View>
-                <View
-                  style={[styles.topContainer, { justifyContent: 'flex-end' }]}>
-                  <Image
-                    source={{
-                      uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
-                    }}
-                    style={styles.profileImageTop}
-                  />
-                  <Text style={styles.inactiveText}>
-                    {filteredUsers[2].name.substring(0, 7)}
-                  </Text>
-                  <Text style={[styles.activeText, styles.rankText]}>
-                    {filteredUsers[2].badges.length}
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <View
-              style={{
-                height: width * 0.8,
-                justifyContent: 'flex-end',
-              }}>
+                styles.topContainer,
+                { justifyContent: 'flex-end', bottom: 20 },
+              ]}>
               <Image
-                source={require('../../assets/images/boxes.png')}
-                style={{
-                  width: width,
-                  height: width * 0.4,
-                  resizeMode: 'contain',
+                source={{
+                  uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
                 }}
+                style={styles.profileImageTop}
               />
+              <Text style={styles.inactiveText}>
+                {filteredUsers[1].name.substring(0, 3)}
+              </Text>
+              <Text style={[styles.activeText, styles.rankText]}>
+                {filteredUsers[1].badges.length}
+              </Text>
+            </View>
+            <View style={styles.topContainer}>
+              <Image
+                source={{
+                  uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
+                }}
+                style={styles.profileImageTop}
+              />
+              <Text style={styles.inactiveText}>
+                {filteredUsers[0].name.substring(0, 5)}
+              </Text>
+              <Text style={[styles.activeText, styles.rankText]}>
+                {filteredUsers[0].badges.length}
+              </Text>
+            </View>
+            <View style={[styles.topContainer, { justifyContent: 'flex-end' }]}>
+              <Image
+                source={{
+                  uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
+                }}
+                style={styles.profileImageTop}
+              />
+              <Text style={styles.inactiveText}>
+                {filteredUsers[2].name.substring(0, 7)}
+              </Text>
+              <Text style={[styles.activeText, styles.rankText]}>
+                {filteredUsers[2].badges.length}
+              </Text>
             </View>
           </View>
-          <ScrollView style={{marginVertical:10}}> 
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={filteredUsers.slice(3, 10)}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => `${item.name}-${index}`}
-            contentContainerStyle={styles.listContent}
+        </View>
+        <View
+          style={{
+            height: width * 0.8,
+            justifyContent: 'flex-end',
+          }}>
+          <Image
+            source={require('../../assets/images/boxes.png')}
+            style={{
+              width: width,
+              height: width * 0.4,
+              resizeMode: 'contain',
+            }}
           />
-        </ScrollView>
-      </ImageBackground>
-    </LinearGradient>
+        </View>
+      </View>
+      <ScrollView style={{ marginVertical: 10 }}>
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={filteredUsers.slice(3, 10)}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => `${item.name}-${index}`}
+          contentContainerStyle={{ padding: 10 }}
+        />
+      </ScrollView>
+    </Container>
   );
 };
 
@@ -511,14 +491,12 @@ export default Leaderboard;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  wrapper: {
-    paddingVertical: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
-  card: {
+  tabTitle: {
     borderRadius: 20,
     paddingVertical: 5,
     paddingHorizontal: 30,
@@ -550,36 +528,31 @@ const styles = StyleSheet.create({
     backgroundColor: secondaryColor,
   },
   itemContainer: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginHorizontal: 10,
-    elevation: 2,
-    shadowRadius: 5,
+    padding: 10,
     marginBottom: 15,
-    borderRadius: 15,
-    shadowOpacity: 0.2,
-    shadowColor: '#000',
+    borderRadius: 10,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-evenly',
     backgroundColor: primaryColor,
   },
   userInfo: {
+    width: '80%',
     flexDirection: 'row',
     alignItems: 'center',
-    width: '80%',
   },
   profileImage: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     marginRight: 5,
-    borderRadius: 25,
+    borderRadius: 20,
+    resizeMode: 'contain',
   },
   profileImageTop: {
-    width: 80,
-    height: 80,
+    width: 70,
+    height: 70,
     borderWidth: 2,
-    borderRadius: 40,
+    borderRadius: 35,
     resizeMode: 'contain',
     borderColor: primaryColor,
   },
@@ -587,30 +560,28 @@ const styles = StyleSheet.create({
     height: width / 2,
     alignItems: 'center',
   },
-  topText: {
-    fontSize: 16,
+  indexText: {
+    borderRadius: 20,
+    paddingVertical: 5,
     color: primaryColor,
+    paddingHorizontal: 10,
     fontWeight: 'bold',
+    backgroundColor: '#000',
   },
   userName: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 15,
     color: '#000',
+    fontWeight: 'bold',
   },
   userDetails: {
-    fontSize: 12,
-    color: '#555',
+    fontSize: 10,
+    color: 'gray',
   },
   rankText: {
-    fontSize: 16,
-    fontWeight: '900',
-    color: '#fff',
-    backgroundColor: primaryColor,
-    paddingHorizontal: 25,
+    fontSize: 15,
     borderRadius: 10,
-  },
-  listContent: {
-    paddingHorizontal: 10,
-    paddingVertical: 20,
+    paddingHorizontal: 20,
+    color: secondaryColor,
+    backgroundColor: primaryColor,
   },
 });
