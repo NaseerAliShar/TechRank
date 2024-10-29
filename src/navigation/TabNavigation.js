@@ -23,9 +23,8 @@ export default function TabNavigation() {
         headerTitleStyle: {
           fontSize: 20,
           color: '#000',
-          fontWeight: '900',
+          fontWeight: 'bold',
         },
-
         headerLeft: () => (
           <AntDesign
             name="arrowleft"
@@ -35,9 +34,7 @@ export default function TabNavigation() {
             onPress={() => navigation.goBack()}
           />
         ),
-
         headerTintColor: '#000',
-
         tabBarShowLabel: false,
         headerTitleAlign: 'center',
         tabBarInactiveTintColor: '#000',

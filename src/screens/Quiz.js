@@ -8,9 +8,10 @@ import {
 } from 'react-native-paper';
 import Result from './Result';
 import instance from '../services/api';
+import Container from '../components/Container';
+import { primaryColor, secondaryColor } from '../styles/colors';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useEffect, useState, useCallback, useMemo } from 'react';
-import { primaryColor, secondaryColor } from '../styles/colors';
 
 const Quiz = ({ route }) => {
   const { quizId } = route.params;
@@ -115,7 +116,10 @@ const Quiz = ({ route }) => {
             onValueChange={option => setSelectedOption(option)}
             value={selectedOption}>
             <View style={styles.optionContainer}>
-              <RadioButton value={item} />
+              <RadioButton
+                value={item}
+                theme={{ colors: { primary: 'red' } }}
+              />
               <Text style={styles.optionText}>{item.text}</Text>
             </View>
           </RadioButton.Group>
@@ -123,6 +127,7 @@ const Quiz = ({ route }) => {
           <Checkbox.Item
             label={item.text}
             position="leading"
+            theme={{ colors: { primary: 'red' } }}
             labelStyle={{ textAlign: 'left', marginHorizontal: 10 }}
             onPress={() => handleMultiSelect(item)}
             status={isSelected ? 'checked' : 'unchecked'}
@@ -134,18 +139,22 @@ const Quiz = ({ route }) => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator animating={true} size={50} color="#000" />
-        <Text style={styles.loadingText}>Loading...</Text>
-      </View>
+      <Container>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator animating={true} size={50} color={primaryColor} />
+          <Text style={styles.loadingText}>Loading...</Text>
+        </View>
+      </Container>
     );
   }
 
   if (!questions.length) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>No questions found</Text>
-      </View>
+      <Container>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>No questions found</Text>
+        </View>
+      </Container>
     );
   }
 
@@ -162,39 +171,40 @@ const Quiz = ({ route }) => {
   }
 
   return (
-    <View style={styles.container}>
-      {questions.length > 0 && (
-        <View style={styles.quizContent}>
-          <Text style={styles.progressText}>
-            {currentIndex + 1}/{questions.length}
-          </Text>
-          <ProgressBar
-            color={primaryColor}
-            progress={progress}
-            style={styles.progressBar}
-          />
-          <Text style={styles.questionText}>
-            {questions[currentIndex].questionText}
-          </Text>
-          <FlatList
-            data={questions[currentIndex].options}
-            keyExtractor={(_, index) => index.toString()}
-            renderItem={renderItem}
-          />
-          <Button
-            icon="arrow-right"
-            mode="contained"
-            textColor="#000"
-            buttonColor={primaryColor}
-            loading={loading}
-            onPress={handleNext}
-            style={styles.nextButton}
-            disabled={!selectedOption && !selectedOptions.length}>
-            {currentIndex + 1 >= questions.length ? 'Finish' : 'Next'}
-          </Button>
-        </View>
-      )}
-    </View>
+    <Container>
+      <View style={styles.container}>
+        {questions.length > 0 && (
+          <View style={styles.quizContent}>
+            <Text style={styles.progressText}>
+              {currentIndex + 1}/{questions.length}
+            </Text>
+            <ProgressBar
+              color={primaryColor}
+              progress={progress}
+              style={styles.progressBar}
+            />
+            <Text style={styles.questionText}>
+              {questions[currentIndex].questionText}
+            </Text>
+            <FlatList
+              data={questions[currentIndex].options}
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={renderItem}
+            />
+            <Button
+              icon="arrow-right"
+              mode="contained"
+              textColor={secondaryColor}
+              buttonColor={primaryColor}
+              loading={loading}
+              onPress={handleNext}
+              disabled={!selectedOption && !selectedOptions.length}>
+              {currentIndex + 1 >= questions.length ? 'Finish' : 'Next'}
+            </Button>
+          </View>
+        )}
+      </View>
+    </Container>
   );
 };
 
@@ -203,19 +213,7 @@ export default Quiz;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 30,
-    paddingHorizontal: 20,
-    backgroundColor: '#f1f1f1',
-  },
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingText: {
-    fontSize: 15,
-    marginTop: 15,
-    color: '#000',
+    padding: 20,
   },
   quizContent: {
     flex: 1,
@@ -225,18 +223,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     marginBottom: 10,
-    color: '#000',
+    color: '#fff',
   },
   progressBar: {
     height: 10,
     borderRadius: 5,
     marginVertical: 15,
-    backgroundColor: secondaryColor,
+    backgroundColor: 'gray',
   },
   questionText: {
     fontSize: 18,
     marginBottom: 20,
-    color: '#000',
+    color: primaryColor,
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -249,18 +247,20 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginVertical: 5,
     backgroundColor: primaryColor,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
   },
   optionText: {
-    fontSize: 16,
-    marginLeft: 10,
+    fontSize: 15,
     color: '#000',
   },
-  nextButton: {
-    borderRadius: 30,
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    margin: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: primaryColor,
   },
 });

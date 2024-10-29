@@ -4,7 +4,11 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const Container = ({ children }) => {
   return (
-    <LinearGradient colors={backgroundColor} style={styles.container}>
+    <LinearGradient
+      colors={backgroundColor}
+      style={styles.container}
+      start={{ x: 0, y: 1 }}
+      end={{ x: 1, y: 1 }}>
       <ImageBackground
         source={require('../../assets/images/bgImage.png')}
         imageStyle={{ transform: [{ scale: 1.5 }] }}

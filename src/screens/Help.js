@@ -1,89 +1,101 @@
 import React, { useState } from 'react';
 import Container from '../components/Container';
-import { List, Text } from 'react-native-paper';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Text } from 'react-native-paper';
 import { primaryColor, secondaryColor } from '../styles/colors';
+import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
 
 const Help = () => {
-  const [expanded, setExpanded] = useState(false);
+  const [expandedIndex, setExpandedIndex] = useState(null);
+  const handlePress = index =>
+    setExpandedIndex(index === expandedIndex ? null : index);
 
-  const handlePress = () => setExpanded(!expanded);
+  const faqData = [
+    {
+      title: 'How to start a quiz?',
+      content:
+        "To start a quiz, navigate to the 'All Quizzes' section, select a quiz, and tap on the 'Start Quiz' button.",
+    },
+    {
+      title: 'How are scores calculated?',
+      content:
+        'Scores are based on correct answers, requiring all correct options in MultiSelect questions without incorrect choices.',
+    },
+    {
+      title: 'What is the time limit for each quiz?',
+      content:
+        'The time limit varies for each quiz and is shown on the quiz details screen before starting.',
+    },
+    {
+      title: 'How to review the quiz results?',
+      content:
+        'After completing a quiz, you can review your results, see correct answers, and compare your score with the maximum possible score.',
+    },
+  ];
 
   return (
     <Container>
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.innerContent}>
-          <List.Section>
-            <List.Accordion
-              title="How to start a quiz?"
-              expanded={expanded}
-              onPress={handlePress}
-              style={styles.accordion}
-              left={props => <List.Icon {...props} icon="help-circle" />}>
-              <Text style={styles.text}>
-                To start a quiz, navigate to the 'All Quizzes' section, select a
-                quiz, and tap on the 'Start Quiz' button.
-              </Text>
-            </List.Accordion>
-
-            <List.Accordion
-              title="How are scores calculated?"
-              style={styles.accordion}
-              left={props => <List.Icon {...props} icon="calculator" />}>
-              <Text style={styles.text}>
-                Scores are calculated based on correct answers. In MultiSelect
-                questions, all correct options must be selected with no
-                incorrect choices for a point.
-              </Text>
-            </List.Accordion>
-
-            <List.Accordion
-              title="What is the time limit for each quiz?"
-              style={styles.accordion}
-              left={props => <List.Icon {...props} icon="timer" />}>
-              <Text style={styles.text}>
-                The time limit varies for each quiz and is displayed on the quiz
-                details screen before starting.
-              </Text>
-            </List.Accordion>
-
-            <List.Accordion
-              title="How to review the quiz results?"
-              style={styles.accordion}
-              left={props => <List.Icon {...props} icon="eye" />}>
-              <Text style={styles.text}>
-                After completing a quiz, you can review your results, see
-                correct answers, and compare your score with the maximum
-                possible score.
-              </Text>
-            </List.Accordion>
-          </List.Section>
-        </View>
-      </ScrollView>
+      <Text style={styles.title}>Help & FAQs</Text>
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.accordionContainer}>
+          {faqData.map((item, index) => (
+            <View key={index} style={styles.accordion}>
+              <TouchableOpacity
+                onPress={() => handlePress(index)}
+                style={styles.header}>
+                <Text style={styles.headerText}>{item.title}</Text>
+              </TouchableOpacity>
+              {expandedIndex === index && (
+                <View style={styles.content}>
+                  <Text style={styles.contentText}>{item.content}</Text>
+                </View>
+              )}
+            </View>
+          ))}
+        </ScrollView>
+      </View>
     </Container>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 20,
-    paddingHorizontal: 20,
-    height: '100%',
-  },
-  innerContent: {
-    padding: 20,
+    flex: 1,
+    marginHorizontal: 20,
     borderTopEndRadius: 20,
     borderTopStartRadius: 20,
     backgroundColor: primaryColor,
-    height: '100%',
+  },
+  title: {
+    padding: 10,
+    fontSize: 20,
+    textAlign: 'center',
+    color: primaryColor,
+  },
+  accordionContainer: {
+    margin: 10,
   },
   accordion: {
-    marginBottom: 10,
+    margin: 5,
+    elevation: 5,
+    borderRadius: 15,
+    overflow: 'hidden',
+  },
+  header: {
+    padding: 15,
+    backgroundColor: '#fff',
+  },
+  headerText: {
+    fontSize: 16,
+    color: '#000',
+    fontWeight: 'semibold',
+  },
+  content: {
+    padding: 10,
     backgroundColor: secondaryColor,
   },
-  text: {
-    fontSize: 16,
-    color: primaryColor,
+  contentText: {
+    fontSize: 14,
+    color: '#fff',
   },
 });
 

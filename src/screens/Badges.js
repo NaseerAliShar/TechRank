@@ -1,11 +1,15 @@
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { primaryColor } from '../styles/colors';
+import React from 'react';
+import Animated from 'react-native-reanimated';
 import Container from '../components/Container';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { primaryColor } from '../styles/colors';
+import { useNavigation } from '@react-navigation/native';
+import { ZoomIn, FadeIn } from 'react-native-reanimated';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 const Badges = () => {
   const navigation = useNavigation();
+
   const badges = [
     {
       name: 'Bronze',
@@ -31,40 +35,44 @@ const Badges = () => {
 
   return (
     <Container>
-      <Text style={styles.title}>All Badges</Text>
-      <View style={styles.container}>
-        <View style={styles.grid}>
+      <Animated.Text entering={FadeIn} style={styles.title}>
+        All Badges
+      </Animated.Text>
+      <Animated.View entering={FadeIn} style={styles.container}>
+        <View style={styles.cardContainer}>
           {badges.map((badge, index) => (
             <TouchableOpacity
               key={index}
-              style={[
-                styles.card,
-                badge.disabled ? styles.disabled : styles.enabled,
-              ]}
+              style={styles.card}
               activeOpacity={0.8}
               onPress={() =>
                 !badge.disabled && navigation.navigate('Quiz', { badge })
               }
               disabled={badge.disabled}>
-              <View>
-                {badge.disabled && (
-                  <MaterialIcons
-                    name="lock"
-                    size={50}
-                    color="#000"
-                    style={styles.lockIcon}
+              <Animated.View entering={ZoomIn.delay(index * 100)}>
+                <View>
+                  {badge.disabled && (
+                    <MaterialIcons
+                      name="lock"
+                      size={50}
+                      color="#000"
+                      style={styles.lockIcon}
+                    />
+                  )}
+                  <Image
+                    source={badge.source}
+                    style={[
+                      styles.image,
+                      badge.disabled && styles.disabledImage,
+                    ]}
                   />
-                )}
-                <Image
-                  source={badge.source}
-                  style={[styles.image, badge.disabled && styles.disabledImage]}
-                />
-                <Text style={styles.badgeName}>{badge.name}</Text>
-              </View>
+                  <Text style={styles.badgeName}>{badge.name}</Text>
+                </View>
+              </Animated.View>
             </TouchableOpacity>
           ))}
         </View>
-      </View>
+      </Animated.View>
     </Container>
   );
 };
@@ -74,39 +82,32 @@ export default Badges;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
     marginHorizontal: 20,
     borderTopEndRadius: 20,
     borderTopStartRadius: 20,
     backgroundColor: primaryColor,
   },
   title: {
-    margin: 10,
+    padding: 10,
     fontSize: 20,
     textAlign: 'center',
     color: primaryColor,
   },
-  grid: {
+  cardContainer: {
+    margin: 10,
     flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   card: {
     width: '46%',
+    height: '38%',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#fff',
     elevation: 10,
     borderRadius: 70,
     marginVertical: 10,
-    paddingVertical: 18,
-  },
-  enabled: {
-    borderWidth: 1,
-    borderColor: '#fff',
-  },
-  disabled: {
-    opacity: 0.6,
-    backgroundColor: '#e0e0e0',
   },
   image: {
     width: 80,
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
   },
   lockIcon: {
     top: '40%',
-    left: '29%',
+    left: '50%',
     position: 'absolute',
     transform: [{ translateX: -25 }, { translateY: -25 }],
   },

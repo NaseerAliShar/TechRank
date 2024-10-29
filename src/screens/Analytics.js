@@ -1,10 +1,9 @@
-import {FlatList, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import {Card} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Card } from 'react-native-paper';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 
-const Answers = ({route}) => {
-  const {questions, wrongAnswers, correctAnswers, userSelections} =
+const Answers = ({ route }) => {
+  const { questions, wrongAnswers, correctAnswers, userSelections } =
     route.params;
 
   // Function to determine if a question is correct or wrong
@@ -18,7 +17,7 @@ const Answers = ({route}) => {
     return 'unattempted';
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     const status = getQuestionStatus(item._id);
     const iconName =
       status === 'correct'
@@ -72,8 +71,10 @@ const Answers = ({route}) => {
             }
 
             return (
-              <View key={option._id} style={[styles.answer, {backgroundColor}]}>
-                <Text style={{color: textColor}}>{option.text}</Text>
+              <View
+                key={option._id}
+                style={[styles.answer, { backgroundColor }]}>
+                <Text style={{ color: textColor }}>{option.text}</Text>
               </View>
             );
           })}

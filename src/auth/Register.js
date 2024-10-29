@@ -10,12 +10,11 @@ import {
 import axios from 'axios';
 import * as Yup from 'yup';
 import React, { useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Container from '../components/Container';
 import { Formik } from 'formik';
 import { width } from '../styles/sizes';
 import { TextInput, Button } from 'react-native-paper';
 import { primaryColor, secondaryColor } from '../styles/colors';
-import Container from '../components/Container';
 
 const Register = ({ navigation }) => {
   const [eye, setEye] = useState(true);
@@ -28,11 +27,12 @@ const Register = ({ navigation }) => {
         'https://p3x08xsn-3000.inc1.devtunnels.ms/api/v1/auth/register',
         values,
       );
-      await AsyncStorage.setItem('token', response.data.token);
-      await AsyncStorage.setItem('user', JSON.stringify(response.data.user));
+      console.log('Registration successful:', response.data);
       navigation.replace('Login');
     } catch (error) {
       const message = error.response?.data?.message || 'Registration failed';
+      console.log('Registration failed:', error.response.data);
+
       Alert.alert('Error', message, [{ text: 'OK' }]);
     } finally {
       setLoading(false);
@@ -40,7 +40,7 @@ const Register = ({ navigation }) => {
   };
 
   const registrationValidationSchema = Yup.object().shape({
-    fullName: Yup.string().required('Full name is required'),
+    name: Yup.string().required('Full name is required'),
     country: Yup.string().required('Country is required'),
     city: Yup.string().required('City is required'),
     mobile: Yup.string().required('Mobile number is required'),
@@ -62,7 +62,7 @@ const Register = ({ navigation }) => {
         contentContainerStyle={{ marginHorizontal: 20 }}>
         <Formik
           initialValues={{
-            fullName: '',
+            name: '',
             email: '',
             country: '',
             city: '',
@@ -86,15 +86,15 @@ const Register = ({ navigation }) => {
               <TextInput
                 mode="flat"
                 label="Full Name"
-                onChangeText={handleChange('fullName')}
-                onBlur={handleBlur('fullName')}
-                value={values.fullName}
+                onChangeText={handleChange('name')}
+                onBlur={handleBlur('name')}
+                value={values.name}
                 style={styles.input}
                 activeUnderlineColor={primaryColor}
-                error={touched.fullName && errors.fullName}
+                error={touched.name && errors.name}
               />
-              {touched.fullName && errors.fullName && (
-                <Text style={styles.errorText}>{errors.fullName}</Text>
+              {touched.name && errors.name && (
+                <Text style={styles.errorText}>{errors.name}</Text>
               )}
               <TextInput
                 mode="flat"

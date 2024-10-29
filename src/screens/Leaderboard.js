@@ -4,7 +4,6 @@ import {
   Image,
   FlatList,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
 } from 'react-native';
 import React, { useState, useMemo, useEffect } from 'react';
@@ -345,7 +344,7 @@ const Leaderboard = () => {
             style={styles.userDetails}>{`${item.country}, ${item.city}`}</Text>
         </View>
       </View>
-      <Text style={styles.badgesCount}>{item.badges.length}</Text>
+      <Text>{item.badges.length}</Text>
     </View>
   );
 
@@ -461,6 +460,7 @@ const Leaderboard = () => {
         </View>
         <View
           style={{
+            marginBottom: 10,
             height: width * 0.8,
             justifyContent: 'flex-end',
           }}>
@@ -474,15 +474,13 @@ const Leaderboard = () => {
           />
         </View>
       </View>
-      <ScrollView style={{ marginVertical: 10 }}>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={filteredUsers.slice(3, 10)}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => `${item.name}-${index}`}
-          contentContainerStyle={{ padding: 10 }}
-        />
-      </ScrollView>
+      <FlatList
+        data={filteredUsers.slice(3, 10)}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 20 }}
+        keyExtractor={(item, index) => `${item.name}-${index}`}
+      />
     </Container>
   );
 };
@@ -491,8 +489,7 @@ export default Leaderboard;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 20,
-    paddingBottom: 10,
+    padding: 10,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
@@ -529,15 +526,15 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     padding: 10,
-    marginBottom: 15,
+    marginBottom: 10,
     borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-around',
     backgroundColor: primaryColor,
   },
   userInfo: {
-    width: '80%',
+    width: '70%',
     flexDirection: 'row',
     alignItems: 'center',
   },

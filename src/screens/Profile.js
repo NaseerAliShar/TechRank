@@ -19,7 +19,6 @@ const Profile = ({ navigation }) => {
         console.log('Failed to fetch user data:', error);
       }
     };
-
     fetchUserData();
   }, []);
 
@@ -54,15 +53,10 @@ const Profile = ({ navigation }) => {
     <Container>
       {user && (
         <View style={styles.container}>
-          <View>
-            <View style={styles.profileHeader}>
-              <Image
-                source={{ uri: user.avatar }}
-                style={styles.profileImage}
-              />
-              <Text style={styles.userName}>{user.name}</Text>
-            </View>
-            <View>
+          <View style={styles.profileHeader}>
+            <Image source={{ uri: user.avatar }} style={styles.profileImage} />
+            <Text style={styles.userName}>{user.name}</Text>
+            <View style={styles.infoContainer}>
               <Text style={styles.label}>
                 Email: <Text style={styles.value}>{user.email}</Text>
               </Text>
@@ -72,12 +66,12 @@ const Profile = ({ navigation }) => {
             </View>
           </View>
 
-          <View>
+          <View style={styles.buttonContainer}>
             <Button
               mode="contained"
               textColor={secondaryColor}
               buttonColor={primaryColor}
-              style={{ margin: 10 }}
+              style={styles.button}
               onPress={() => console.log('Edit Profile')}>
               Edit Profile
             </Button>
@@ -85,7 +79,7 @@ const Profile = ({ navigation }) => {
               mode="contained"
               textColor="#fff"
               buttonColor="red"
-              style={{ margin: 10 }}
+              style={styles.button}
               onPress={handleLogout}>
               Logout
             </Button>
@@ -106,27 +100,51 @@ const styles = StyleSheet.create({
   },
   profileHeader: {
     alignItems: 'center',
+    marginBottom: 20,
   },
   profileImage: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
     borderRadius: 50,
+    borderWidth: 3,
+    borderColor: primaryColor,
     marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
   },
   userName: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     color: primaryColor,
   },
+  infoContainer: {
+    alignItems: 'center',
+    marginVertical: 15,
+  },
   label: {
-    fontSize: 15,
-    marginBottom: 10,
+    fontSize: 16,
+    marginBottom: 8,
     color: primaryColor,
     fontWeight: 'bold',
-    textAlign: 'center',
   },
   value: {
     color: '#fff',
     fontWeight: 'normal',
+  },
+  buttonContainer: {
+    marginTop: 30,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  button: {
+    width: '45%',
+    borderRadius: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
   },
 });

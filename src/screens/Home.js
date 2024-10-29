@@ -7,18 +7,19 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
+import Animated, {
+  ZoomIn,
+  BounceIn,
+  FadeInRight,
+  FadeOutDown,
+} from 'react-native-reanimated';
 import { width } from '../styles/sizes';
-import {
-  backgroundColor,
-  primaryColor,
-  secondaryColor,
-} from '../styles/colors';
+import { primaryColor } from '../styles/colors';
 import instance from '../services/api';
 import Container from '../components/Container';
 import React, { useEffect, useState, useCallback } from 'react';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-const Technologies = ({ navigation }) => {
+const Home = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [technologies, setTechnologies] = useState([]);
 
@@ -28,7 +29,7 @@ const Technologies = ({ navigation }) => {
       const response = await instance.get('/technologies');
       setTechnologies(response.data);
     } catch (error) {
-      console.error('Error fetching exams:', error);
+      console.error('Error fetching technologies:', error);
     } finally {
       setLoading(false);
     }
@@ -38,16 +39,15 @@ const Technologies = ({ navigation }) => {
     fetchTechnologies();
   }, []);
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item, index }) => (
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={() => navigation.navigate('Badges')}>
-      <Animated.View entering={FadeIn} exiting={FadeOut}>
-        <View style={styles.card}>
-          <View style={{ alignItems: 'center' }}>
-            <Image source={{ uri: item.image }} style={styles.image} />
-          </View>
-        </View>
+      <Animated.View
+        entering={BounceIn.delay(index * 150)}
+        exiting={FadeOutDown}
+        style={styles.card}>
+        <Image source={{ uri: item.image }} style={styles.image} />
       </Animated.View>
     </TouchableOpacity>
   );
@@ -55,10 +55,10 @@ const Technologies = ({ navigation }) => {
   if (loading) {
     return (
       <Container>
-        <View style={styles.loadingContainer}>
+        <Animated.View entering={ZoomIn} style={styles.loadingContainer}>
           <ActivityIndicator size={50} color={primaryColor} />
           <Text style={styles.loadingText}>Loading...</Text>
-        </View>
+        </Animated.View>
       </Container>
     );
   }
@@ -66,25 +66,28 @@ const Technologies = ({ navigation }) => {
   if (!loading && !technologies.length) {
     return (
       <Container>
-        <View style={styles.loadingContainer}>
+        <Animated.View entering={FadeInRight} style={styles.loadingContainer}>
           <Text style={styles.loadingText}>No technologies found</Text>
-        </View>
+        </Animated.View>
       </Container>
     );
   }
 
   return (
     <Container>
-      <Text style={styles.title}>All Technologies</Text>
-      <FlatList
-        data={technologies}
-        numColumns={4}
-        renderItem={renderItem}
-        keyExtractor={item => item._id.toString()}
-        showsVerticalScrollIndicator={false}
-        columnWrapperStyle={styles.cards}
-        contentContainerStyle={styles.container}
-      />
+      <Animated.Text entering={FadeInRight} style={styles.title}>
+        All Technologies
+      </Animated.Text>
+      <View style={styles.container}>
+        <FlatList
+          data={technologies}
+          numColumns={4}
+          renderItem={renderItem}
+          keyExtractor={item => item._id.toString()}
+          showsVerticalScrollIndicator={false}
+          columnWrapperStyle={styles.cardContainer}
+        />
+      </View>
     </Container>
   );
 };
@@ -92,33 +95,34 @@ const Technologies = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
     marginHorizontal: 20,
     borderTopEndRadius: 20,
     borderTopStartRadius: 20,
     backgroundColor: primaryColor,
   },
   title: {
-    margin: 10,
+    padding: 10,
     fontSize: 20,
     textAlign: 'center',
     color: primaryColor,
   },
-  cards: {
+  cardContainer: {
+    margin: 10,
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
   },
   card: {
-    margin: 5,
     borderRadius: 50,
+    marginHorizontal: 5,
     width: (width - 40) / 5,
     height: (width - 40) / 5,
-    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'white',
+    justifyContent: 'center',
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: '90%',
+    height: '90%',
     borderRadius: 50,
     resizeMode: 'contain',
   },
@@ -135,4 +139,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Technologies;
+export default Home;
