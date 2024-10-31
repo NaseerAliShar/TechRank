@@ -1,5 +1,6 @@
-const primaryColor = '#FFC600';
-const secondaryColor = '#000000';
-const backgroundColor = ['rgba(0,0,0,1)', 'rgba(0,0,0,0.8)'];
+const darkColor = '#000000';
+const lightColor = '#FFFFFF';
+const primaryColor = '#5A6AE0';
+const secondaryColor = '#EFEEFC';
 
-export { primaryColor, secondaryColor, backgroundColor };
+export { darkColor, lightColor, primaryColor, secondaryColor };

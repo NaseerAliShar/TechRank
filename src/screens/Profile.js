@@ -1,8 +1,15 @@
+import {
+  darkColor,
+  lightColor,
+  primaryColor,
+  secondaryColor,
+} from '../styles/colors';
 import Container from '../components/Container';
 import React, { useEffect, useState } from 'react';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button } from 'react-native-paper';
-import { primaryColor, secondaryColor } from '../styles/colors';
 import { Text, View, Image, Alert, StyleSheet } from 'react-native';
 
 const Profile = ({ navigation }) => {
@@ -12,9 +19,7 @@ const Profile = ({ navigation }) => {
     const fetchUserData = async () => {
       try {
         const userData = await AsyncStorage.getItem('user');
-        if (userData) {
-          setUser(JSON.parse(userData));
-        }
+        if (userData) setUser(JSON.parse(userData));
       } catch (error) {
         console.log('Failed to fetch user data:', error);
       }
@@ -23,69 +28,73 @@ const Profile = ({ navigation }) => {
   }, []);
 
   const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Logout cancelled'),
-          style: 'cancel',
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Yes',
+        onPress: async () => {
+          try {
+            await AsyncStorage.removeItem('user');
+            await AsyncStorage.removeItem('token');
+            navigation.navigate('Login');
+          } catch (error) {
+            console.log('Failed to logout:', error);
+          }
         },
-        {
-          text: 'Yes',
-          onPress: async () => {
-            try {
-              await AsyncStorage.removeItem('user');
-              await AsyncStorage.removeItem('token');
-              navigation.navigate('Login');
-            } catch (error) {
-              console.log('Failed to logout:', error);
-            }
-          },
-        },
-      ],
-      { cancelable: false },
-    );
+      },
+    ]);
   };
 
   return (
     <Container>
-      {user && (
-        <View style={styles.container}>
-          <View style={styles.profileHeader}>
-            <Image source={{ uri: user.avatar }} style={styles.profileImage} />
-            <Text style={styles.userName}>{user.name}</Text>
-            <View style={styles.infoContainer}>
-              <Text style={styles.label}>
-                Email: <Text style={styles.value}>{user.email}</Text>
-              </Text>
-              <Text style={styles.label}>
-                Phone: <Text style={styles.value}>{user.mobile || 'N/A'}</Text>
-              </Text>
-            </View>
-          </View>
+      {/* <View style={styles.buttonContainer}>
+        <Button
+          mode="contained"
+          textColor="#fff"
+          buttonColor="green"
+          style={styles.button}
+          onPress={() => console.log('Edit Profile')}>
+          Edit Profile
+        </Button>
+        <Button
+          mode="contained"
+          textColor="#fff"
+          buttonColor="red"
+          style={styles.button}
+          onPress={handleLogout}>
+          Logout
+        </Button>
+      </View> */}
+      <View style={styles.profileImageContainer}>
+        <Image
+          source={require('../../assets/images/avatar.png')}
+          style={styles.profileImage}
+        />
+      </View>
 
-          <View style={styles.buttonContainer}>
-            <Button
-              mode="contained"
-              textColor={secondaryColor}
-              buttonColor={primaryColor}
-              style={styles.button}
-              onPress={() => console.log('Edit Profile')}>
-              Edit Profile
-            </Button>
-            <Button
-              mode="contained"
-              textColor="#fff"
-              buttonColor="red"
-              style={styles.button}
-              onPress={handleLogout}>
-              Logout
-            </Button>
+      <View style={styles.container}>
+        <View>
+          <Text style={styles.profileName}>{user?.name}</Text>
+        </View>
+
+        <View style={styles.rankContainer}>
+          <View style={styles.rankCard}>
+            <Fontisto name="world-o" size={24} color="blue" />
+            <Text style={{ color: lightColor }}>World Rank</Text>
+            <Text style={{ color: lightColor }}>#102</Text>
+          </View>
+          <View style={styles.rankCard}>
+            <AntDesign name="staro" size={24} color="gold" />
+            <Text style={{ color: lightColor }}>Country Rank</Text>
+            <Text style={{ color: lightColor }}>#82</Text>
+          </View>
+          <View style={styles.rankCard}>
+            <Ionicons name="trophy-outline" size={24} color="purple" />
+            <Text style={{ color: lightColor }}>City Rank</Text>
+            <Text style={{ color: lightColor }}>#45</Text>
           </View>
         </View>
-      )}
+      </View>
     </Container>
   );
 };
@@ -94,57 +103,55 @@ export default Profile;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'space-between',
-  },
-  profileHeader: {
+    flexGrow: 1,
     alignItems: 'center',
-    marginBottom: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: secondaryColor,
+  },
+  profileImageContainer: {
+    top: 30,
+    zIndex: 1,
+    width: 90,
+    height: 90,
+    borderRadius: 50,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#978EE7',
   },
   profileImage: {
-    width: 100,
-    height: 100,
+    width: 80,
+    height: 80,
     borderRadius: 50,
-    borderWidth: 3,
-    borderColor: primaryColor,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 4,
+    resizeMode: 'contain',
   },
-  userName: {
-    fontSize: 26,
+  profileName: {
+    fontSize: 25,
+    marginVertical: 20,
+    paddingVertical: 10,
+    color: darkColor,
     fontWeight: 'bold',
-    color: primaryColor,
   },
-  infoContainer: {
+  rankContainer: {
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: primaryColor,
+    width: '95%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  rankCard: {
     alignItems: 'center',
-    marginVertical: 15,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: primaryColor,
-    fontWeight: 'bold',
-  },
-  value: {
-    color: '#fff',
-    fontWeight: 'normal',
+    padding: 10,
   },
   buttonContainer: {
-    marginTop: 30,
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   button: {
-    width: '45%',
+    width: '40%',
     borderRadius: 20,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
 });

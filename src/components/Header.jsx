@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
+import { lightColor } from '../styles/colors';
+import { StyleSheet, Text, View } from 'react-native';
 
 const Header = ({ title }) => {
   return (
@@ -14,7 +15,7 @@ export default Header;
 const styles = StyleSheet.create({
   text: {
     fontSize: 20,
-    color: '#000',
+    color: lightColor,
     fontWeight: 'bold',
   },
 });

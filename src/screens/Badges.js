@@ -1,11 +1,19 @@
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import Animated from 'react-native-reanimated';
 import Container from '../components/Container';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { primaryColor } from '../styles/colors';
+import { width } from '../styles/sizes';
 import { useNavigation } from '@react-navigation/native';
 import { ZoomIn, FadeIn } from 'react-native-reanimated';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
 
 const Badges = () => {
   const navigation = useNavigation();
@@ -33,45 +41,47 @@ const Badges = () => {
     },
   ];
 
+  const renderItem = ({ item, index }) => (
+    <TouchableOpacity
+      style={styles.card}
+      activeOpacity={0.8}
+      onPress={() =>
+        !item.disabled && navigation.navigate('Quiz', { badge: item })
+      }
+      disabled={item.disabled}>
+      <Animated.View entering={ZoomIn.delay(index * 100)}>
+        <View>
+          {item.disabled && (
+            <MaterialIcons
+              name="lock"
+              size={50}
+              color="#000"
+              style={styles.lockIcon}
+            />
+          )}
+          <Image
+            source={item.source}
+            style={[styles.image, item.disabled && styles.disabledImage]}
+          />
+          <Text style={styles.badgeName}>{item.name}</Text>
+        </View>
+      </Animated.View>
+    </TouchableOpacity>
+  );
+
   return (
     <Container>
       <Animated.Text entering={FadeIn} style={styles.title}>
         All Badges
       </Animated.Text>
       <Animated.View entering={FadeIn} style={styles.container}>
-        <View style={styles.cardContainer}>
-          {badges.map((badge, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.card}
-              activeOpacity={0.8}
-              onPress={() =>
-                !badge.disabled && navigation.navigate('Quiz', { badge })
-              }
-              disabled={badge.disabled}>
-              <Animated.View entering={ZoomIn.delay(index * 100)}>
-                <View>
-                  {badge.disabled && (
-                    <MaterialIcons
-                      name="lock"
-                      size={50}
-                      color="#000"
-                      style={styles.lockIcon}
-                    />
-                  )}
-                  <Image
-                    source={badge.source}
-                    style={[
-                      styles.image,
-                      badge.disabled && styles.disabledImage,
-                    ]}
-                  />
-                  <Text style={styles.badgeName}>{badge.name}</Text>
-                </View>
-              </Animated.View>
-            </TouchableOpacity>
-          ))}
-        </View>
+        <FlatList
+          data={badges}
+          renderItem={renderItem}
+          keyExtractor={item => item.name}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+        />
       </Animated.View>
     </Container>
   );
@@ -82,44 +92,41 @@ export default Badges;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 20,
-    borderTopEndRadius: 20,
-    borderTopStartRadius: 20,
-    backgroundColor: primaryColor,
+    paddingTop: 20,
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: secondaryColor,
   },
   title: {
     padding: 10,
     fontSize: 20,
     textAlign: 'center',
-    color: primaryColor,
-  },
-  cardContainer: {
-    margin: 10,
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    color: lightColor,
   },
   card: {
-    width: '46%',
-    height: '38%',
+    margin: 5,
+    borderRadius: 70,
+    width: width / 2.5,
+    height: width / 2.5,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
-    elevation: 10,
-    borderRadius: 70,
-    marginVertical: 10,
+    backgroundColor: 'lemonchiffon',
   },
   image: {
-    width: 80,
-    height: 80,
+    width: width / 4,
+    height: width / 4,
     resizeMode: 'contain',
   },
   disabledImage: {
     opacity: 0.2,
   },
   badgeName: {
-    fontSize: 15,
-    color: '#000',
+    fontSize: 16,
+    marginTop: 5,
+    color: primaryColor,
+    fontWeight: 'bold',
     textAlign: 'center',
   },
   lockIcon: {

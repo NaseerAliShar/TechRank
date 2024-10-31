@@ -13,11 +13,11 @@ import Animated, {
   FadeInRight,
   FadeOutDown,
 } from 'react-native-reanimated';
-import { width } from '../styles/sizes';
-import { primaryColor } from '../styles/colors';
+import { darkColor, lightColor, secondaryColor } from '../styles/colors';
 import instance from '../services/api';
 import Container from '../components/Container';
 import React, { useEffect, useState, useCallback } from 'react';
+import { width } from '../styles/sizes';
 
 const Home = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ const Home = ({ navigation }) => {
     return (
       <Container>
         <Animated.View entering={ZoomIn} style={styles.loadingContainer}>
-          <ActivityIndicator size={50} color={primaryColor} />
+          <ActivityIndicator size={50} color={darkColor} />
           <Text style={styles.loadingText}>Loading...</Text>
         </Animated.View>
       </Container>
@@ -85,7 +85,6 @@ const Home = ({ navigation }) => {
           renderItem={renderItem}
           keyExtractor={item => item._id.toString()}
           showsVerticalScrollIndicator={false}
-          columnWrapperStyle={styles.cardContainer}
         />
       </View>
     </Container>
@@ -95,35 +94,32 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 20,
-    borderTopEndRadius: 20,
-    borderTopStartRadius: 20,
-    backgroundColor: primaryColor,
+    paddingTop: 20,
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: secondaryColor,
   },
   title: {
     padding: 10,
     fontSize: 20,
     textAlign: 'center',
-    color: primaryColor,
-  },
-  cardContainer: {
-    margin: 10,
-    flexWrap: 'wrap',
-    justifyContent: 'flex-start',
+    color: lightColor,
   },
   card: {
-    borderRadius: 50,
-    marginHorizontal: 5,
-    width: (width - 40) / 5,
-    height: (width - 40) / 5,
+    margin: 5,
+    borderRadius: 40,
+    width: width / 5.5,
+    height: width / 5.5,
     alignItems: 'center',
-    backgroundColor: 'white',
     justifyContent: 'center',
+    backgroundColor: 'lemonchiffon',
   },
   image: {
     width: '90%',
     height: '90%',
-    borderRadius: 50,
+    borderRadius: 40,
     resizeMode: 'contain',
   },
   loadingContainer: {
@@ -133,9 +129,9 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     margin: 10,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
-    color: primaryColor,
+    color: darkColor,
   },
 });
 

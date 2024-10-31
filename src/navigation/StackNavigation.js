@@ -7,7 +7,7 @@ import Result from '../screens/Result';
 import Splash from '../screens/Splash';
 import Badges from '../screens/Badges';
 import Analytics from '../screens/Analytics';
-import { primaryColor } from '../styles/colors';
+import { lightColor, primaryColor } from '../styles/colors';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
@@ -30,6 +30,8 @@ export default function StackNavigation() {
         component={Badges}
         options={{
           headerShown: true,
+          headerTintColor: lightColor,
+          headerShadowVisible: false,
           headerTitleAlign: 'center',
           headerStyle: {
             backgroundColor: primaryColor,
@@ -42,6 +44,8 @@ export default function StackNavigation() {
         component={Analytics}
         options={{
           headerShown: true,
+          headerShadowVisible: false,
+          headerTintColor: lightColor,
           headerTitleAlign: 'center',
           headerStyle: {
             backgroundColor: primaryColor,

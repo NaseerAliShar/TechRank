@@ -6,335 +6,182 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import React, { useState, useMemo, useEffect } from 'react';
-import Container from '../components/Container';
+import {
+  darkColor,
+  lightColor,
+  primaryColor,
+  secondaryColor,
+} from '../styles/colors';
+
 import { width } from '../styles/sizes';
-import { SelectList } from 'react-native-dropdown-select-list';
-import { primaryColor, secondaryColor } from '../styles/colors';
+import Container from '../components/Container';
+import React, { useState, useEffect } from 'react';
 
 const users = [
   {
     name: 'Alice Johnson',
-    country: 'United States of America',
+    email: 'alice@example.com',
+    password: 'password123',
+    mobile: '1234567890',
+    country: 'United States',
     city: 'New York',
-    badges: [
-      {
-        badge: 'Bronze',
-        technology: 'React',
-      },
-      {
-        badge: 'Gold',
-        technology: 'JavaScript',
-      },
-      {
-        badge: 'Silver',
-        technology: 'Python',
-      },
-      {
-        badge: 'Diamond',
-        technology: 'HTML',
-      },
-      {
-        badge: 'Diamond',
-        technology: 'JavaScript',
-      },
+    role: 'user',
+    avatar: 'alice.jpg',
+    weightage: [
+      { badgeId: 'bronze', technologyId: 'JavaScript', score: 70 },
+      { badgeId: 'silver', technologyId: 'HTML', score: 80 },
     ],
   },
   {
     name: 'Bob Smith',
-    country: 'Canada',
-    city: 'Toronto',
-    badges: [
-      {
-        badge: 'Silver',
-        technology: 'HTML',
-      },
-      {
-        badge: 'Bronze',
-        technology: 'React',
-      },
-      {
-        badge: 'Gold',
-        technology: 'JavaScript',
-      },
-    ],
-  },
-  {
-    name: 'Charlie Brown',
+    email: 'bob@example.com',
+    password: 'password123',
+    mobile: '1234567891',
     country: 'United Kingdom',
     city: 'London',
-    badges: [
-      {
-        badge: 'Gold',
-        technology: 'Python',
-      },
-      {
-        badge: 'Diamond',
-        technology: 'React',
-      },
-      {
-        badge: 'Silver',
-        technology: 'JavaScript',
-      },
-      {
-        badge: 'Bronze',
-        technology: 'HTML',
-      },
-      {
-        badge: 'Diamond',
-        technology: 'Python',
-      },
-      {
-        badge: 'Gold',
-        technology: 'HTML',
-      },
-      {
-        badge: 'Silver',
-        technology: 'React',
-      },
+    role: 'user',
+    avatar: 'bob.jpg',
+    weightage: [
+      { badgeId: 'gold', technologyId: 'CSS', score: 88 },
+      { badgeId: 'diamond', technologyId: 'React', score: 95 },
+      { badgeId: 'silver', technologyId: 'Java', score: 82 },
+      { badgeId: 'gold', technologyId: 'Python', score: 90 },
+      { badgeId: 'bronze', technologyId: 'HTML', score: 65 },
     ],
   },
   {
-    name: 'Diana Prince',
+    name: 'Charlies Davis',
+    email: 'charlie@example.com',
+    password: 'password123',
+    mobile: '1234567892',
+    country: 'Canada',
+    city: 'Toronto',
+    role: 'admin',
+    avatar: 'charlie.jpg',
+    weightage: [
+      { badgeId: 'silver', technologyId: 'JavaScript', score: 75 },
+      { badgeId: 'gold', technologyId: 'Python', score: 85 },
+      { badgeId: 'diamond', technologyId: 'Java', score: 92 },
+    ],
+  },
+  {
+    name: 'Daisy Brown',
+    email: 'daisy@example.com',
+    password: 'password123',
+    mobile: '1234567893',
     country: 'Australia',
     city: 'Sydney',
-    badges: [
-      {
-        badge: 'Bronze',
-        technology: 'JavaScript',
-      },
-      {
-        badge: 'Silver',
-        technology: 'HTML',
-      },
+    role: 'user',
+    avatar: 'daisy.jpg',
+    weightage: [
+      { badgeId: 'gold', technologyId: 'HTML', score: 85 },
+      { badgeId: 'bronze', technologyId: 'CSS', score: 60 },
+      { badgeId: 'silver', technologyId: 'JavaScript', score: 70 },
+      { badgeId: 'gold', technologyId: 'Java', score: 78 },
+      { badgeId: 'diamond', technologyId: 'React', score: 95 },
+      { badgeId: 'silver', technologyId: 'CSS', score: 78 },
+      { badgeId: 'diamond', technologyId: 'Java', score: 93 },
     ],
   },
   {
-    name: 'Edward Wang',
-    country: 'China',
-    city: 'Beijing',
-    badges: [
-      {
-        badge: 'Gold',
-        technology: 'React',
-      },
-      {
-        badge: 'Diamond',
-        technology: 'JavaScript',
-      },
-      {
-        badge: 'Silver',
-        technology: 'Python',
-      },
-      {
-        badge: 'Bronze',
-        technology: 'HTML',
-      },
+    name: 'Ethan Wilson',
+    email: 'ethan@example.com',
+    password: 'password123',
+    mobile: '1234567894',
+    country: 'India',
+    city: 'Mumbai',
+    role: 'admin',
+    avatar: 'ethan.jpg',
+    weightage: [
+      { badgeId: 'gold', technologyId: 'JavaScript', score: 88 },
+      { badgeId: 'silver', technologyId: 'Python', score: 82 },
     ],
   },
   {
-    name: 'Fiona Lee',
-    country: 'United States of America',
-    city: 'Ohio',
-    badges: [
-      {
-        badge: 'Silver',
-        technology: 'JavaScript',
-      },
+    name: 'Fiona Green',
+    email: 'fiona@example.com',
+    password: 'password123',
+    mobile: '1234567895',
+    country: 'Germany',
+    city: 'Berlin',
+    role: 'user',
+    avatar: 'fiona.jpg',
+    weightage: [{ badgeId: 'bronze', technologyId: 'HTML', score: 65 }],
+  },
+  {
+    name: 'George Miller',
+    email: 'george@example.com',
+    password: 'password123',
+    mobile: '1234567896',
+    country: 'France',
+    city: 'Paris',
+    role: 'user',
+    avatar: 'george.jpg',
+    weightage: [
+      { badgeId: 'silver', technologyId: 'React', score: 82 },
+      { badgeId: 'gold', technologyId: 'HTML', score: 90 },
+      { badgeId: 'bronze', technologyId: 'Python', score: 68 },
+      { badgeId: 'bronze', technologyId: 'JavaScript', score: 70 },
+      { badgeId: 'diamond', technologyId: 'JavaScript', score: 94 },
     ],
   },
   {
-    name: 'George Clark',
-    country: 'Canada',
-    city: 'Vancouver',
-    badges: [
-      {
-        badge: 'Diamond',
-        technology: 'Python',
-      },
-      {
-        badge: 'Gold',
-        technology: 'React',
-      },
-      {
-        badge: 'Silver',
-        technology: 'JavaScript',
-      },
-      {
-        badge: 'Bronze',
-        technology: 'HTML',
-      },
-      {
-        badge: 'Diamond',
-        technology: 'HTML',
-      },
-      {
-        badge: 'Gold',
-        technology: 'JavaScript',
-      },
+    name: 'Hannah Scott',
+    email: 'hannah@example.com',
+    password: 'password123',
+    mobile: '1234567897',
+    country: 'Japan',
+    city: 'Tokyo',
+    role: 'user',
+    avatar: 'hannah.jpg',
+    weightage: [
+      { badgeId: 'gold', technologyId: 'CSS', score: 88 },
+      { badgeId: 'silver', technologyId: 'Python', score: 77 },
     ],
   },
   {
-    name: 'Hannah Kim',
-    country: 'South Korea',
-    city: 'Seoul',
-    badges: [
-      {
-        badge: 'Silver',
-        technology: 'Python',
-      },
-      {
-        badge: 'Gold',
-        technology: 'HTML',
-      },
+    name: 'Ian Taylor',
+    email: 'ian@example.com',
+    password: 'password123',
+    mobile: '1234567898',
+    country: 'Italy',
+    city: 'Rome',
+    role: 'user',
+    avatar: 'ian.jpg',
+    weightage: [
+      { badgeId: 'silver', technologyId: 'React', score: 85 },
+      { badgeId: 'gold', technologyId: 'Java', score: 91 },
     ],
   },
   {
-    name: 'Isaac Newton',
-    country: 'United Kingdom',
-    city: 'Manchester',
-    badges: [
-      {
-        badge: 'Gold',
-        technology: 'Python',
-      },
-      {
-        badge: 'Diamond',
-        technology: 'JavaScript',
-      },
-      {
-        badge: 'Silver',
-        technology: 'React',
-      },
-      {
-        badge: 'Bronze',
-        technology: 'HTML',
-      },
-      {
-        badge: 'Diamond',
-        technology: 'React',
-      },
-      {
-        badge: 'Gold',
-        technology: 'HTML',
-      },
-      {
-        badge: 'Silver',
-        technology: 'JavaScript',
-      },
-      {
-        badge: 'Bronze',
-        technology: 'Python',
-      },
+    name: 'Jenny Evans',
+    email: 'jenny@example.com',
+    password: 'password123',
+    mobile: '1234567899',
+    country: 'Brazil',
+    city: 'São Paulo',
+    role: 'user',
+    avatar: 'jenny.jpg',
+    weightage: [
+      { badgeId: 'bronze', technologyId: 'CSS', score: 60 },
+      { badgeId: 'gold', technologyId: 'React', score: 89 },
+      { badgeId: 'silver', technologyId: 'Python', score: 75 },
     ],
   },
-  {
-    name: 'Julia Roberts',
-    country: 'United States of America',
-    city: 'Texas',
-    badges: [
-      {
-        badge: 'Diamond',
-        technology: 'React',
-      },
-      {
-        badge: 'Gold',
-        technology: 'JavaScript',
-      },
-      {
-        badge: 'Silver',
-        technology: 'Python',
-      },
-      {
-        badge: 'Bronze',
-        technology: 'HTML',
-      },
-      {
-        badge: 'Diamond',
-        technology: 'JavaScript',
-      },
-    ],
-  },
-];
-
-const countries = [
-  'Afghanistan',
-  'Australia',
-  'Austria',
-  'Azerbaijan',
-  'Bangladesh',
-  'Belgium',
-  'Canada',
-  'China',
-  'Denmark',
-  'Finland',
-  'France',
-  'Georgia',
-  'Germany',
-  'India',
-  'Indonesia',
-  'Iran',
-  'Iraq',
-  'Ireland',
-  'Israel',
-  'Italy',
-  'Malaysia',
-  'Maldives',
-  'Nepal',
-  'Netherlands',
-  'New Zealand',
-  'Norway',
-  'Oman',
-  'Pakistan',
-  'Palau',
-  'Palestine',
-  'Qatar',
-  'Romania',
-  'Russia',
-  'Saudi Arabia',
-  'Sri Lanka',
-  'Sudan',
-  'Sweden',
-  'Switzerland',
-  'Ukraine',
-  'United Arab Emirates',
-  'United Kingdom',
-  'United States of America',
-  'Uzbekistan',
-  'Zimbabwe',
 ];
 
 const Leaderboard = () => {
   const [activeTab, setActiveTab] = useState('All');
-  const [selectedBadge, setSelectedBadge] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState('');
 
-  // Reset filters when switching tabs
-  useEffect(() => {
-    setSelectedBadge('');
-    setSelectedCountry('');
-  }, [activeTab]);
-
-  const filteredUsers = useMemo(() => {
-    return users.filter(user => {
-      const badgeFilter = selectedBadge
-        ? user.badges.some(b => b.badge === selectedBadge)
-        : true;
-      const countryFilter = selectedCountry
-        ? user.country === selectedCountry
-        : true;
-      return badgeFilter && countryFilter;
-    });
-  }, [selectedBadge, selectedCountry]);
+  useEffect(() => {}, [activeTab]);
 
   const renderItem = ({ item, index }) => (
     <View style={styles.itemContainer}>
       <Text style={styles.indexText}>{index + 4}</Text>
-
       <View style={styles.userInfo}>
         <Image
           source={{
-            uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
+            uri: 'https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png',
           }}
           style={styles.profileImage}
         />
@@ -344,14 +191,13 @@ const Leaderboard = () => {
             style={styles.userDetails}>{`${item.country}, ${item.city}`}</Text>
         </View>
       </View>
-      <Text>{item.badges.length}</Text>
+      <Text>{item.weightage.length}</Text>
     </View>
   );
-
   return (
     <Container>
-      <View style={styles.container}>
-        {['All', 'Badge', 'Country'].map(tab => (
+      <View style={styles.tabContainer}>
+        {['All', 'Country', 'City'].map(tab => (
           <TouchableOpacity
             key={tab}
             style={[
@@ -369,91 +215,59 @@ const Leaderboard = () => {
           </TouchableOpacity>
         ))}
       </View>
-      {activeTab === 'Badge' && (
-        <SelectList
-          setSelected={setSelectedBadge}
-          boxStyles={styles.dropdown}
-          dropdownStyles={styles.dropdownText}
-          inputStyles={{ color: secondaryColor }}
-          dropdownTextStyles={{ color: primaryColor }}
-          data={['Gold', 'Silver', 'Bronze', 'Diamond'].map(badge => ({
-            key: badge,
-            value: badge,
-          }))}
-          save="value"
-        />
-      )}
-      {activeTab === 'Country' && (
-        <SelectList
-          setSelected={setSelectedCountry}
-          boxStyles={styles.dropdown}
-          dropdownStyles={styles.dropdownText}
-          inputStyles={{ color: secondaryColor }}
-          dropdownTextStyles={{ color: primaryColor }}
-          data={countries.map(country => ({
-            key: country,
-            value: country,
-          }))}
-          save="value"
-        />
-      )}
 
-      <View style={{ position: 'relative' }}>
+      <View style={{ alignItems: 'center' }}>
         <View
           style={{
-            width: '85%',
+            width: '90%',
             alignSelf: 'center',
             position: 'absolute',
           }}>
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: 'space-between',
+              justifyContent: 'space-around',
             }}>
-            <View
-              style={[
-                styles.topContainer,
-                { justifyContent: 'flex-end', bottom: 20 },
-              ]}>
+            <View style={[styles.topContainer, { justifyContent: 'flex-end' }]}>
               <Image
                 source={{
-                  uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
+                  uri: 'https://www.shareicon.net/data/128x128/2016/09/15/829453_user_512x512.png',
                 }}
                 style={styles.profileImageTop}
               />
               <Text style={styles.inactiveText}>
-                {filteredUsers[1].name.substring(0, 3)}
+                {users[1].name.substring(0, 3)}
               </Text>
               <Text style={[styles.activeText, styles.rankText]}>
-                {filteredUsers[1].badges.length}
+                {users[1].weightage.length}
               </Text>
             </View>
             <View style={styles.topContainer}>
               <Image
                 source={{
-                  uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
+                  uri: 'https://www.shareicon.net/data/128x128/2016/05/24/770137_man_512x512.png',
                 }}
                 style={styles.profileImageTop}
               />
               <Text style={styles.inactiveText}>
-                {filteredUsers[0].name.substring(0, 5)}
+                {users[0].name.substring(0, 5)}
               </Text>
               <Text style={[styles.activeText, styles.rankText]}>
-                {filteredUsers[0].badges.length}
+                {users[0].weightage.length}
               </Text>
             </View>
             <View style={[styles.topContainer, { justifyContent: 'flex-end' }]}>
               <Image
                 source={{
-                  uri: 'http://res.cloudinary.com/daqwg7pwp/image/upload/v1726296128/aqhfwirtvjyztvxygmkz.jpg',
+                  uri: 'https://www.shareicon.net/data/128x128/2016/09/15/829460_user_512x512.png',
                 }}
                 style={styles.profileImageTop}
               />
               <Text style={styles.inactiveText}>
-                {filteredUsers[2].name.substring(0, 7)}
+                {users[2].name.substring(0, 7)}
               </Text>
               <Text style={[styles.activeText, styles.rankText]}>
-                {filteredUsers[2].badges.length}
+                {users[2].weightage.length}
               </Text>
             </View>
           </View>
@@ -461,7 +275,7 @@ const Leaderboard = () => {
         <View
           style={{
             marginBottom: 10,
-            height: width * 0.8,
+            height: width * 0.75,
             justifyContent: 'flex-end',
           }}>
           <Image
@@ -474,13 +288,14 @@ const Leaderboard = () => {
           />
         </View>
       </View>
-      <FlatList
-        data={filteredUsers.slice(3, 10)}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 20 }}
-        keyExtractor={(item, index) => `${item.name}-${index}`}
-      />
+      <View style={styles.container}>
+        <FlatList
+          data={users.slice(3)}
+          renderItem={renderItem}
+          keyExtractor={item => item.email}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
     </Container>
   );
 };
@@ -488,9 +303,10 @@ const Leaderboard = () => {
 export default Leaderboard;
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 10,
+  tabContainer: {
+    marginBottom: 10,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-evenly',
   },
   tabTitle: {
@@ -498,43 +314,42 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 30,
   },
-  active: {
-    backgroundColor: primaryColor,
-  },
-  inactive: {
+  container: {
+    flex: 1,
+    flexGrow: 1,
+    paddingTop: 10,
+    alignItems: 'center',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     backgroundColor: secondaryColor,
   },
-  activeText: {
-    fontSize: 16,
-    color: secondaryColor,
-    fontWeight: 'bold',
+  itemContainer: {
+    padding: 12,
+    borderRadius: 15,
+    marginVertical: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: lightColor,
   },
-  inactiveText: {
+  active: {
+    backgroundColor: secondaryColor,
+  },
+  inactive: {
+    backgroundColor: primaryColor,
+  },
+  activeText: {
     fontSize: 16,
     color: primaryColor,
     fontWeight: 'bold',
   },
-  dropdown: {
-    marginBottom: 10,
-    marginHorizontal: 20,
-    backgroundColor: primaryColor,
-  },
-  dropdownText: {
-    marginBottom: 10,
-    marginHorizontal: 20,
-    backgroundColor: secondaryColor,
-  },
-  itemContainer: {
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    backgroundColor: primaryColor,
+  inactiveText: {
+    fontSize: 15,
+    color: lightColor,
+    fontWeight: 'bold',
   },
   userInfo: {
-    width: '70%',
+    width: '80%',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -546,39 +361,42 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   profileImageTop: {
-    width: 70,
-    height: 70,
-    borderWidth: 2,
-    borderRadius: 35,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     resizeMode: 'contain',
     borderColor: primaryColor,
   },
   topContainer: {
-    height: width / 2,
+    height: width / 2.4,
     alignItems: 'center',
   },
   indexText: {
     borderRadius: 20,
-    paddingVertical: 5,
-    color: primaryColor,
-    paddingHorizontal: 10,
+    borderWidth: 1.5,
+    paddingHorizontal: 5,
+    color: darkColor,
+    backgroundColor: lightColor,
     fontWeight: 'bold',
-    backgroundColor: '#000',
+    textAlign: 'center',
+    borderColor: 'gray',
   },
   userName: {
-    fontSize: 15,
+    fontSize: 14,
     color: '#000',
     fontWeight: 'bold',
   },
   userDetails: {
-    fontSize: 10,
+    fontSize: 12,
     color: 'gray',
   },
   rankText: {
+    marginTop: 4,
     fontSize: 15,
-    borderRadius: 10,
-    paddingHorizontal: 20,
-    color: secondaryColor,
-    backgroundColor: primaryColor,
+    borderRadius: 15,
+    paddingVertical: 5,
+    paddingHorizontal: 30,
+    color: lightColor,
+    backgroundColor: '#978EE7',
   },
 });
