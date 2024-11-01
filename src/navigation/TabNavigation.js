@@ -90,6 +90,15 @@ export default function TabNavigation() {
                 size={size}
               />
             ),
+          headerRight: () => (
+            <AntDesign
+              name="setting"
+              size={25}
+              color={lightColor}
+              style={{ marginRight: 20 }}
+              onPress={() => navigation.navigate('EditProfile')}
+            />
+          ),
         }}
       />
       <Tab.Screen

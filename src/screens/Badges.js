@@ -5,41 +5,38 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
-import React from 'react';
+import instance from '../services/api';
 import Animated from 'react-native-reanimated';
 import Container from '../components/Container';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { width } from '../styles/sizes';
 import { useNavigation } from '@react-navigation/native';
-import { ZoomIn, FadeIn } from 'react-native-reanimated';
-import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
+import { useCallback, useEffect, useState } from 'react';
+import { ZoomIn, FadeIn, FadeInRight } from 'react-native-reanimated';
+import { darkColor, lightColor, primaryColor } from '../styles/colors';
 
 const Badges = () => {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const [badges, setBadges] = useState([]);
 
-  const badges = [
-    {
-      name: 'Bronze',
-      source: require('../../assets/images/bronze.png'),
-      disabled: false,
-    },
-    {
-      name: 'Silver',
-      source: require('../../assets/images/silver.png'),
-      disabled: true,
-    },
-    {
-      name: 'Gold',
-      source: require('../../assets/images/gold.png'),
-      disabled: true,
-    },
-    {
-      name: 'Diamond',
-      source: require('../../assets/images/diamond.png'),
-      disabled: true,
-    },
-  ];
+  const fetchBadges = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await instance.get('/badges');
+      setBadges(response.data);
+    } catch (error) {
+      console.error('Error fetching badges:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchBadges();
+  }, []);
 
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
@@ -60,7 +57,9 @@ const Badges = () => {
             />
           )}
           <Image
-            source={item.source}
+            source={{
+              uri: `https://p3x08xsn-3000.inc1.devtunnels.ms/${item.image}`,
+            }}
             style={[styles.image, item.disabled && styles.disabledImage]}
           />
           <Text style={styles.badgeName}>{item.name}</Text>
@@ -68,6 +67,27 @@ const Badges = () => {
       </Animated.View>
     </TouchableOpacity>
   );
+
+  if (loading) {
+    return (
+      <Container>
+        <Animated.View entering={ZoomIn} style={styles.loadingContainer}>
+          <ActivityIndicator size={50} color={darkColor} />
+          <Text style={styles.loadingText}>Loading...</Text>
+        </Animated.View>
+      </Container>
+    );
+  }
+
+  if (!loading && !badges.length) {
+    return (
+      <Container>
+        <Animated.View entering={FadeInRight} style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>No technologies found</Text>
+        </Animated.View>
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -92,12 +112,12 @@ export default Badges;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
+    paddingTop: 10,
     alignItems: 'center',
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    backgroundColor: secondaryColor,
+    backgroundColor: lightColor,
   },
   title: {
     padding: 10,
@@ -108,8 +128,8 @@ const styles = StyleSheet.create({
   card: {
     margin: 5,
     borderRadius: 70,
-    width: width / 2.5,
-    height: width / 2.5,
+    width: width / 2.6,
+    height: width / 2.6,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'lemonchiffon',
@@ -117,7 +137,19 @@ const styles = StyleSheet.create({
   image: {
     width: width / 4,
     height: width / 4,
+    borderRadius: 80,
     resizeMode: 'contain',
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    margin: 10,
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: darkColor,
   },
   disabledImage: {
     opacity: 0.2,

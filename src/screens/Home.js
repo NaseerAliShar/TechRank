@@ -7,19 +7,22 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import Animated, {
+import {
   ZoomIn,
   BounceIn,
   FadeInRight,
   FadeOutDown,
 } from 'react-native-reanimated';
-import { darkColor, lightColor, secondaryColor } from '../styles/colors';
 import instance from '../services/api';
+import Animated from 'react-native-reanimated';
 import Container from '../components/Container';
-import React, { useEffect, useState, useCallback } from 'react';
 import { width } from '../styles/sizes';
+import { useNavigation } from '@react-navigation/native';
+import { darkColor, lightColor } from '../styles/colors';
+import { useEffect, useState, useCallback } from 'react';
 
-const Home = ({ navigation }) => {
+const Home = () => {
+  const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [technologies, setTechnologies] = useState([]);
 
@@ -94,12 +97,12 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
+    paddingTop: 10,
     alignItems: 'center',
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    backgroundColor: secondaryColor,
+    backgroundColor: lightColor,
   },
   title: {
     padding: 10,
@@ -117,8 +120,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'lemonchiffon',
   },
   image: {
-    width: '90%',
-    height: '90%',
+    width: width / 6,
+    height: width / 6,
     borderRadius: 40,
     resizeMode: 'contain',
   },

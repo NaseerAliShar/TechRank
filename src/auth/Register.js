@@ -1,18 +1,12 @@
-import { View, Text, Image, Alert, Keyboard, ScrollView } from 'react-native';
-import {
-  darkColor,
-  lightColor,
-  primaryColor,
-  secondaryColor,
-} from '../styles/colors';
 import axios from 'axios';
 import * as Yup from 'yup';
-import React, { useState } from 'react';
 import Container from '../components/Container';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Formik } from 'formik';
+import { useState } from 'react';
 import { width } from '../styles/sizes';
 import { TextInput, Button } from 'react-native-paper';
+import { darkColor, lightColor, primaryColor } from '../styles/colors';
+import { View, Text, Image, Alert, Keyboard, ScrollView } from 'react-native';
 
 const Register = ({ navigation }) => {
   const [eye, setEye] = useState(true);
@@ -25,8 +19,6 @@ const Register = ({ navigation }) => {
         'https://p3x08xsn-3000.inc1.devtunnels.ms/api/v1/auth/register',
         values,
       );
-      await AsyncStorage.setItem('token', response.data.token);
-      await AsyncStorage.setItem('user', JSON.stringify(response.data.user));
       navigation.replace('Login');
     } catch (error) {
       const message = error.response?.data?.message || 'Registration failed';
@@ -76,7 +68,9 @@ const Register = ({ navigation }) => {
             values,
             errors,
           }) => (
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled">
               <TextInput
                 label="Name"
                 mode="outlined"
@@ -202,15 +196,15 @@ export default Register;
 const styles = {
   container: {
     flex: 1,
-    paddingTop: 20,
+    paddingTop: 10,
     paddingHorizontal: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    backgroundColor: secondaryColor,
+    backgroundColor: lightColor,
   },
   logo: {
     width: width * 0.8,
-    height: width * 0.4,
+    height: width * 0.6,
     alignSelf: 'center',
     resizeMode: 'contain',
   },

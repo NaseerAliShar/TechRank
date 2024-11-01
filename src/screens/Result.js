@@ -3,7 +3,7 @@ import * as Progress from 'react-native-progress';
 import { Button } from 'react-native-paper';
 import { height, width } from '../styles/sizes';
 import { useNavigation } from '@react-navigation/native';
-import { primaryColor, secondaryColor } from '../styles/colors';
+import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 const Result = ({
   score,
@@ -110,7 +110,7 @@ const Result = ({
             Go Back to Home
           </Text>
         </TouchableOpacity>
-        <Text style={{ marginTop: 20, color: 'grey' }}>
+        <Text style={{ marginTop: 10, color: '#fff' }}>
           Analytics are available for premium users only.
         </Text>
       </View>
@@ -123,7 +123,7 @@ export default Result;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -173,10 +173,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderWidth: 1,
     borderRadius: 30,
-    borderColor: primaryColor,
+    borderColor: lightColor,
   },
   analyticsButtonText: {
-    color: primaryColor,
+    color: lightColor,
     fontWeight: 'bold',
   },
   boxContainer: {
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    color: secondaryColor,
-    backgroundColor: primaryColor,
+    color: primaryColor,
+    backgroundColor: secondaryColor,
   },
 });

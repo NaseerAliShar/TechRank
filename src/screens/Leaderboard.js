@@ -16,6 +16,7 @@ import {
 import { width } from '../styles/sizes';
 import Container from '../components/Container';
 import React, { useState, useEffect } from 'react';
+import Svg, { Circle, Path } from 'react-native-svg';
 
 const users = [
   {
@@ -215,7 +216,7 @@ const Leaderboard = () => {
           </TouchableOpacity>
         ))}
       </View>
-
+      {/* Top 3 Users */}
       <View style={{ alignItems: 'center' }}>
         <View
           style={{
@@ -243,6 +244,35 @@ const Leaderboard = () => {
               </Text>
             </View>
             <View style={styles.topContainer}>
+              {/* Add the SVG Crown here */}
+              <View style={{ position: 'absolute', zIndex: 1, top: -16 }}>
+                <Svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                  {/* Left Jewel */}
+                  <Circle cx="4" cy="8" r="1.5" fill="red" />
+
+                  {/* Middle Jewel */}
+                  <Circle cx="12" cy="3" r="1.5" fill="blue" />
+
+                  {/* Right Jewel */}
+                  <Circle cx="20" cy="8" r="1.5" fill="white" />
+
+                  {/* Crown Spikes */}
+                  <Path
+                    d="M4 14L8 7L12 11L16 7L20 14H4Z"
+                    stroke="gold"
+                    strokeWidth="1.5"
+                    fill="gold"
+                  />
+
+                  {/* Crown Base */}
+                  <Path d="M2 17H22V19H2V17Z" fill="gold" />
+
+                  {/* Base Details */}
+                  <Circle cx="6" cy="18" r="1" fill="red" />
+                  <Circle cx="12" cy="18" r="1" fill="red" />
+                  <Circle cx="18" cy="18" r="1" fill="red" />
+                </Svg>
+              </View>
               <Image
                 source={{
                   uri: 'https://www.shareicon.net/data/128x128/2016/05/24/770137_man_512x512.png',
@@ -278,6 +308,7 @@ const Leaderboard = () => {
             height: width * 0.75,
             justifyContent: 'flex-end',
           }}>
+          {/* Add the Boxes Image here */}
           <Image
             source={require('../../assets/images/boxes.png')}
             style={{
@@ -304,7 +335,7 @@ export default Leaderboard;
 
 const styles = StyleSheet.create({
   tabContainer: {
-    marginBottom: 10,
+    marginBottom: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
@@ -333,7 +364,7 @@ const styles = StyleSheet.create({
     backgroundColor: lightColor,
   },
   active: {
-    backgroundColor: secondaryColor,
+    backgroundColor: lightColor,
   },
   inactive: {
     backgroundColor: primaryColor,

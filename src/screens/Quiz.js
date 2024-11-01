@@ -9,12 +9,16 @@ import {
 import Result from './Result';
 import instance from '../services/api';
 import Container from '../components/Container';
-import { primaryColor, secondaryColor } from '../styles/colors';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState, useCallback, useMemo } from 'react';
+import { View, Text, FlatList, StyleSheet, Alert } from 'react-native';
+import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
+import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Quiz = ({ route }) => {
   const { quizId } = route.params;
+  const navigation = useNavigation();
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState([]);
@@ -25,6 +29,7 @@ const Quiz = ({ route }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [userSelections, setUserSelections] = useState([]);
+
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -48,14 +53,12 @@ const Quiz = ({ route }) => {
     const currentQuestion = questions[currentIndex];
     const isMultiChoice = currentQuestion.questionType === 'MultiChoice';
 
-    // Determine if the answer is correct
     const isCorrect = isMultiChoice
       ? selectedOption?.isCorrect
       : selectedOptions.every(option => option.isCorrect) &&
         selectedOptions.length ===
           currentQuestion.options.filter(option => option.isCorrect).length;
 
-    // Update the score and the lists of correct or wrong answers
     if (isCorrect) {
       setScore(prevScore => prevScore + 1);
       setCorrectAnswers(prev => [...prev, currentQuestion]);
@@ -63,31 +66,25 @@ const Quiz = ({ route }) => {
       setWrongAnswers(prev => [...prev, currentQuestion]);
     }
 
-    // Save user selections for the current question
     const updatedSelections = [...userSelections];
     updatedSelections[currentIndex] = isMultiChoice
-      ? [selectedOption] // Store the selected option as an array
-      : selectedOptions; // Store selected options for multi-select
+      ? [selectedOption]
+      : selectedOptions;
     setUserSelections(updatedSelections);
 
-    // Move to the next question or navigate to the results if it was the last question
     if (currentIndex + 1 >= questions.length) {
       setQuizFinished(true);
     } else {
       setCurrentIndex(prevIndex => prevIndex + 1);
     }
 
-    // Reset selected options
     setSelectedOptions([]);
     setSelectedOption(null);
   }, [
-    score,
     questions,
     currentIndex,
     selectedOption,
     selectedOptions,
-    correctAnswers,
-    wrongAnswers,
     userSelections,
   ]);
 
@@ -118,7 +115,7 @@ const Quiz = ({ route }) => {
             <View style={styles.optionContainer}>
               <RadioButton
                 value={item}
-                theme={{ colors: { primary: 'red' } }}
+                theme={{ colors: { primary: primaryColor } }}
               />
               <Text style={styles.optionText}>{item.text}</Text>
             </View>
@@ -127,8 +124,8 @@ const Quiz = ({ route }) => {
           <Checkbox.Item
             label={item.text}
             position="leading"
-            theme={{ colors: { primary: 'red' } }}
-            labelStyle={{ textAlign: 'left', marginHorizontal: 10 }}
+            theme={{ colors: { primary: primaryColor } }}
+            labelStyle={[styles.optionText, { textAlign: 'left' }]}
             onPress={() => handleMultiSelect(item)}
             status={isSelected ? 'checked' : 'unchecked'}
           />
@@ -141,7 +138,7 @@ const Quiz = ({ route }) => {
     return (
       <Container>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator animating={true} size={50} color={primaryColor} />
+          <ActivityIndicator animating={true} size={50} color={lightColor} />
           <Text style={styles.loadingText}>Loading...</Text>
         </View>
       </Container>
@@ -172,17 +169,47 @@ const Quiz = ({ route }) => {
 
   return (
     <Container>
-      <View style={styles.container}>
-        {questions.length > 0 && (
-          <View style={styles.quizContent}>
-            <Text style={styles.progressText}>
-              {currentIndex + 1}/{questions.length}
-            </Text>
-            <ProgressBar
-              color={primaryColor}
-              progress={progress}
-              style={styles.progressBar}
-            />
+      {questions.length > 0 && (
+        <View style={styles.container}>
+          <View>
+            <View style={{ alignItems: 'center' }}>
+              <Text style={styles.progressText}>
+                {currentIndex + 1}/{questions.length}
+              </Text>
+              <ProgressBar
+                color={primaryColor}
+                progress={progress}
+                style={styles.progressBar}
+              />
+              <CountdownCircleTimer
+                isPlaying
+                size={60}
+                duration={600}
+                strokeWidth={5}
+                key={currentIndex}
+                colorsTime={[60, 30, 15, 0]}
+                onComplete={() => handleNext()}
+                colors={[primaryColor, secondaryColor, '#A30000', '#A30000']}>
+                {({ remainingTime }) => {
+                  const seconds = remainingTime % 60;
+                  const minutes = Math.floor(remainingTime / 60);
+                  return (
+                    <View>
+                      <MaterialCommunityIcons
+                        name="timer"
+                        size={26}
+                        color={primaryColor}
+                      />
+                      <View style={{ flexDirection: 'row' }}>
+                        <Text>{minutes}:</Text>
+                        <Text>{seconds < 10 ? `0${seconds}` : seconds}</Text>
+                      </View>
+                    </View>
+                  );
+                }}
+              </CountdownCircleTimer>
+            </View>
+
             <Text style={styles.questionText}>
               {questions[currentIndex].questionText}
             </Text>
@@ -191,19 +218,64 @@ const Quiz = ({ route }) => {
               keyExtractor={(_, index) => index.toString()}
               renderItem={renderItem}
             />
-            <Button
-              icon="arrow-right"
-              mode="contained"
-              textColor={secondaryColor}
-              buttonColor={primaryColor}
-              loading={loading}
-              onPress={handleNext}
-              disabled={!selectedOption && !selectedOptions.length}>
-              {currentIndex + 1 >= questions.length ? 'Finish' : 'Next'}
-            </Button>
           </View>
-        )}
-      </View>
+
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View>
+              <Button
+                icon="arrow-left"
+                mode="contained"
+                textColor={lightColor}
+                buttonColor={primaryColor}
+                loading={loading}
+                onPress={() => setCurrentIndex(prevIndex => prevIndex - 1)}
+                disabled={currentIndex === 0}>
+                Prev
+              </Button>
+            </View>
+
+            {/* <View>
+              <Button
+                icon="home"
+                mode="contained"
+                textColor={lightColor}
+                buttonColor={primaryColor}
+                loading={loading}
+                onPress={() =>
+                  Alert.alert(
+                    'Are you sure you want to exit?',
+                    'Your progress will be lost',
+                    [
+                      {
+                        text: 'Cancel',
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'OK',
+                        onPress: () => navigation.navigate('Home'),
+                      },
+                    ],
+                  )
+                }>
+                Home
+              </Button>
+            </View> */}
+            <View>
+              <Button
+                icon="arrow-right"
+                mode="contained"
+                textColor={lightColor}
+                buttonColor={primaryColor}
+                loading={loading}
+                onPress={handleNext}
+                disabled={!selectedOption && !selectedOptions.length}>
+                {currentIndex + 1 >= questions.length ? 'Finish' : 'Next'}
+              </Button>
+            </View>
+          </View>
+        </View>
+      )}
     </Container>
   );
 };
@@ -213,44 +285,48 @@ export default Quiz;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-  },
-  quizContent: {
-    flex: 1,
-    justifyContent: 'center',
+    marginTop: 50,
+    paddingHorizontal: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: lightColor,
+    justifyContent: 'space-between',
   },
   progressText: {
+    fontSize: 20,
+    marginTop: 10,
+    fontWeight: 'bold',
     textAlign: 'center',
-    fontSize: 16,
-    marginBottom: 10,
-    color: '#fff',
+    color: primaryColor,
   },
   progressBar: {
     height: 10,
     borderRadius: 5,
-    marginVertical: 15,
-    backgroundColor: 'gray',
+    marginVertical: 10,
+    backgroundColor: secondaryColor,
   },
   questionText: {
     fontSize: 18,
-    marginBottom: 20,
+    marginVertical: 5,
     color: primaryColor,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   optionContainer: {
+    padding: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 5,
   },
   optionCard: {
+    borderWidth: 1,
     borderRadius: 30,
     marginVertical: 5,
-    backgroundColor: primaryColor,
+    borderColor: primaryColor,
   },
   optionText: {
-    fontSize: 15,
-    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: primaryColor,
   },
   loadingContainer: {
     flex: 1,
@@ -261,6 +337,6 @@ const styles = StyleSheet.create({
     margin: 10,
     fontSize: 16,
     fontWeight: 'bold',
-    color: primaryColor,
+    color: lightColor,
   },
 });

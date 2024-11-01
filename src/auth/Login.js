@@ -7,20 +7,15 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {
-  darkColor,
-  lightColor,
-  primaryColor,
-  secondaryColor,
-} from '../styles/colors';
 import axios from 'axios';
 import * as Yup from 'yup';
-import React, { useState } from 'react';
 import Container from '../components/Container';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Formik } from 'formik';
+import { useState } from 'react';
 import { width } from '../styles/sizes';
 import { TextInput, Button } from 'react-native-paper';
+import { darkColor, lightColor, primaryColor } from '../styles/colors';
 
 const Login = ({ navigation }) => {
   const [eye, setEye] = useState(true);
@@ -182,11 +177,11 @@ export default Login;
 const styles = {
   container: {
     flex: 1,
-    paddingTop: 20,
+    paddingTop: 10,
     paddingHorizontal: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    backgroundColor: secondaryColor,
+    backgroundColor: lightColor,
   },
   logo: {
     width: width * 0.8,

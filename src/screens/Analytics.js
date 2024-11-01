@@ -1,6 +1,8 @@
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Card } from 'react-native-paper';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
+import Container from '../components/Container';
+import { lightColor } from '../styles/colors';
 
 const Answers = ({ route }) => {
   const { questions, wrongAnswers, correctAnswers, userSelections } =
@@ -84,15 +86,17 @@ const Answers = ({ route }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <Container>
       <Text style={styles.title}>All Questions</Text>
-      <FlatList
-        data={questions}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={item => item._id.toString()}
-      />
-    </View>
+      <View style={styles.container}>
+        <FlatList
+          data={questions}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={item => item._id.toString()}
+        />
+      </View>
+    </Container>
   );
 };
 
@@ -102,13 +106,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     backgroundColor: '#f0f4f7',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#333',
+    color: lightColor,
     textAlign: 'center',
   },
   card: {
