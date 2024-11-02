@@ -4,6 +4,7 @@ import {
   Image,
   FlatList,
   StyleSheet,
+  ScrollView,
   TouchableOpacity,
 } from 'react-native';
 import {
@@ -12,11 +13,11 @@ import {
   primaryColor,
   secondaryColor,
 } from '../styles/colors';
-
 import { width } from '../styles/sizes';
 import Container from '../components/Container';
 import React, { useState, useEffect } from 'react';
 import Svg, { Circle, Path } from 'react-native-svg';
+import { SelectList } from 'react-native-dropdown-select-list';
 
 const users = [
   {
@@ -173,8 +174,13 @@ const users = [
 
 const Leaderboard = () => {
   const [activeTab, setActiveTab] = useState('All');
+  const [selectedBadge, setSelectedBadge] = useState('');
+  const [selectedTechnology, setSelectedTechnology] = useState('');
 
-  useEffect(() => {}, [activeTab]);
+  useEffect(() => {
+    setSelectedBadge('');
+    setSelectedTechnology('');
+  }, [activeTab]);
 
   const renderItem = ({ item, index }) => (
     <View style={styles.itemContainer}>
@@ -195,130 +201,187 @@ const Leaderboard = () => {
       <Text>{item.weightage.length}</Text>
     </View>
   );
+  console.log(activeTab, selectedBadge, selectedTechnology);
+
   return (
     <Container>
-      <View style={styles.tabContainer}>
-        {['All', 'Country', 'City'].map(tab => (
-          <TouchableOpacity
-            key={tab}
-            style={[
-              styles.tabTitle,
-              activeTab === tab ? styles.active : styles.inactive,
-            ]}
-            onPress={() => setActiveTab(tab)}
-            activeOpacity={0.6}>
-            <Text
-              style={
-                activeTab === tab ? styles.activeText : styles.inactiveText
-              }>
-              {tab}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      {/* Top 3 Users */}
-      <View style={{ alignItems: 'center' }}>
-        <View
-          style={{
-            width: '90%',
-            alignSelf: 'center',
-            position: 'absolute',
-          }}>
+      <View>
+        <ScrollView
+          contentContainerStyle={{ flexDirection: 'row' }}
+          showsHorizontalScrollIndicator={false}
+          horizontal={true}>
+          {['All', 'Country', 'City', 'Badge', 'Technology'].map(tab => (
+            <TouchableOpacity
+              key={tab}
+              style={[
+                styles.tabTitle,
+                activeTab === tab ? styles.active : styles.inactive,
+              ]}
+              onPress={() => setActiveTab(tab)}
+              activeOpacity={0.8}>
+              <Text
+                style={
+                  activeTab === tab ? styles.activeText : styles.inactiveText
+                }>
+                {tab}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        {activeTab === 'Badge' && (
+          <SelectList
+            setSelected={val => setSelectedBadge(val)}
+            inputStyles={{ color: primaryColor }}
+            dropdownTextStyles={{ color: primaryColor }}
+            boxStyles={{
+              marginTop: 10,
+              marginHorizontal: 10,
+              backgroundColor: lightColor,
+            }}
+            dropdownStyles={{
+              marginHorizontal: 10,
+              backgroundColor: lightColor,
+            }}
+            data={['Bronze', 'Silver', 'Gold', 'Diamond'].map(badge => ({
+              key: badge,
+              value: badge,
+            }))}
+            save="value"
+          />
+        )}
+
+        {activeTab === 'Technology' && (
+          <SelectList
+            setSelected={val => setSelectedTechnology(val)}
+            inputStyles={{ color: primaryColor }}
+            dropdownTextStyles={{ color: primaryColor }}
+            boxStyles={{
+              marginTop: 10,
+              marginHorizontal: 10,
+              backgroundColor: lightColor,
+            }}
+            dropdownStyles={{
+              marginHorizontal: 10,
+              backgroundColor: lightColor,
+            }}
+            data={['JavaScript', 'Python', 'Java', 'HTML', 'CSS'].map(
+              technology => ({
+                key: technology,
+                value: technology,
+              }),
+            )}
+            save="value"
+          />
+        )}
+
+        {/* Top 3 Users */}
+        <View style={{ alignItems: 'center', marginTop: 20 }}>
           <View
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
+              width: '90%',
+              alignSelf: 'center',
+              position: 'absolute',
             }}>
-            <View style={[styles.topContainer, { justifyContent: 'flex-end' }]}>
-              <Image
-                source={{
-                  uri: 'https://www.shareicon.net/data/128x128/2016/09/15/829453_user_512x512.png',
-                }}
-                style={styles.profileImageTop}
-              />
-              <Text style={styles.inactiveText}>
-                {users[1].name.substring(0, 3)}
-              </Text>
-              <Text style={[styles.activeText, styles.rankText]}>
-                {users[1].weightage.length}
-              </Text>
-            </View>
-            <View style={styles.topContainer}>
-              {/* Add the SVG Crown here */}
-              <View style={{ position: 'absolute', zIndex: 1, top: -16 }}>
-                <Svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                  {/* Left Jewel */}
-                  <Circle cx="4" cy="8" r="1.5" fill="red" />
-
-                  {/* Middle Jewel */}
-                  <Circle cx="12" cy="3" r="1.5" fill="blue" />
-
-                  {/* Right Jewel */}
-                  <Circle cx="20" cy="8" r="1.5" fill="white" />
-
-                  {/* Crown Spikes */}
-                  <Path
-                    d="M4 14L8 7L12 11L16 7L20 14H4Z"
-                    stroke="gold"
-                    strokeWidth="1.5"
-                    fill="gold"
-                  />
-
-                  {/* Crown Base */}
-                  <Path d="M2 17H22V19H2V17Z" fill="gold" />
-
-                  {/* Base Details */}
-                  <Circle cx="6" cy="18" r="1" fill="red" />
-                  <Circle cx="12" cy="18" r="1" fill="red" />
-                  <Circle cx="18" cy="18" r="1" fill="red" />
-                </Svg>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+              }}>
+              <View
+                style={[styles.topContainer, { justifyContent: 'flex-end' }]}>
+                <Image
+                  source={{
+                    uri: 'https://www.shareicon.net/data/128x128/2016/09/15/829453_user_512x512.png',
+                  }}
+                  style={styles.profileImageTop}
+                />
+                <Text style={styles.inactiveText}>
+                  {users[1].name.substring(0, 3)}
+                </Text>
+                <Text style={[styles.activeText, styles.rankText]}>
+                  {users[1].weightage.length}
+                </Text>
               </View>
-              <Image
-                source={{
-                  uri: 'https://www.shareicon.net/data/128x128/2016/05/24/770137_man_512x512.png',
-                }}
-                style={styles.profileImageTop}
-              />
-              <Text style={styles.inactiveText}>
-                {users[0].name.substring(0, 5)}
-              </Text>
-              <Text style={[styles.activeText, styles.rankText]}>
-                {users[0].weightage.length}
-              </Text>
-            </View>
-            <View style={[styles.topContainer, { justifyContent: 'flex-end' }]}>
-              <Image
-                source={{
-                  uri: 'https://www.shareicon.net/data/128x128/2016/09/15/829460_user_512x512.png',
-                }}
-                style={styles.profileImageTop}
-              />
-              <Text style={styles.inactiveText}>
-                {users[2].name.substring(0, 7)}
-              </Text>
-              <Text style={[styles.activeText, styles.rankText]}>
-                {users[2].weightage.length}
-              </Text>
+              <View style={styles.topContainer}>
+                {/* Add the SVG Crown here */}
+                <View style={{ position: 'absolute', zIndex: 1, top: -16 }}>
+                  <Svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                    {/* Left Jewel */}
+                    <Circle cx="4" cy="8" r="1.5" fill="red" />
+
+                    {/* Middle Jewel */}
+                    <Circle cx="12" cy="3" r="1.5" fill="blue" />
+
+                    {/* Right Jewel */}
+                    <Circle cx="20" cy="8" r="1.5" fill="white" />
+
+                    {/* Crown Spikes */}
+                    <Path
+                      d="M4 14L8 7L12 11L16 7L20 14H4Z"
+                      stroke="gold"
+                      strokeWidth="1.5"
+                      fill="gold"
+                    />
+
+                    {/* Crown Base */}
+                    <Path d="M2 17H22V19H2V17Z" fill="gold" />
+
+                    {/* Base Details */}
+                    <Circle cx="6" cy="18" r="1" fill="red" />
+                    <Circle cx="12" cy="18" r="1" fill="red" />
+                    <Circle cx="18" cy="18" r="1" fill="red" />
+                  </Svg>
+                </View>
+                <Image
+                  source={{
+                    uri: 'https://www.shareicon.net/data/128x128/2016/05/24/770137_man_512x512.png',
+                  }}
+                  style={styles.profileImageTop}
+                />
+                <Text style={styles.inactiveText}>
+                  {users[0].name.substring(0, 5)}
+                </Text>
+                <Text style={[styles.activeText, styles.rankText]}>
+                  {users[0].weightage.length}
+                </Text>
+              </View>
+              <View
+                style={[styles.topContainer, { justifyContent: 'flex-end' }]}>
+                <Image
+                  source={{
+                    uri: 'https://www.shareicon.net/data/128x128/2016/09/15/829460_user_512x512.png',
+                  }}
+                  style={styles.profileImageTop}
+                />
+                <Text style={styles.inactiveText}>
+                  {users[2].name.substring(0, 7)}
+                </Text>
+                <Text style={[styles.activeText, styles.rankText]}>
+                  {users[2].weightage.length}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
-        <View
-          style={{
-            marginBottom: 10,
-            height: width * 0.75,
-            justifyContent: 'flex-end',
-          }}>
-          {/* Add the Boxes Image here */}
-          <Image
-            source={require('../../assets/images/boxes.png')}
+          <View
             style={{
-              width: width,
-              height: width * 0.4,
-              resizeMode: 'contain',
-            }}
-          />
+              marginBottom: 10,
+              height: width * 0.75,
+              justifyContent: 'flex-end',
+            }}>
+            {/* Add the Boxes Image here */}
+            <Image
+              source={require('../../assets/images/boxes.png')}
+              style={{
+                width: width,
+                height: width * 0.4,
+                resizeMode: 'contain',
+              }}
+            />
+          </View>
         </View>
       </View>
+
       <View style={styles.container}>
         <FlatList
           data={users.slice(3)}
@@ -334,17 +397,6 @@ const Leaderboard = () => {
 export default Leaderboard;
 
 const styles = StyleSheet.create({
-  tabContainer: {
-    marginBottom: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-  },
-  tabTitle: {
-    borderRadius: 20,
-    paddingVertical: 5,
-    paddingHorizontal: 30,
-  },
   container: {
     flex: 1,
     flexGrow: 1,
@@ -353,6 +405,11 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: secondaryColor,
+  },
+  tabTitle: {
+    borderRadius: 20,
+    paddingVertical: 5,
+    paddingHorizontal: 25,
   },
   itemContainer: {
     padding: 12,

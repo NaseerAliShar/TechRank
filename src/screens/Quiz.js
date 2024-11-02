@@ -14,7 +14,6 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { View, Text, FlatList, StyleSheet, Alert } from 'react-native';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
 import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Quiz = ({ route }) => {
   const { quizId } = route.params;
@@ -169,59 +168,79 @@ const Quiz = ({ route }) => {
 
   return (
     <Container>
+      <View
+        style={{
+          padding: 20,
+          borderRadius: 20,
+          marginVertical: 20,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          backgroundColor: lightColor,
+        }}>
+        <View>
+          <Text style={styles.progressText}>Questions</Text>
+          <Text style={{ textAlign: 'center' }}>
+            {currentIndex + 1}/{questions.length}
+          </Text>
+        </View>
+        <View>
+          <Text style={styles.progressText}>Topic</Text>
+          <Text>JavaScript</Text>
+        </View>
+        <View>
+          <Text style={styles.progressText}>Duration</Text>
+          <Text style={{ textAlign: 'center' }}>10 min</Text>
+        </View>
+      </View>
       {questions.length > 0 && (
         <View style={styles.container}>
-          <View>
-            <View style={{ alignItems: 'center' }}>
-              <Text style={styles.progressText}>
-                {currentIndex + 1}/{questions.length}
-              </Text>
-              <ProgressBar
-                color={primaryColor}
-                progress={progress}
-                style={styles.progressBar}
-              />
-              <CountdownCircleTimer
-                isPlaying
-                size={60}
-                duration={600}
-                strokeWidth={5}
-                key={currentIndex}
-                colorsTime={[60, 30, 15, 0]}
-                onComplete={() => handleNext()}
-                colors={[primaryColor, secondaryColor, '#A30000', '#A30000']}>
-                {({ remainingTime }) => {
-                  const seconds = remainingTime % 60;
-                  const minutes = Math.floor(remainingTime / 60);
-                  return (
-                    <View>
-                      <MaterialCommunityIcons
-                        name="timer"
-                        size={26}
-                        color={primaryColor}
-                      />
-                      <View style={{ flexDirection: 'row' }}>
-                        <Text>{minutes}:</Text>
-                        <Text>{seconds < 10 ? `0${seconds}` : seconds}</Text>
-                      </View>
+          <View style={{ alignSelf: 'center', paddingVertical: 10 }}>
+            <CountdownCircleTimer
+              isPlaying
+              size={40}
+              duration={600}
+              strokeWidth={4}
+              colorsTime={[60, 30, 15, 0]}
+              onComplete={() => handleNext()}
+              colors={[primaryColor, secondaryColor, '#A30000', '#A30000']}>
+              {({ remainingTime }) => {
+                const seconds = remainingTime % 60;
+                const minutes = Math.floor(remainingTime / 60);
+                return (
+                  <View>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Text style={{ fontSize: 12 }}>{minutes}:</Text>
+                      <Text style={{ fontSize: 12 }}>
+                        {seconds < 10 ? `0${seconds}` : seconds}
+                      </Text>
                     </View>
-                  );
-                }}
-              </CountdownCircleTimer>
-            </View>
-
-            <Text style={styles.questionText}>
-              {questions[currentIndex].questionText}
-            </Text>
-            <FlatList
-              data={questions[currentIndex].options}
-              keyExtractor={(_, index) => index.toString()}
-              renderItem={renderItem}
-            />
+                  </View>
+                );
+              }}
+            </CountdownCircleTimer>
           </View>
+          <ProgressBar
+            color={primaryColor}
+            progress={progress}
+            style={styles.progressBar}
+          />
+          <Text style={styles.questionText}>
+            {questions[currentIndex].questionText}
+          </Text>
+          <FlatList
+            data={questions[currentIndex].options}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={renderItem}
+          />
 
           <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            style={{
+              columnGap: 10,
+              marginBottom: 10,
+              flexDirection: 'row',
+              justifyContent: 'center',
+            }}>
             <View>
               <Button
                 icon="arrow-left"
@@ -235,7 +254,7 @@ const Quiz = ({ route }) => {
               </Button>
             </View>
 
-            {/* <View>
+            <View>
               <Button
                 icon="home"
                 mode="contained"
@@ -260,7 +279,7 @@ const Quiz = ({ route }) => {
                 }>
                 Home
               </Button>
-            </View> */}
+            </View>
             <View>
               <Button
                 icon="arrow-right"
@@ -285,7 +304,6 @@ export default Quiz;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 50,
     paddingHorizontal: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -293,8 +311,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   progressText: {
-    fontSize: 20,
-    marginTop: 10,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
     color: primaryColor,
@@ -302,7 +319,7 @@ const styles = StyleSheet.create({
   progressBar: {
     height: 10,
     borderRadius: 5,
-    marginVertical: 10,
+    marginTop: 10,
     backgroundColor: secondaryColor,
   },
   questionText: {
@@ -325,7 +342,6 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 16,
-    fontWeight: 'bold',
     color: primaryColor,
   },
   loadingContainer: {
