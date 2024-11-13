@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Formik } from 'formik';
 import { useState } from 'react';
 import { width } from '../styles/sizes';
+import { apiURL, apiVersion } from '../config/config';
 import { TextInput, Button } from 'react-native-paper';
 import { darkColor, lightColor, primaryColor } from '../styles/colors';
 
@@ -25,7 +26,7 @@ const Login = ({ navigation }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://p3x08xsn-3000.inc1.devtunnels.ms/api/v1/auth/login',
+        `${apiURL}/${apiVersion}/auth/login`,
         values,
       );
       await AsyncStorage.setItem('token', response.data.token);

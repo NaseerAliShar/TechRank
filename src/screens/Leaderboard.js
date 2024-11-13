@@ -427,12 +427,12 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
   },
   activeText: {
-    fontSize: 16,
+    fontSize: 15,
     color: primaryColor,
     fontWeight: 'bold',
   },
   inactiveText: {
-    fontSize: 15,
+    fontSize: 14,
     color: lightColor,
     fontWeight: 'bold',
   },

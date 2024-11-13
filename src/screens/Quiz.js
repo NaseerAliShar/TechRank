@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native-paper';
 import Result from './Result';
-import instance from '../services/api';
+import instance from '../services/services';
 import Container from '../components/Container';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState, useCallback, useMemo } from 'react';
@@ -34,6 +34,8 @@ const Quiz = ({ route }) => {
       try {
         const { data } = await instance.get(`questions`);
         setQuestions(data);
+        console.log(data);
+        
       } catch (error) {
         console.log('Error fetching quizzes', error);
       } finally {

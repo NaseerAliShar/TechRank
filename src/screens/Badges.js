@@ -7,11 +7,12 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import instance from '../services/api';
+import instance from '../services/services';
 import Animated from 'react-native-reanimated';
 import Container from '../components/Container';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { width } from '../styles/sizes';
+import { apiURL } from '../config/config';
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
 import { ZoomIn, FadeIn, FadeInRight } from 'react-native-reanimated';
@@ -58,7 +59,7 @@ const Badges = () => {
           )}
           <Image
             source={{
-              uri: `https://p3x08xsn-3000.inc1.devtunnels.ms/${item.image}`,
+              uri: `${apiURL}/${item.image}`,
             }}
             style={[styles.image, item.disabled && styles.disabledImage]}
           />

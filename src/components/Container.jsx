@@ -4,7 +4,7 @@ import { View, StyleSheet, StatusBar } from 'react-native';
 const Container = ({ children }) => {
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={primaryColor} barStyle="light-content" />
+      <StatusBar backgroundColor={primaryColor} />
       {children}
     </View>
     // <LinearGradient

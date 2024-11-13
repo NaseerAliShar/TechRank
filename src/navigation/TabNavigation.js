@@ -8,7 +8,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useNavigation } from '@react-navigation/native';
 import { darkColor, lightColor, primaryColor } from '../styles/colors';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Svg, { Path } from 'react-native-svg';
 
 const Tab = createBottomTabNavigator();
 export default function TabNavigation() {
@@ -53,6 +52,7 @@ export default function TabNavigation() {
         name="Home"
         component={Home}
         options={{
+          headerShown: false,
           tabBarIcon: ({ color, size, focused }) =>
             focused ? (
               <Ionicons name="home" color={color} size={size} />

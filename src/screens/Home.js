@@ -20,10 +20,11 @@ import {
   secondaryColor,
 } from '../styles/colors';
 import { width } from '../styles/sizes';
+import { apiURL } from '../config/config';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState, useCallback } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
-import instance from '../services/api';
+import instance from '../services/services';
 import Animated from 'react-native-reanimated';
 import Container from '../components/Container';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -58,7 +59,12 @@ const Home = () => {
         entering={BounceIn.delay(index * 150)}
         exiting={FadeOutDown}
         style={styles.card}>
-        <Image source={{ uri: item.image }} style={styles.image} />
+        <Image
+          source={{
+            uri: `${apiURL}/${item.image}`,
+          }}
+          style={styles.image}
+        />
       </Animated.View>
     </TouchableOpacity>
   );
@@ -90,9 +96,10 @@ const Home = () => {
         style={{
           backgroundColor: secondaryColor,
           padding: 20,
-          width: '100%',
+          marginTop: 20,
+          marginBottom: 20,
           borderRadius: 20,
-          marginVertical: 20,
+          width: '100%',
           alignItems: 'center',
           flexDirection: 'row',
         }}>
@@ -109,12 +116,12 @@ const Home = () => {
 
           <View
             style={{
-              flexDirection: 'row',
-              alignItems: 'center',
               gap: 2,
               paddingBottom: 5,
+              flexDirection: 'row',
+              alignItems: 'center',
             }}>
-            <Feather name="sun" size={17} color="orange" />
+            <Feather name="sun" size={16} color="orange" />
             <Text style={{ color: 'yellow', fontSize: 15 }}>Good Morning</Text>
           </View>
           <View style={{ flexDirection: 'row', columnGap: 5 }}>

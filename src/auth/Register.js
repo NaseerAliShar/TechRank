@@ -4,6 +4,7 @@ import Container from '../components/Container';
 import { Formik } from 'formik';
 import { useState } from 'react';
 import { width } from '../styles/sizes';
+import { apiURL, apiVersion } from '../config/config';
 import { TextInput, Button } from 'react-native-paper';
 import { darkColor, lightColor, primaryColor } from '../styles/colors';
 import { View, Text, Image, Alert, Keyboard, ScrollView } from 'react-native';
@@ -16,7 +17,7 @@ const Register = ({ navigation }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://p3x08xsn-3000.inc1.devtunnels.ms/api/v1/auth/register',
+        `${apiURL}/${apiVersion}/auth/register`,
         values,
       );
       navigation.replace('Login');
