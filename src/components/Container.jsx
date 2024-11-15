@@ -7,6 +7,7 @@ const Container = ({ children }) => {
       <StatusBar backgroundColor={primaryColor} />
       {children}
     </View>
+
     // <LinearGradient
     //   colors={backgroundColor}
     //   style={styles.container}
@@ -17,8 +18,8 @@ const Container = ({ children }) => {
     //     imageStyle={{ transform: [{ scale: 1.5 }] }}
     //     style={styles.container}>
     //     {children}
-    //   </ImageBackground>
-    // </LinearGradient>
+    //   </ImageBackground
+    // </LinearGradient=
   );
 };
 
@@ -27,7 +28,7 @@ export default Container;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     backgroundColor: primaryColor,
   },
 });

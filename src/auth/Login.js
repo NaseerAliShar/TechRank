@@ -9,14 +9,14 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import * as Yup from 'yup';
-import Container from '../components/Container';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Formik } from 'formik';
 import { useState } from 'react';
 import { width } from '../styles/sizes';
+import Container from '../components/Container';
 import { apiURL, apiVersion } from '../config/config';
 import { TextInput, Button } from 'react-native-paper';
-import { darkColor, lightColor, primaryColor } from '../styles/colors';
+import { lightColor, primaryColor } from '../styles/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({ navigation }) => {
   const [eye, setEye] = useState(true);
@@ -50,7 +50,7 @@ const Login = ({ navigation }) => {
   return (
     <Container>
       <Image
-        source={require('../../assets/images/techrank1.png')}
+        source={require('../../assets/images/logo1.png')}
         style={styles.logo}
       />
       <View style={styles.container}>
@@ -106,7 +106,9 @@ const Login = ({ navigation }) => {
                 <Text style={styles.errorText}>{errors.password}</Text>
               )}
 
-              <TouchableOpacity style={styles.forgotPassword}>
+              <TouchableOpacity
+                style={styles.forgotPassword}
+                activeOpacity={0.85}>
                 <Text style={styles.linkText}>Forgot Password?</Text>
               </TouchableOpacity>
 
@@ -134,19 +136,19 @@ const Login = ({ navigation }) => {
               <View style={styles.textContainer}>
                 <Text>or sign in with</Text>
                 <View style={styles.iconsContainer}>
-                  <TouchableOpacity>
+                  <TouchableOpacity activeOpacity={0.8}>
                     <Image
                       source={require('../../assets/images/google.png')}
                       style={styles.icon}
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity>
+                  <TouchableOpacity activeOpacity={0.8}>
                     <Image
                       source={require('../../assets/images/facebook.png')}
                       style={styles.icon}
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity>
+                  <TouchableOpacity activeOpacity={0.8}>
                     <Image
                       source={require('../../assets/images/linkedin.png')}
                       style={styles.icon}
@@ -156,12 +158,12 @@ const Login = ({ navigation }) => {
               </View>
 
               <View style={styles.textContainer}>
-                <Text style={styles.text}>By continuing, you agree to our</Text>
-                <TouchableOpacity>
+                <Text>By continuing, you agree to our</Text>
+                <TouchableOpacity activeOpacity={0.85}>
                   <Text style={styles.linkText}>Terms and Conditions</Text>
                 </TouchableOpacity>
-                <Text style={styles.text}> and </Text>
-                <TouchableOpacity>
+                <Text> and </Text>
+                <TouchableOpacity activeOpacity={0.85}>
                   <Text style={styles.linkText}>Privacy Policy</Text>
                 </TouchableOpacity>
               </View>
@@ -178,32 +180,28 @@ export default Login;
 const styles = {
   container: {
     flex: 1,
-    paddingTop: 10,
-    paddingHorizontal: 20,
+    padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: lightColor,
   },
   logo: {
-    width: width * 0.8,
+    width: width,
     height: width * 0.6,
     alignSelf: 'center',
     resizeMode: 'contain',
   },
   input: {
     marginTop: 10,
+    marginBottom: 5,
     backgroundColor: lightColor,
   },
   errorText: {
     color: 'red',
-    fontSize: 10,
-  },
-  forgotPassword: {
-    marginVertical: 10,
-    alignSelf: 'flex-end',
+    fontSize: 12,
   },
   button: {
-    marginVertical: 10,
+    marginVertical: 15,
   },
   buttonLabel: {
     fontSize: 18,
@@ -213,12 +211,13 @@ const styles = {
     paddingTop: 10,
     alignItems: 'center',
   },
-  text: {
-    color: darkColor,
-  },
   linkText: {
     color: primaryColor,
     fontWeight: 'bold',
+  },
+  forgotPassword: {
+    marginVertical: 10,
+    alignSelf: 'flex-end',
   },
   iconsContainer: {
     gap: 15,

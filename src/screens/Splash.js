@@ -1,10 +1,10 @@
+import { width } from '../styles/sizes';
 import React, { useEffect } from 'react';
+import { Divider } from 'react-native-paper';
 import Container from '../components/Container';
 import * as Animatable from 'react-native-animatable';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { width } from '../styles/sizes';
-import { Divider } from 'react-native-paper';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Splash = ({ navigation }) => {
   useEffect(() => {
@@ -31,7 +31,7 @@ const Splash = ({ navigation }) => {
           style={styles.topContainer}>
           <Image
             style={styles.techrankLogo}
-            source={require('../../assets/images/techrank1.png')}
+            source={require('../../assets/images/logo1.png')}
           />
         </Animatable.View>
         <View style={styles.bottomContainer}>
@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     flex: 1,
+    alignItems: 'center',
     justifyContent: 'center',
   },
   techrankLogo: {

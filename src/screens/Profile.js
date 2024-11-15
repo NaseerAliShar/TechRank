@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import Feather from 'react-native-vector-icons/Feather';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Svg, Rect, Path, Circle } from 'react-native-svg';
-import { Text, View, Image, Alert, StyleSheet } from 'react-native';
-
-import { darkColor, lightColor, primaryColor } from '../styles/colors';
+import { width } from '../styles/sizes';
 import Container from '../components/Container';
+import React, { useEffect, useState } from 'react';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import { Svg, Rect, Path, Circle } from 'react-native-svg';
+import { lightColor, secondaryColor } from '../styles/colors';
+import { Text, View, Image, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Profile = ({ navigation }) => {
+const Profile = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -23,31 +22,8 @@ const Profile = ({ navigation }) => {
     fetchUserData();
   }, []);
 
-  const handleLogout = () => {
-    Alert.alert('Logout', 'Are you sure you want to logout?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Yes',
-        onPress: async () => {
-          try {
-            await AsyncStorage.removeItem('user');
-            await AsyncStorage.removeItem('token');
-            navigation.navigate('Login');
-          } catch (error) {
-            console.log('Failed to logout:', error);
-          }
-        },
-      },
-    ]);
-  };
-
   return (
     <Container>
-      <View style={styles.buttonContainer}>
-        <Feather name="edit-3" size={24} color="white" />
-        <Feather name="power" size={24} color="white" onPress={handleLogout} />
-      </View>
-
       <View style={styles.profileImageContainer}>
         <Image
           source={require('../../assets/images/avatar.png')}
@@ -102,9 +78,8 @@ const Profile = ({ navigation }) => {
           <Text
             style={{
               fontSize: 20,
+              marginVertical: 10,
               fontWeight: 'bold',
-              color: '#333',
-              marginTop: 20,
               textAlign: 'center',
             }}>
             Achievements
@@ -113,7 +88,6 @@ const Profile = ({ navigation }) => {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginTop: 20,
             }}>
             <View style={styles.badgeContainer}>
               <Image
@@ -154,10 +128,9 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     alignItems: 'center',
-    paddingTop: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     backgroundColor: lightColor,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
   },
   profileImageContainer: {
     top: 30,
@@ -166,7 +139,7 @@ const styles = StyleSheet.create({
     height: 90,
     borderRadius: 45,
     alignSelf: 'center',
-    backgroundColor: '#C4C9F2',
+    backgroundColor: secondaryColor,
   },
   profileImage: {
     width: '100%',
@@ -174,68 +147,49 @@ const styles = StyleSheet.create({
   },
   profileName: {
     fontSize: 25,
-    marginVertical: 20,
+    marginTop: 30,
+    marginBottom: 10,
     color: '#333',
     fontWeight: 'bold',
   },
   rankContainer: {
-    width: '90%',
+    borderRadius: 10,
+    height: width / 4,
+    width: width / 1.2,
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'center',
-    backgroundColor: '#978EE7',
-    padding: 20,
-    borderRadius: 15,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 5 },
-    shadowRadius: 8,
-    elevation: 5,
+    justifyContent: 'space-around',
+    backgroundColor: secondaryColor,
   },
   rankCard: {
     alignItems: 'center',
-    width: 100,
     paddingVertical: 10,
   },
   rankTitle: {
-    fontSize: 12,
-    color: lightColor,
+    fontSize: 15,
     marginTop: 5,
+    color: lightColor,
   },
   rankNumber: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     color: lightColor,
   },
-  buttonContainer: {
-    padding: 10,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
   badgeContainer: {
-    // flexDirection: 'row',
-    backgroundColor: '#978EE7',
-    padding: 5,
-    alignItems: 'center',
+    margin: 10,
+    padding: 10,
     borderRadius: 10,
-    margin: 5,
-    // justifyContent: 'space-between',
-    // marginTop: 20,
+    alignItems: 'center',
+    backgroundColor: secondaryColor,
   },
   badgeIcon: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
     resizeMode: 'contain',
-    // borderRadius: 20,
-    padding: 5,
-    backgroundColor: '#C4C9F2',
-    // justifyContent: 'center',
-    alignItems: 'center',
   },
   badgeText: {
+    marginTop: 5,
     color: '#fff',
-    margin: 5,
   },
 });
 

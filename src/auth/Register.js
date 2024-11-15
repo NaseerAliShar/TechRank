@@ -1,12 +1,12 @@
 import axios from 'axios';
 import * as Yup from 'yup';
-import Container from '../components/Container';
 import { Formik } from 'formik';
 import { useState } from 'react';
 import { width } from '../styles/sizes';
+import Container from '../components/Container';
 import { apiURL, apiVersion } from '../config/config';
 import { TextInput, Button } from 'react-native-paper';
-import { darkColor, lightColor, primaryColor } from '../styles/colors';
+import { lightColor, primaryColor } from '../styles/colors';
 import { View, Text, Image, Alert, Keyboard, ScrollView } from 'react-native';
 
 const Register = ({ navigation }) => {
@@ -43,7 +43,7 @@ const Register = ({ navigation }) => {
   return (
     <Container>
       <Image
-        source={require('../../assets/images/techrank1.png')}
+        source={require('../../assets/images/logo1.png')}
         style={styles.logo}
       />
       <View style={styles.container}>
@@ -69,9 +69,7 @@ const Register = ({ navigation }) => {
             values,
             errors,
           }) => (
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              keyboardShouldPersistTaps="handled">
+            <ScrollView showsVerticalScrollIndicator={false}>
               <TextInput
                 label="Name"
                 mode="outlined"
@@ -197,28 +195,28 @@ export default Register;
 const styles = {
   container: {
     flex: 1,
-    paddingTop: 10,
-    paddingHorizontal: 20,
+    padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: lightColor,
   },
   logo: {
-    width: width * 0.8,
+    width: width,
     height: width * 0.6,
     alignSelf: 'center',
     resizeMode: 'contain',
   },
   input: {
     marginTop: 10,
+    marginBottom: 5,
     backgroundColor: lightColor,
   },
   errorText: {
     color: 'red',
-    fontSize: 10,
+    fontSize: 12,
   },
   button: {
-    marginVertical: 10,
+    marginVertical: 15,
   },
   buttonLabel: {
     fontSize: 18,
@@ -227,9 +225,6 @@ const styles = {
   textContainer: {
     paddingTop: 10,
     alignItems: 'center',
-  },
-  text: {
-    color: darkColor,
   },
   linkText: {
     color: primaryColor,

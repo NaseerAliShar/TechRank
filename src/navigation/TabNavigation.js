@@ -1,24 +1,47 @@
 import Home from '../screens/Home';
 import Help from '../screens/Help';
+import { Alert } from 'react-native';
+import { width } from '../styles/sizes';
 import Profile from '../screens/Profile';
 import Leaderboard from '../screens/Leaderboard';
+import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { darkColor, lightColor, primaryColor } from '../styles/colors';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Tab = createBottomTabNavigator();
 export default function TabNavigation() {
   const navigation = useNavigation();
+
+  const handleLogout = () => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Yes',
+        onPress: async () => {
+          try {
+            await AsyncStorage.removeItem('user');
+            await AsyncStorage.removeItem('token');
+            navigation.navigate('Login');
+          } catch (error) {
+            console.log('Failed to logout:', error);
+          }
+        },
+      },
+    ]);
+  };
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
         headerShown: true,
-        headerShadowVisible: false,
+        headerShadowVisible: true,
         headerStyle: {
+          height: width / 8,
           backgroundColor: primaryColor,
         },
         headerTitleStyle: {
@@ -93,11 +116,11 @@ export default function TabNavigation() {
             ),
           headerRight: () => (
             <AntDesign
-              name="setting"
-              size={25}
+              name="poweroff"
+              size={20}
               color={lightColor}
               style={{ marginRight: 20 }}
-              onPress={() => navigation.navigate('EditProfile')}
+              onPress={() => handleLogout()}
             />
           ),
         }}

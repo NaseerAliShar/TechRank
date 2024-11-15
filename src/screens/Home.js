@@ -21,12 +21,12 @@ import {
 } from '../styles/colors';
 import { width } from '../styles/sizes';
 import { apiURL } from '../config/config';
-import { useNavigation } from '@react-navigation/native';
-import { useEffect, useState, useCallback } from 'react';
-import Feather from 'react-native-vector-icons/Feather';
 import instance from '../services/services';
 import Animated from 'react-native-reanimated';
 import Container from '../components/Container';
+import Feather from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
+import { useEffect, useState, useCallback } from 'react';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -94,14 +94,13 @@ const Home = () => {
     <Container>
       <View
         style={{
-          backgroundColor: secondaryColor,
-          padding: 20,
-          marginTop: 20,
-          marginBottom: 20,
-          borderRadius: 20,
-          width: '100%',
+          padding: 10,
+          borderRadius: 10,
+          height: width / 5,
+          marginVertical: 20,
           alignItems: 'center',
           flexDirection: 'row',
+          backgroundColor: lightColor,
         }}>
         <Image
           source={{
@@ -110,77 +109,87 @@ const Home = () => {
           style={styles.profileImageTop}
         />
         <View style={{ marginLeft: 10 }}>
-          <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 20 }}>
+          <Text
+            style={{ color: primaryColor, fontWeight: 'bold', fontSize: 20 }}>
             Hello, Naseer
           </Text>
 
           <View
             style={{
-              gap: 2,
               paddingBottom: 5,
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            <Feather name="sun" size={16} color="orange" />
-            <Text style={{ color: 'yellow', fontSize: 15 }}>Good Morning</Text>
+            <Feather name="sun" size={15} color="orange" />
+            <Text style={{ color: primaryColor, fontSize: 15, left: 5 }}>
+              Good Morning
+            </Text>
           </View>
           <View style={{ flexDirection: 'row', columnGap: 5 }}>
             <View
               style={{
-                flexDirection: 'row',
-                columnGap: 4,
-                alignItems: 'center',
-                backgroundColor: primaryColor,
-                paddingHorizontal: 5,
-                paddingVertical: 2,
+                columnGap: 5,
                 borderRadius: 15,
+                paddingVertical: 5,
+                paddingHorizontal: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: secondaryColor,
               }}>
-              <SimpleLineIcons name="trophy" size={18} color="white" />
-              <Text style={{ fontSize: 16, color: '#fff' }}>50</Text>
+              <SimpleLineIcons name="trophy" size={15} color="white" />
+              <Text style={{ fontSize: 15, color: '#fff' }}>50</Text>
             </View>
             <View
               style={{
-                flexDirection: 'row',
-                columnGap: 4,
-                alignItems: 'center',
-                backgroundColor: primaryColor,
-                paddingHorizontal: 5,
-                paddingVertical: 2,
+                columnGap: 5,
                 borderRadius: 15,
+                paddingVertical: 5,
+                paddingHorizontal: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: secondaryColor,
               }}>
-              <SimpleLineIcons name="badge" size={18} color="white" />
-              <Text style={{ fontSize: 16, color: '#fff' }}>50</Text>
+              <SimpleLineIcons name="badge" size={15} color="white" />
+              <Text style={{ fontSize: 15, color: '#fff' }}>50</Text>
             </View>
             <View
               style={{
-                flexDirection: 'row',
-                columnGap: 4,
-                alignItems: 'center',
-                backgroundColor: primaryColor,
-                paddingHorizontal: 5,
-                paddingVertical: 2,
+                columnGap: 5,
                 borderRadius: 15,
+                paddingVertical: 5,
+                paddingHorizontal: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: secondaryColor,
               }}>
               <MaterialCommunityIcons
                 name="crown-outline"
-                size={18}
+                size={15}
                 color="white"
               />
-              <Text style={{ fontSize: 16, color: '#fff' }}>50</Text>
+              <Text style={{ fontSize: 15, color: '#fff' }}>50</Text>
             </View>
           </View>
         </View>
       </View>
+      <View
+        style={{
+          padding: 10,
+          borderRadius: 10,
+          height: width / 4,
+          marginBottom: 20,
+          alignItems: 'center',
+          flexDirection: 'row',
+          backgroundColor: lightColor,
+        }}></View>
       <View style={styles.container}>
-        <View style={{ justifyContent: 'space-between' }}>
-          <FlatList
-            data={technologies}
-            numColumns={4}
-            renderItem={renderItem}
-            keyExtractor={item => item._id.toString()}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
+        <FlatList
+          numColumns={4}
+          data={technologies}
+          renderItem={renderItem}
+          keyExtractor={item => item._id.toString()}
+          showsVerticalScrollIndicator={false}
+        />
       </View>
     </Container>
   );
@@ -189,18 +198,17 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 10,
+    padding: 10,
     alignItems: 'center',
-    paddingHorizontal: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: lightColor,
   },
   card: {
     margin: 5,
-    borderRadius: 40,
-    width: width / 5.5,
-    height: width / 5.5,
+    width: width / 5.6,
+    height: width / 5.6,
+    borderRadius: width / 2.8,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'lemonchiffon',
@@ -208,7 +216,7 @@ const styles = StyleSheet.create({
   image: {
     width: width / 6,
     height: width / 6,
-    borderRadius: 40,
+    borderRadius: width / 3,
     resizeMode: 'contain',
   },
   loadingContainer: {
@@ -220,11 +228,11 @@ const styles = StyleSheet.create({
     margin: 10,
     fontSize: 15,
     fontWeight: 'bold',
-    color: darkColor,
+    color: lightColor,
   },
   profileImageTop: {
-    width: 80,
-    height: 80,
+    width: 70,
+    height: 70,
     borderRadius: 30,
     resizeMode: 'contain',
     borderColor: primaryColor,

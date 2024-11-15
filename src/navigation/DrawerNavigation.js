@@ -3,8 +3,8 @@ import Help from '../screens/Help';
 import Profile from '../screens/Profile';
 import Leaderboard from '../screens/Leaderboard';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const Drawer = createDrawerNavigator();
 export default function DrawerNavigation() {

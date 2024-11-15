@@ -1,11 +1,11 @@
 import Tab from './TabNavigation';
 import Login from '../auth/Login';
-import Register from '../auth/Register';
-import Header from '../components/Header';
 import Quiz from '../screens/Quiz';
 import Result from '../screens/Result';
 import Splash from '../screens/Splash';
 import Badges from '../screens/Badges';
+import Register from '../auth/Register';
+import Header from '../components/Header';
 import Analytics from '../screens/Analytics';
 import { lightColor, primaryColor } from '../styles/colors';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -29,7 +29,7 @@ export default function StackNavigation() {
         name="Badges"
         component={Badges}
         options={{
-          headerShown: true,
+          headerShown: false,
           headerTintColor: lightColor,
           headerShadowVisible: false,
           headerTitleAlign: 'center',
@@ -43,7 +43,7 @@ export default function StackNavigation() {
         name="Analytics"
         component={Analytics}
         options={{
-          headerShown: true,
+          headerShown: false,
           headerShadowVisible: false,
           headerTintColor: lightColor,
           headerTitleAlign: 'center',

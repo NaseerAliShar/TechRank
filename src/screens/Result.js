@@ -1,11 +1,12 @@
+import { width } from '../styles/sizes';
+import { Button } from 'react-native-paper';
 import Container from '../components/Container';
 import * as Progress from 'react-native-progress';
-import { Button } from 'react-native-paper';
-import { height, width } from '../styles/sizes';
 import { useNavigation } from '@react-navigation/native';
-import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
+import { lightColor, primaryColor } from '../styles/colors';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 const Result = ({
+  time,
   score,
   questions,
   wrongAnswers,
@@ -13,20 +14,41 @@ const Result = ({
   userSelections,
 }) => {
   const navigation = useNavigation();
-  const percentage = (score / questions.length) * 100;
+  const totalQuestions = questions.length;
+  const totalPercentage = (score / totalQuestions) * 100;
+  const totalTime = {
+    seconds: Math.round(time % 60),
+    minutes: Math.floor(time / 60),
+  };
+  const avgTime = {
+    seconds: Math.round((time / totalQuestions) % 60),
+    minutes: Math.floor(time / totalQuestions / 60),
+  };
+
   return (
     <Container>
+      {totalPercentage >= 80 ? (
+        <Image
+          source={require('../../assets/images/congrats.png')}
+          style={styles.resultImage}
+        />
+      ) : (
+        <Image
+          source={require('../../assets/images/oops.png')}
+          style={styles.resultImage}
+        />
+      )}
       <View style={styles.container}>
-        {percentage >= 50 ? (
+        {totalPercentage >= 80 ? (
           <View>
-            <Image
-              source={require('../../assets/images/congrats.png')}
-              style={styles.resultImage}
-            />
             <View style={styles.resultCard}>
               <View style={styles.resultProgress}>
-                <Progress.Pie size={30} progress={score / questions.length} />
-                <Text>{percentage}%</Text>
+                <Progress.Pie
+                  size={30}
+                  progress={totalPercentage / 100}
+                  color={primaryColor}
+                />
+                <Text>{totalPercentage}%</Text>
               </View>
               <View style={styles.resultMessage}>
                 <Text style={[styles.scoreMessage, { color: 'green' }]}>
@@ -40,20 +62,14 @@ const Result = ({
           </View>
         ) : (
           <View>
-            <Image
-              source={require('../../assets/images/oops.png')}
-              style={styles.resultImage}
-            />
             <View style={styles.resultCard}>
               <View style={styles.resultProgress}>
                 <Progress.Pie
                   size={30}
-                  progress={score / questions.length}
-                  color="blue"
+                  color={primaryColor}
+                  progress={totalPercentage / 100}
                 />
-                <Text style={{ color: 'blue' }}>
-                  {(score / questions.length) * 100}%
-                </Text>
+                <Text style={{ color: 'blue' }}>{totalPercentage}%</Text>
               </View>
               <View style={styles.resultMessage}>
                 <Text style={[styles.scoreMessage, { color: 'red' }]}>
@@ -66,53 +82,81 @@ const Result = ({
             </View>
           </View>
         )}
-        <View style={styles.boxContainer}>
-          <TouchableOpacity
-            style={[styles.boxCard, { backgroundColor: '#0E81B4' }]}>
-            <Text style={styles.boxText}>Total Time</Text>
-            <Text style={styles.boxText}>00:00:00</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.boxCard, { backgroundColor: '#F2954D' }]}>
-            <Text style={styles.boxText}>Avg Time</Text>
-            <Text style={styles.boxText}>00:00:00</Text>
-          </TouchableOpacity>
+        <View style={{ flex: 1, justifyContent: 'space-between' }}>
+          <View>
+            <View style={styles.boxContainer}>
+              <TouchableOpacity
+                activeOpacity={1}
+                style={[styles.box, { backgroundColor: '#0E81B4' }]}>
+                <Text style={styles.boxText}>Total Time</Text>
+                <Text style={styles.boxText}>
+                  {totalTime.minutes < 10
+                    ? `0${totalTime.minutes}`
+                    : totalTime.minutes}
+                  :
+                  {totalTime.seconds < 10
+                    ? `0${totalTime.seconds}`
+                    : totalTime.seconds}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={1}
+                style={[styles.box, { backgroundColor: '#F2954D' }]}>
+                <Text style={styles.boxText}>Avg Time</Text>
+                <Text style={styles.boxText}>
+                  {avgTime.minutes < 10
+                    ? `0${avgTime.minutes}`
+                    : avgTime.minutes}
+                  :
+                  {avgTime.seconds < 10
+                    ? `0${avgTime.seconds}`
+                    : avgTime.seconds}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.boxContainer}>
+              <TouchableOpacity
+                activeOpacity={0.85}
+                style={[styles.box, { backgroundColor: '#27AE60' }]}>
+                <Text style={styles.boxText}>Correct Answers</Text>
+                <Text style={styles.boxText}>{correctAnswers.length}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.85}
+                style={[styles.box, { backgroundColor: '#EB5757' }]}>
+                <Text style={styles.boxText}>Wrong Answers</Text>
+                <Text style={styles.boxText}>{wrongAnswers.length}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{ alignItems: 'center' }}>
+              <Button
+                style={styles.analyticsButton}
+                mode="outlined"
+                onPress={() =>
+                  navigation.navigate('Analytics', {
+                    questions,
+                    wrongAnswers,
+                    correctAnswers,
+                    userSelections,
+                  })
+                }>
+                <Text style={styles.analyticsButtonText}>View Analytics</Text>
+              </Button>
+              <Button
+                style={styles.backButton}
+                mode="outlined"
+                onPress={() => navigation.navigate('Home')}>
+                <Text style={styles.backButtonText}>Try Again</Text>
+              </Button>
+            </View>
+          </View>
+          <View>
+            <Text
+              style={{ margin: 10, color: primaryColor, textAlign: 'center' }}>
+              *Analytics are available for premium users only.
+            </Text>
+          </View>
         </View>
-        <View style={styles.boxContainer}>
-          <TouchableOpacity
-            style={[styles.boxCard, { backgroundColor: '#27AE60' }]}>
-            <Text style={styles.boxText}>Correct Answers</Text>
-            <Text style={styles.boxText}>{correctAnswers.length}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.boxCard, { backgroundColor: '#EB5757' }]}>
-            <Text style={styles.boxText}>Wrong Answers</Text>
-            <Text style={styles.boxText}>{wrongAnswers.length}</Text>
-          </TouchableOpacity>
-        </View>
-        <Button
-          style={styles.analyticsButton}
-          mode="outlined"
-          onPress={() =>
-            navigation.navigate('Analytics', {
-              questions,
-              wrongAnswers,
-              correctAnswers,
-              userSelections,
-            })
-          }>
-          <Text style={styles.analyticsButtonText}>View Analytics</Text>
-        </Button>
-        <TouchableOpacity>
-          <Text
-            style={styles.backText}
-            onPress={() => navigation.navigate('Home')}>
-            Go Back to Home
-          </Text>
-        </TouchableOpacity>
-        <Text style={{ marginTop: 10, color: '#fff' }}>
-          Analytics are available for premium users only.
-        </Text>
       </View>
     </Container>
   );
@@ -124,89 +168,77 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: lightColor,
   },
   resultImage: {
+    marginVertical: 20,
     width: width * 0.8,
-    height: height * 0.25,
+    height: width * 0.4,
     alignSelf: 'center',
     resizeMode: 'contain',
   },
   resultCard: {
-    padding: 7,
-    marginTop: 20,
+    borderWidth: 2,
     borderRadius: 10,
-    width: '100%',
+    height: width / 5,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    elevation: 3, // Add shadow for Android
-    shadowColor: '#000', // Add shadow for iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    borderColor: primaryColor,
   },
   resultProgress: {
-    borderRightWidth: 2,
-    paddingVertical: 10,
     width: '20%',
     alignItems: 'center',
-    borderColor: 'blue',
-  },
-  scoreText: {
-    fontSize: 24,
-    color: '#6200ea',
-    fontWeight: 'bold',
+    borderRightWidth: 2,
+    borderColor: primaryColor,
   },
   scoreMessage: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'blue',
+    color: primaryColor,
   },
   resultMessage: {
-    paddingLeft: 14,
-    width: '85%',
+    width: '80%',
     alignItems: 'center',
   },
   analyticsButton: {
     marginTop: 20,
     borderWidth: 1,
     borderRadius: 30,
-    borderColor: lightColor,
+    borderColor: primaryColor,
   },
   analyticsButtonText: {
-    color: lightColor,
+    color: primaryColor,
     fontWeight: 'bold',
   },
   boxContainer: {
-    marginTop: 30,
-    paddingHorizontal: 20,
-    width: '100%',
+    marginTop: 20,
+    paddingHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  boxCard: {
-    padding: 15,
+  box: {
     borderWidth: 1,
     borderRadius: 10,
+    paddingVertical: 20,
+    width: '48%',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '48%',
-    borderColor: '#6200ea',
+    borderColor: primaryColor,
   },
   boxText: {
     fontSize: 16,
     color: '#fff',
     fontWeight: 'bold',
-    textAlign: 'center',
   },
-  backText: {
-    marginTop: 10,
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    color: primaryColor,
-    backgroundColor: secondaryColor,
+  backButton: {
+    marginTop: 20,
+    borderRadius: 30,
+    backgroundColor: primaryColor,
+  },
+  backButtonText: {
+    color: lightColor,
+    fontWeight: 'bold',
   },
 });

@@ -7,14 +7,15 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
+import { width } from '../styles/sizes';
+import { apiURL } from '../config/config';
+import Header from '../components/Header';
 import instance from '../services/services';
 import Animated from 'react-native-reanimated';
 import Container from '../components/Container';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { width } from '../styles/sizes';
-import { apiURL } from '../config/config';
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ZoomIn, FadeIn, FadeInRight } from 'react-native-reanimated';
 import { darkColor, lightColor, primaryColor } from '../styles/colors';
 
@@ -38,18 +39,16 @@ const Badges = () => {
   useEffect(() => {
     fetchBadges();
   }, []);
-
+  const disabled = true;
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
       style={styles.card}
       activeOpacity={0.8}
-      onPress={() =>
-        !item.disabled && navigation.navigate('Quiz', { badge: item })
-      }
-      disabled={item.disabled}>
+      onPress={() => disabled && navigation.navigate('Quiz')}
+      disabled={!disabled}>
       <Animated.View entering={ZoomIn.delay(index * 100)}>
         <View>
-          {item.disabled && (
+          {disabled && (
             <MaterialIcons
               name="lock"
               size={50}
@@ -61,7 +60,7 @@ const Badges = () => {
             source={{
               uri: `${apiURL}/${item.image}`,
             }}
-            style={[styles.image, item.disabled && styles.disabledImage]}
+            style={[styles.image, disabled && { opacity: 0.2 }]}
           />
           <Text style={styles.badgeName}>{item.name}</Text>
         </View>
@@ -84,7 +83,7 @@ const Badges = () => {
     return (
       <Container>
         <Animated.View entering={FadeInRight} style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>No technologies found</Text>
+          <Text style={styles.loadingText}>No Badges found</Text>
         </Animated.View>
       </Container>
     );
@@ -92,15 +91,23 @@ const Badges = () => {
 
   return (
     <Container>
-      <Animated.Text entering={FadeIn} style={styles.title}>
-        All Badges
-      </Animated.Text>
+      <Header title="Badges" />
+      <View
+        style={{
+          padding: 10,
+          borderRadius: 10,
+          height: width / 5,
+          marginVertical: 20,
+          alignItems: 'center',
+          flexDirection: 'row',
+          backgroundColor: lightColor,
+        }}></View>
       <Animated.View entering={FadeIn} style={styles.container}>
         <FlatList
+          numColumns={2}
           data={badges}
           renderItem={renderItem}
           keyExtractor={item => item.name}
-          numColumns={2}
           showsVerticalScrollIndicator={false}
         />
       </Animated.View>
@@ -113,24 +120,17 @@ export default Badges;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 10,
+    padding: 10,
     alignItems: 'center',
-    paddingHorizontal: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: lightColor,
   },
-  title: {
-    padding: 10,
-    fontSize: 20,
-    textAlign: 'center',
-    color: lightColor,
-  },
   card: {
     margin: 5,
-    borderRadius: 70,
     width: width / 2.6,
     height: width / 2.6,
+    borderRadius: width / 1.3,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'lemonchiffon',
@@ -138,7 +138,6 @@ const styles = StyleSheet.create({
   image: {
     width: width / 4,
     height: width / 4,
-    borderRadius: 80,
     resizeMode: 'contain',
   },
   loadingContainer: {
@@ -150,20 +149,17 @@ const styles = StyleSheet.create({
     margin: 10,
     fontSize: 15,
     fontWeight: 'bold',
-    color: darkColor,
-  },
-  disabledImage: {
-    opacity: 0.2,
+    color: lightColor,
   },
   badgeName: {
-    fontSize: 16,
+    fontSize: 15,
     marginTop: 5,
-    color: primaryColor,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: primaryColor,
   },
   lockIcon: {
-    top: '40%',
+    top: '50%',
     left: '50%',
     position: 'absolute',
     transform: [{ translateX: -25 }, { translateY: -25 }],

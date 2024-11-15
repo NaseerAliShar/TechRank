@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import Container from '../components/Container';
+import { width } from '../styles/sizes';
 import { Text } from 'react-native-paper';
-import { primaryColor, secondaryColor } from '../styles/colors';
+import Container from '../components/Container';
+import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
 import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
 
 const Help = () => {
@@ -9,7 +10,7 @@ const Help = () => {
   const handlePress = index =>
     setExpandedIndex(index === expandedIndex ? null : index);
 
-  const faqData = [
+  const data = [
     {
       title: 'How to start a quiz?',
       content:
@@ -34,10 +35,19 @@ const Help = () => {
 
   return (
     <Container>
-      <Text style={styles.title}>Help & FAQs</Text>
+      <View
+        style={{
+          padding: 10,
+          borderRadius: 10,
+          height: width / 5,
+          marginVertical: 20,
+          alignItems: 'center',
+          flexDirection: 'row',
+          backgroundColor: lightColor,
+        }}></View>
       <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.accordionContainer}>
-          {faqData.map((item, index) => (
+        <ScrollView>
+          {data.map((item, index) => (
             <View key={index} style={styles.accordion}>
               <TouchableOpacity
                 onPress={() => handlePress(index)}
@@ -60,42 +70,32 @@ const Help = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 20,
+    padding: 10,
     borderTopEndRadius: 20,
     borderTopStartRadius: 20,
-    backgroundColor: primaryColor,
-  },
-  title: {
-    padding: 10,
-    fontSize: 20,
-    textAlign: 'center',
-    color: primaryColor,
-  },
-  accordionContainer: {
-    margin: 10,
+    backgroundColor: lightColor,
   },
   accordion: {
     margin: 5,
-    elevation: 5,
-    borderRadius: 15,
+    borderRadius: 10,
     overflow: 'hidden',
   },
   header: {
-    padding: 15,
-    backgroundColor: '#fff',
+    padding: 20,
+    backgroundColor: primaryColor,
   },
   headerText: {
-    fontSize: 16,
-    color: '#000',
-    fontWeight: 'semibold',
+    fontSize: 18,
+    color: lightColor,
+    fontWeight: '400',
   },
   content: {
     padding: 10,
     backgroundColor: secondaryColor,
   },
   contentText: {
-    fontSize: 14,
-    color: '#fff',
+    fontSize: 15,
+    color: lightColor,
   },
 });
 

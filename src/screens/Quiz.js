@@ -7,17 +7,16 @@ import {
   ActivityIndicator,
 } from 'react-native-paper';
 import Result from './Result';
+import { width } from '../styles/sizes';
 import instance from '../services/services';
 import Container from '../components/Container';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useEffect, useState, useCallback, useMemo } from 'react';
-import { View, Text, FlatList, StyleSheet, Alert } from 'react-native';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
 import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
 
-const Quiz = ({ route }) => {
-  const { quizId } = route.params;
-  const navigation = useNavigation();
+const Quiz = () => {
+  const [time, setTime] = useState(0);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState([]);
@@ -34,8 +33,6 @@ const Quiz = ({ route }) => {
       try {
         const { data } = await instance.get(`questions`);
         setQuestions(data);
-        console.log(data);
-        
       } catch (error) {
         console.log('Error fetching quizzes', error);
       } finally {
@@ -43,7 +40,19 @@ const Quiz = ({ route }) => {
       }
     };
     fetchQuestions();
-  }, [quizId]);
+  }, []);
+
+  useEffect(() => {
+    let timer;
+    if (!quizFinished) {
+      const startTime = Date.now();
+      timer = setInterval(() => {
+        const elapsedTime = Math.round((Date.now() - startTime) / 1000);
+        setTime(elapsedTime);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [quizFinished]);
 
   const progress = useMemo(
     () => currentIndex / questions.length,
@@ -159,6 +168,7 @@ const Quiz = ({ route }) => {
   if (quizFinished) {
     return (
       <Result
+        time={time}
         score={score}
         questions={questions}
         wrongAnswers={wrongAnswers}
@@ -172,12 +182,13 @@ const Quiz = ({ route }) => {
     <Container>
       <View
         style={{
-          padding: 20,
-          borderRadius: 20,
+          adding: 10,
+          borderRadius: 10,
+          height: width / 5,
           marginVertical: 20,
-          flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          flexDirection: 'row',
+          justifyContent: 'space-around',
           backgroundColor: lightColor,
         }}>
         <View>
@@ -197,18 +208,25 @@ const Quiz = ({ route }) => {
       </View>
       {questions.length > 0 && (
         <View style={styles.container}>
-          <View style={{ alignSelf: 'center', paddingVertical: 10 }}>
+          <View style={{ alignSelf: 'center' }}>
             <CountdownCircleTimer
-              isPlaying
+              isPlaying={!quizFinished}
               size={40}
-              duration={600}
+              duration={500}
               strokeWidth={4}
               colorsTime={[60, 30, 15, 0]}
-              onComplete={() => handleNext()}
-              colors={[primaryColor, secondaryColor, '#A30000', '#A30000']}>
+              onComplete={() => {
+                setQuizFinished(true);
+                return { shouldRepeat: false, delay: 0 };
+              }}
+              colors={[primaryColor, secondaryColor, 'yellow', 'red']}>
               {({ remainingTime }) => {
                 const seconds = remainingTime % 60;
                 const minutes = Math.floor(remainingTime / 60);
+                if (remainingTime === 0) {
+                  setQuizFinished(true);
+                }
+
                 return (
                   <View>
                     <View style={{ flexDirection: 'row' }}>
@@ -238,10 +256,9 @@ const Quiz = ({ route }) => {
 
           <View
             style={{
-              columnGap: 10,
-              marginBottom: 10,
+              margin: 10,
               flexDirection: 'row',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
             }}>
             <View>
               <Button
@@ -255,33 +272,6 @@ const Quiz = ({ route }) => {
                 Prev
               </Button>
             </View>
-
-            <View>
-              <Button
-                icon="home"
-                mode="contained"
-                textColor={lightColor}
-                buttonColor={primaryColor}
-                loading={loading}
-                onPress={() =>
-                  Alert.alert(
-                    'Are you sure you want to exit?',
-                    'Your progress will be lost',
-                    [
-                      {
-                        text: 'Cancel',
-                        style: 'cancel',
-                      },
-                      {
-                        text: 'OK',
-                        onPress: () => navigation.navigate('Home'),
-                      },
-                    ],
-                  )
-                }>
-                Home
-              </Button>
-            </View>
             <View>
               <Button
                 icon="arrow-right"
@@ -290,6 +280,7 @@ const Quiz = ({ route }) => {
                 buttonColor={primaryColor}
                 loading={loading}
                 onPress={handleNext}
+                contentStyle={{ flexDirection: 'row-reverse' }}
                 disabled={!selectedOption && !selectedOptions.length}>
                 {currentIndex + 1 >= questions.length ? 'Finish' : 'Next'}
               </Button>
@@ -306,11 +297,10 @@ export default Quiz;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+    padding: 10,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: lightColor,
-    justifyContent: 'space-between',
   },
   progressText: {
     fontSize: 16,

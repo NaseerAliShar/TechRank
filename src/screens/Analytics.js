@@ -1,8 +1,10 @@
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { width } from '../styles/sizes';
+import Header from '../components/Header';
 import { Card } from 'react-native-paper';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
 import Container from '../components/Container';
-import { lightColor } from '../styles/colors';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { lightColor, primaryColor } from '../styles/colors';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 const Answers = ({ route }) => {
   const { questions, wrongAnswers, correctAnswers, userSelections } =
@@ -87,7 +89,17 @@ const Answers = ({ route }) => {
 
   return (
     <Container>
-      <Text style={styles.title}>All Questions</Text>
+      <Header title="Analytics" />
+      <View
+        style={{
+          padding: 10,
+          borderRadius: 10,
+          height: width / 5,
+          marginVertical: 20,
+          alignItems: 'center',
+          flexDirection: 'row',
+          backgroundColor: lightColor,
+        }}></View>
       <View style={styles.container}>
         <FlatList
           data={questions}
@@ -105,29 +117,21 @@ export default Answers;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
+    padding: 10,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    backgroundColor: '#f0f4f7',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: lightColor,
-    textAlign: 'center',
+    backgroundColor: lightColor,
   },
   card: {
-    marginBottom: 15,
-    borderRadius: 8,
-    overflow: 'hidden',
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowRadius: 2,
+    shadowOpacity: 1,
+    marginBottom: 10,
+    borderRadius: 10,
+    shadowColor: primaryColor,
+    backgroundColor: 'skyblue',
   },
   cardContent: {
-    padding: 15,
+    padding: 10,
   },
   questionHeader: {
     flexDirection: 'row',
@@ -135,19 +139,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   questionText: {
-    paddingBottom: 10,
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#000',
     flex: 1,
+    fontSize: 15,
+    paddingBottom: 10,
+    color: '#000',
+    fontWeight: 'bold',
   },
   answer: {
     padding: 10,
     borderRadius: 5,
     marginVertical: 5,
-  },
-  answerText: {
-    fontSize: 14,
-    color: '#555',
   },
 });

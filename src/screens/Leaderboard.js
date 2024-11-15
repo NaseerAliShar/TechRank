@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import {
   darkColor,
@@ -182,25 +183,35 @@ const Leaderboard = () => {
     setSelectedTechnology('');
   }, [activeTab]);
 
-  const renderItem = ({ item, index }) => (
-    <View style={styles.itemContainer}>
-      <Text style={styles.indexText}>{index + 4}</Text>
-      <View style={styles.userInfo}>
-        <Image
-          source={{
-            uri: 'https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png',
-          }}
-          style={styles.profileImage}
-        />
-        <View>
-          <Text style={styles.userName}>{item.name}</Text>
-          <Text
-            style={styles.userDetails}>{`${item.country}, ${item.city}`}</Text>
+  const renderItem = ({ item, index }) => {
+    if (item.name === 'Ian Taylor') {
+      console.log('Index of Current User:', index);
+      // return null;
+    }
+
+    return (
+      <View style={styles.itemContainer}>
+        <Text style={styles.indexText}>{index + 4}</Text>
+        <View style={styles.userInfo}>
+          <Image
+            source={{
+              uri: 'https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png',
+            }}
+            style={styles.profileImage}
+          />
+          <View>
+            <Text style={styles.userName}>{item.name}</Text>
+            <Text
+              style={
+                styles.userDetails
+              }>{`${item.country}, ${item.city}`}</Text>
+          </View>
         </View>
+        <Text>{item.weightage.length}</Text>
       </View>
-      <Text>{item.weightage.length}</Text>
-    </View>
-  );
+    );
+  };
+
   console.log(activeTab, selectedBadge, selectedTechnology);
 
   return (
@@ -240,6 +251,7 @@ const Leaderboard = () => {
               backgroundColor: lightColor,
             }}
             dropdownStyles={{
+              marginTop: 10,
               marginHorizontal: 10,
               backgroundColor: lightColor,
             }}
@@ -276,11 +288,10 @@ const Leaderboard = () => {
         )}
 
         {/* Top 3 Users */}
-        <View style={{ alignItems: 'center', marginTop: 20 }}>
+        <View style={{ alignItems: 'center', marginTop: 30 }}>
           <View
             style={{
-              width: '90%',
-              alignSelf: 'center',
+              width: '95%',
               position: 'absolute',
             }}>
             <View
@@ -288,8 +299,7 @@ const Leaderboard = () => {
                 flexDirection: 'row',
                 justifyContent: 'space-around',
               }}>
-              <View
-                style={[styles.topContainer, { justifyContent: 'flex-end' }]}>
+              <View style={[styles.topContainer, { justifyContent: 'center' }]}>
                 <Image
                   source={{
                     uri: 'https://www.shareicon.net/data/128x128/2016/09/15/829453_user_512x512.png',
@@ -299,11 +309,13 @@ const Leaderboard = () => {
                 <Text style={styles.inactiveText}>
                   {users[1].name.substring(0, 3)}
                 </Text>
-                <Text style={[styles.activeText, styles.rankText]}>
-                  {users[1].weightage.length}
-                </Text>
+                <View style={styles.rankText}>
+                  <Text style={[styles.inactiveText]}>
+                    {users[1].weightage.length}
+                  </Text>
+                </View>
               </View>
-              <View style={styles.topContainer}>
+              <View style={[styles.topContainer]}>
                 {/* Add the SVG Crown here */}
                 <View style={{ position: 'absolute', zIndex: 1, top: -16 }}>
                   <Svg width="28" height="28" viewBox="0 0 24 24" fill="none">
@@ -323,10 +335,8 @@ const Leaderboard = () => {
                       strokeWidth="1.5"
                       fill="gold"
                     />
-
                     {/* Crown Base */}
                     <Path d="M2 17H22V19H2V17Z" fill="gold" />
-
                     {/* Base Details */}
                     <Circle cx="6" cy="18" r="1" fill="red" />
                     <Circle cx="12" cy="18" r="1" fill="red" />
@@ -342,12 +352,17 @@ const Leaderboard = () => {
                 <Text style={styles.inactiveText}>
                   {users[0].name.substring(0, 5)}
                 </Text>
-                <Text style={[styles.activeText, styles.rankText]}>
-                  {users[0].weightage.length}
-                </Text>
+                <View style={styles.rankText}>
+                  <Text style={[styles.inactiveText]}>
+                    {users[0].weightage.length}
+                  </Text>
+                </View>
               </View>
               <View
-                style={[styles.topContainer, { justifyContent: 'flex-end' }]}>
+                style={[
+                  styles.topContainer,
+                  { justifyContent: 'center', marginTop: 25 },
+                ]}>
                 <Image
                   source={{
                     uri: 'https://www.shareicon.net/data/128x128/2016/09/15/829460_user_512x512.png',
@@ -357,16 +372,17 @@ const Leaderboard = () => {
                 <Text style={styles.inactiveText}>
                   {users[2].name.substring(0, 7)}
                 </Text>
-                <Text style={[styles.activeText, styles.rankText]}>
-                  {users[2].weightage.length}
-                </Text>
+                <View style={styles.rankText}>
+                  <Text style={[styles.inactiveText]}>
+                    {users[2].weightage.length}
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
           <View
             style={{
-              marginBottom: 10,
-              height: width * 0.75,
+              height: Platform.OS == 'android' ? width * 0.7 : width * 0.67,
               justifyContent: 'flex-end',
             }}>
             {/* Add the Boxes Image here */}
@@ -374,7 +390,7 @@ const Leaderboard = () => {
               source={require('../../assets/images/boxes.png')}
               style={{
                 width: width,
-                height: width * 0.4,
+                height: width / 2.5,
                 resizeMode: 'contain',
               }}
             />
@@ -400,20 +416,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexGrow: 1,
-    paddingTop: 10,
+    marginTop: 10,
     alignItems: 'center',
+    paddingVertical: 10,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: secondaryColor,
   },
   tabTitle: {
-    borderRadius: 20,
+    marginTop: 10,
+    borderRadius: 15,
     paddingVertical: 5,
-    paddingHorizontal: 25,
+    paddingHorizontal: 30,
   },
   itemContainer: {
-    padding: 12,
-    borderRadius: 15,
+    padding: 10,
+    borderRadius: 10,
     marginVertical: 5,
     flexDirection: 'row',
     alignItems: 'center',
@@ -427,14 +445,13 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
   },
   activeText: {
-    fontSize: 15,
+    fontSize: 18,
     color: primaryColor,
     fontWeight: 'bold',
   },
   inactiveText: {
-    fontSize: 14,
+    fontSize: 18,
     color: lightColor,
-    fontWeight: 'bold',
   },
   userInfo: {
     width: '80%',
@@ -460,9 +477,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   indexText: {
-    borderRadius: 20,
-    borderWidth: 1.5,
-    paddingHorizontal: 5,
+    borderWidth: 1,
+    borderRadius: 15,
+    paddingHorizontal: 6,
     color: darkColor,
     backgroundColor: lightColor,
     fontWeight: 'bold',
@@ -479,12 +496,10 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   rankText: {
-    marginTop: 4,
-    fontSize: 15,
-    borderRadius: 15,
-    paddingVertical: 5,
-    paddingHorizontal: 30,
-    color: lightColor,
+    fontSize: 14,
+    borderRadius: 20,
+    paddingVertical: 2,
+    paddingHorizontal: 25,
     backgroundColor: '#978EE7',
   },
 });
