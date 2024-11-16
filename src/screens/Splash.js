@@ -10,8 +10,7 @@ const Splash = ({ navigation }) => {
   useEffect(() => {
     setTimeout(async () => {
       const token = await AsyncStorage.getItem('token');
-      const user = await AsyncStorage.getItem('user');
-      if (!token || !user) {
+      if (!token) {
         navigation.replace('Login');
       } else {
         navigation.replace('Tab');
@@ -21,31 +20,28 @@ const Splash = ({ navigation }) => {
 
   return (
     <Container>
-      <Animatable.View
-        animation="fadeIn"
-        duration={2000}
-        style={styles.container}>
+      <Animatable.View animation="fadeIn" duration={2000} style={{ flex: 1 }}>
         <Animatable.View
           animation="fadeInUp"
           duration={2000}
-          style={styles.topContainer}>
+          style={styles.container}>
           <Image
-            style={styles.techrankLogo}
+            style={styles.wwrLogo}
             source={require('../../assets/images/logo1.png')}
           />
         </Animatable.View>
-        <View style={styles.bottomContainer}>
+        <View style={styles.footerContainer}>
           <Animatable.View animation="fadeInUp" delay={1000}>
-            <View style={styles.textContainer}>
+            <View style={styles.footer}>
               <Divider style={styles.divider} />
-              <Text style={styles.text}>Powered by</Text>
+              <Text style={{ color: '#fff' }}>Powered by</Text>
               <Divider style={styles.divider} />
             </View>
           </Animatable.View>
           <Animatable.View animation="zoomIn" delay={1500}>
             <Image
               source={require('../../assets/images/innovador1.png')}
-              style={styles.innovadorLogo}
+              style={styles.isLogo}
             />
           </Animatable.View>
         </View>
@@ -59,37 +55,30 @@ export default Splash;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  topContainer: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  techrankLogo: {
-    width: width,
+  wwrLogo: {
     height: width,
+    width: width / 1.5,
     resizeMode: 'contain',
   },
-  bottomContainer: {
+  footerContainer: {
     marginBottom: 20,
     alignItems: 'center',
   },
-  innovadorLogo: {
-    width: width * 0.2,
-    height: width * 0.1,
-    resizeMode: 'contain',
-  },
-  textContainer: {
+  footer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  text: {
-    color: '#fff',
-    fontSize: 14,
   },
   divider: {
     width: width * 0.3,
     marginHorizontal: 5,
     backgroundColor: '#fff',
+  },
+  isLogo: {
+    width: width * 0.2,
+    height: width * 0.1,
+    resizeMode: 'contain',
   },
 });

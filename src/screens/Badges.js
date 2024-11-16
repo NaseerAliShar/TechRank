@@ -15,9 +15,9 @@ import Animated from 'react-native-reanimated';
 import Container from '../components/Container';
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
+import { darkColor, lightColor } from '../styles/colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ZoomIn, FadeIn, FadeInRight } from 'react-native-reanimated';
-import { darkColor, lightColor, primaryColor } from '../styles/colors';
 
 const Badges = () => {
   const navigation = useNavigation();
@@ -39,16 +39,16 @@ const Badges = () => {
   useEffect(() => {
     fetchBadges();
   }, []);
-  const disabled = true;
+
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
       style={styles.card}
       activeOpacity={0.8}
-      onPress={() => disabled && navigation.navigate('Quiz')}
-      disabled={!disabled}>
+      onPress={() => true && navigation.navigate('Quiz')}
+      disabled={false}>
       <Animated.View entering={ZoomIn.delay(index * 100)}>
         <View>
-          {disabled && (
+          {true && (
             <MaterialIcons
               name="lock"
               size={50}
@@ -60,9 +60,8 @@ const Badges = () => {
             source={{
               uri: `${apiURL}/${item.image}`,
             }}
-            style={[styles.image, disabled && { opacity: 0.2 }]}
+            style={[styles.icon, true && { opacity: 0.4 }]}
           />
-          <Text style={styles.badgeName}>{item.name}</Text>
         </View>
       </Animated.View>
     </TouchableOpacity>
@@ -96,20 +95,22 @@ const Badges = () => {
         style={{
           padding: 10,
           borderRadius: 10,
-          height: width / 5,
+          height: width / 4,
           marginVertical: 20,
           alignItems: 'center',
           flexDirection: 'row',
           backgroundColor: lightColor,
         }}></View>
       <Animated.View entering={FadeIn} style={styles.container}>
-        <FlatList
-          numColumns={2}
-          data={badges}
-          renderItem={renderItem}
-          keyExtractor={item => item.name}
-          showsVerticalScrollIndicator={false}
-        />
+        <View style={{ alignItems: 'center' }}>
+          <FlatList
+            numColumns={2}
+            data={badges}
+            renderItem={renderItem}
+            keyExtractor={item => item.name}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
       </Animated.View>
     </Container>
   );
@@ -121,7 +122,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    alignItems: 'center',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: lightColor,
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'lemonchiffon',
   },
-  image: {
+  icon: {
     width: width / 4,
     height: width / 4,
     resizeMode: 'contain',
@@ -150,13 +150,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     color: lightColor,
-  },
-  badgeName: {
-    fontSize: 15,
-    marginTop: 5,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: primaryColor,
   },
   lockIcon: {
     top: '50%',

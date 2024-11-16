@@ -182,9 +182,9 @@ const Quiz = () => {
     <Container>
       <View
         style={{
-          adding: 10,
+          padding: 10,
           borderRadius: 10,
-          height: width / 5,
+          height: width / 4,
           marginVertical: 20,
           alignItems: 'center',
           flexDirection: 'row',
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     backgroundColor: lightColor,
   },
   progressText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
     textAlign: 'center',
     color: primaryColor,
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
   progressBar: {
     height: 10,
     borderRadius: 5,
-    marginTop: 10,
+    marginVertical: 10,
     backgroundColor: secondaryColor,
   },
   questionText: {
@@ -327,9 +327,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   optionCard: {
+    margin: 5,
     borderWidth: 1,
     borderRadius: 30,
-    marginVertical: 5,
     borderColor: primaryColor,
   },
   optionText: {

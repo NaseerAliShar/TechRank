@@ -107,7 +107,7 @@ const Login = ({ navigation }) => {
               )}
 
               <TouchableOpacity
-                style={styles.forgotPassword}
+                style={{ marginVertical: 10, alignSelf: 'flex-end' }}
                 activeOpacity={0.85}>
                 <Text style={styles.linkText}>Forgot Password?</Text>
               </TouchableOpacity>
@@ -198,7 +198,7 @@ const styles = {
   },
   errorText: {
     color: 'red',
-    fontSize: 12,
+    fontSize: 10,
   },
   button: {
     marginVertical: 15,
@@ -214,10 +214,6 @@ const styles = {
   linkText: {
     color: primaryColor,
     fontWeight: 'bold',
-  },
-  forgotPassword: {
-    marginVertical: 10,
-    alignSelf: 'flex-end',
   },
   iconsContainer: {
     gap: 15,

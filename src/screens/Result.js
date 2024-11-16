@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   resultCard: {
     borderWidth: 2,
     borderRadius: 10,
-    height: width / 5,
+    height: width / 4,
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: primaryColor,

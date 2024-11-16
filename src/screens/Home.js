@@ -7,11 +7,13 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import {
+import Animated, {
   ZoomIn,
+  FadeInUp,
   BounceIn,
   FadeInRight,
   FadeOutDown,
+  ZoomInRotate,
 } from 'react-native-reanimated';
 import {
   darkColor,
@@ -22,11 +24,10 @@ import {
 import { width } from '../styles/sizes';
 import { apiURL } from '../config/config';
 import instance from '../services/services';
-import Animated from 'react-native-reanimated';
 import Container from '../components/Container';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -56,14 +57,14 @@ const Home = () => {
       activeOpacity={0.8}
       onPress={() => navigation.navigate('Badges')}>
       <Animated.View
-        entering={BounceIn.delay(index * 150)}
+        entering={BounceIn.delay(index * 100)}
         exiting={FadeOutDown}
         style={styles.card}>
         <Image
           source={{
             uri: `${apiURL}/${item.image}`,
           }}
-          style={styles.image}
+          style={styles.icon}
         />
       </Animated.View>
     </TouchableOpacity>
@@ -96,7 +97,7 @@ const Home = () => {
         style={{
           padding: 10,
           borderRadius: 10,
-          height: width / 5,
+          height: width / 4,
           marginVertical: 20,
           alignItems: 'center',
           flexDirection: 'row',
@@ -106,17 +107,16 @@ const Home = () => {
           source={{
             uri: 'https://www.shareicon.net/data/128x128/2016/05/24/770137_man_512x512.png',
           }}
-          style={styles.profileImageTop}
+          style={styles.profileImage}
         />
-        <View style={{ marginLeft: 10 }}>
+        <View style={{ left: 15 }}>
           <Text
-            style={{ color: primaryColor, fontWeight: 'bold', fontSize: 20 }}>
+            style={{ color: primaryColor, fontSize: 20, fontWeight: 'bold' }}>
             Hello, Naseer
           </Text>
-
           <View
             style={{
-              paddingBottom: 5,
+              paddingVertical: 5,
               flexDirection: 'row',
               alignItems: 'center',
             }}>
@@ -137,7 +137,7 @@ const Home = () => {
                 backgroundColor: secondaryColor,
               }}>
               <SimpleLineIcons name="trophy" size={15} color="white" />
-              <Text style={{ fontSize: 15, color: '#fff' }}>50</Text>
+              <Text style={{ color: '#fff' }}>50</Text>
             </View>
             <View
               style={{
@@ -150,7 +150,7 @@ const Home = () => {
                 backgroundColor: secondaryColor,
               }}>
               <SimpleLineIcons name="badge" size={15} color="white" />
-              <Text style={{ fontSize: 15, color: '#fff' }}>50</Text>
+              <Text style={{ color: '#fff' }}>50</Text>
             </View>
             <View
               style={{
@@ -167,7 +167,7 @@ const Home = () => {
                 size={15}
                 color="white"
               />
-              <Text style={{ fontSize: 15, color: '#fff' }}>50</Text>
+              <Text style={{ color: '#fff' }}>50</Text>
             </View>
           </View>
         </View>
@@ -176,20 +176,43 @@ const Home = () => {
         style={{
           padding: 10,
           borderRadius: 10,
-          height: width / 4,
           marginBottom: 20,
           alignItems: 'center',
           flexDirection: 'row',
           backgroundColor: lightColor,
-        }}></View>
+        }}>
+        <Animated.View style={[{ marginRight: 10 }]} entering={ZoomInRotate}>
+          <Image
+            source={require('../../assets/images/didyouknow.png')}
+            style={{
+              width: width / 5,
+              height: width / 5,
+              resizeMode: 'contain',
+            }}
+          />
+        </Animated.View>
+        <Animated.View entering={FadeInUp}>
+          <Text
+            style={{
+              color: primaryColor,
+              fontFamily: 'Poppins-Regular',
+              maxWidth: '85%',
+            }}>
+            JavaScript has a built-in function to randomly shuffle items in an
+            array, helping you mix things up with ease.
+          </Text>
+        </Animated.View>
+      </View>
       <View style={styles.container}>
-        <FlatList
-          numColumns={4}
-          data={technologies}
-          renderItem={renderItem}
-          keyExtractor={item => item._id.toString()}
-          showsVerticalScrollIndicator={false}
-        />
+        <View style={{ alignItems: 'center' }}>
+          <FlatList
+            numColumns={4}
+            data={technologies}
+            renderItem={renderItem}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={item => item._id.toString()}
+          />
+        </View>
       </View>
     </Container>
   );
@@ -199,7 +222,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    alignItems: 'center',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: lightColor,
@@ -213,10 +235,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'lemonchiffon',
   },
-  image: {
+  icon: {
     width: width / 6,
     height: width / 6,
-    borderRadius: width / 3,
     resizeMode: 'contain',
   },
   loadingContainer: {
@@ -230,7 +251,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: lightColor,
   },
-  profileImageTop: {
+  profileImage: {
     width: 70,
     height: 70,
     borderRadius: 30,

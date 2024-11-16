@@ -7,6 +7,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const Drawer = createDrawerNavigator();
+
 export default function DrawerNavigation() {
   return (
     <Drawer.Navigator

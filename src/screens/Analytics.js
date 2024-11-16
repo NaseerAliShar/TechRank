@@ -38,8 +38,8 @@ const Answers = ({ route }) => {
 
     return (
       <Card style={styles.card}>
-        <View style={styles.cardContent}>
-          <View style={styles.questionHeader}>
+        <View style={{ padding: 10 }}>
+          <View style={styles.questionContainer}>
             <Text style={styles.questionText}>{item.questionText}</Text>
             {iconName && (
               <Icon
@@ -77,7 +77,7 @@ const Answers = ({ route }) => {
             return (
               <View
                 key={option._id}
-                style={[styles.answer, { backgroundColor }]}>
+                style={[styles.optionContainer, { backgroundColor }]}>
                 <Text style={{ color: textColor }}>{option.text}</Text>
               </View>
             );
@@ -94,7 +94,7 @@ const Answers = ({ route }) => {
         style={{
           padding: 10,
           borderRadius: 10,
-          height: width / 5,
+          height: width / 4,
           marginVertical: 20,
           alignItems: 'center',
           flexDirection: 'row',
@@ -123,17 +123,14 @@ const styles = StyleSheet.create({
     backgroundColor: lightColor,
   },
   card: {
-    shadowRadius: 2,
+    shadowRadius: 1,
     shadowOpacity: 1,
     marginBottom: 10,
     borderRadius: 10,
     shadowColor: primaryColor,
-    backgroundColor: 'skyblue',
+    backgroundColor: 'lemonchiffon',
   },
-  cardContent: {
-    padding: 10,
-  },
-  questionHeader: {
+  questionContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -142,10 +139,10 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     paddingBottom: 10,
-    color: '#000',
     fontWeight: 'bold',
+    color: primaryColor,
   },
-  answer: {
+  optionContainer: {
     padding: 10,
     borderRadius: 5,
     marginVertical: 5,

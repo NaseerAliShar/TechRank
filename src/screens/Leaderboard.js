@@ -216,7 +216,7 @@ const Leaderboard = () => {
 
   return (
     <Container>
-      <View>
+      <View style={{ marginBottom: 10 }}>
         <ScrollView
           contentContainerStyle={{ flexDirection: 'row' }}
           showsHorizontalScrollIndicator={false}
@@ -399,12 +399,14 @@ const Leaderboard = () => {
       </View>
 
       <View style={styles.container}>
-        <FlatList
-          data={users.slice(3)}
-          renderItem={renderItem}
-          keyExtractor={item => item.email}
-          showsVerticalScrollIndicator={false}
-        />
+        <View style={{ alignItems: 'center' }}>
+          <FlatList
+            data={users.slice(3)}
+            renderItem={renderItem}
+            keyExtractor={item => item.email}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
       </View>
     </Container>
   );
@@ -416,8 +418,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexGrow: 1,
-    marginTop: 10,
-    alignItems: 'center',
     paddingVertical: 10,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     borderColor: primaryColor,
   },
   topContainer: {
-    height: width / 2.4,
+    height: width / 2.5,
     alignItems: 'center',
   },
   indexText: {
@@ -484,10 +484,8 @@ const styles = StyleSheet.create({
     backgroundColor: lightColor,
     fontWeight: 'bold',
     textAlign: 'center',
-    borderColor: 'gray',
   },
   userName: {
-    fontSize: 14,
     color: '#000',
     fontWeight: 'bold',
   },
@@ -496,7 +494,6 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   rankText: {
-    fontSize: 14,
     borderRadius: 20,
     paddingVertical: 2,
     paddingHorizontal: 25,

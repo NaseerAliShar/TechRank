@@ -39,7 +39,7 @@ const Help = () => {
         style={{
           padding: 10,
           borderRadius: 10,
-          height: width / 5,
+          height: width / 4,
           marginVertical: 20,
           alignItems: 'center',
           flexDirection: 'row',

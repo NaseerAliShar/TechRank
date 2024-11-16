@@ -34,6 +34,12 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   response => response,
   error => {
+    if (error.response) {
+      const statusCode = error.response.status;
+      if (statusCode === 401) {
+        AsyncStorage.clear();
+      }
+    }
     console.error('Response interceptor error:', error);
     return Promise.reject(error);
   },

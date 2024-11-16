@@ -13,6 +13,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Tab = createBottomTabNavigator();
+
 export default function TabNavigation() {
   const navigation = useNavigation();
 
@@ -23,8 +24,7 @@ export default function TabNavigation() {
         text: 'Yes',
         onPress: async () => {
           try {
-            await AsyncStorage.removeItem('user');
-            await AsyncStorage.removeItem('token');
+            await AsyncStorage.clear();
             navigation.navigate('Login');
           } catch (error) {
             console.log('Failed to logout:', error);

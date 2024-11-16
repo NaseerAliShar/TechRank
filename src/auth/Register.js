@@ -16,10 +16,7 @@ const Register = ({ navigation }) => {
   const handleRegister = async values => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${apiURL}/${apiVersion}/auth/register`,
-        values,
-      );
+      await axios.post(`${apiURL}/${apiVersion}/auth/register`, values);
       navigation.replace('Login');
     } catch (error) {
       const message = error.response?.data?.message || 'Registration failed';
@@ -213,7 +210,7 @@ const styles = {
   },
   errorText: {
     color: 'red',
-    fontSize: 12,
+    fontSize: 10,
   },
   button: {
     marginVertical: 15,
