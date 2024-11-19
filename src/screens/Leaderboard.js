@@ -6,7 +6,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Platform,
 } from 'react-native';
 import {
   darkColor,
@@ -17,7 +16,6 @@ import {
 import { width } from '../styles/sizes';
 import Container from '../components/Container';
 import React, { useState, useEffect } from 'react';
-import Svg, { Circle, Path } from 'react-native-svg';
 import { SelectList } from 'react-native-dropdown-select-list';
 
 const users = [
@@ -216,7 +214,7 @@ const Leaderboard = () => {
 
   return (
     <Container>
-      <View style={{ marginBottom: 10 }}>
+      <View>
         <ScrollView
           contentContainerStyle={{ flexDirection: 'row' }}
           showsHorizontalScrollIndicator={false}
@@ -288,18 +286,15 @@ const Leaderboard = () => {
         )}
 
         {/* Top 3 Users */}
-        <View style={{ alignItems: 'center', marginTop: 30 }}>
-          <View
-            style={{
-              width: '95%',
-              position: 'absolute',
-            }}>
+        <View style={{ marginVertical: 10, alignItems: 'center' }}>
+          <View style={{ width: '100%' }}>
             <View
               style={{
+                marginBottom: 10,
                 flexDirection: 'row',
-                justifyContent: 'space-around',
+                justifyContent: 'space-evenly',
               }}>
-              <View style={[styles.topContainer, { justifyContent: 'center' }]}>
+              <View style={{ alignItems: 'center', top: 30 }}>
                 <Image
                   source={{
                     uri: 'https://www.shareicon.net/data/128x128/2016/09/15/829453_user_512x512.png',
@@ -315,34 +310,7 @@ const Leaderboard = () => {
                   </Text>
                 </View>
               </View>
-              <View style={[styles.topContainer]}>
-                {/* Add the SVG Crown here */}
-                <View style={{ position: 'absolute', zIndex: 1, top: -16 }}>
-                  <Svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                    {/* Left Jewel */}
-                    <Circle cx="4" cy="8" r="1.5" fill="red" />
-
-                    {/* Middle Jewel */}
-                    <Circle cx="12" cy="3" r="1.5" fill="blue" />
-
-                    {/* Right Jewel */}
-                    <Circle cx="20" cy="8" r="1.5" fill="white" />
-
-                    {/* Crown Spikes */}
-                    <Path
-                      d="M4 14L8 7L12 11L16 7L20 14H4Z"
-                      stroke="gold"
-                      strokeWidth="1.5"
-                      fill="gold"
-                    />
-                    {/* Crown Base */}
-                    <Path d="M2 17H22V19H2V17Z" fill="gold" />
-                    {/* Base Details */}
-                    <Circle cx="6" cy="18" r="1" fill="red" />
-                    <Circle cx="12" cy="18" r="1" fill="red" />
-                    <Circle cx="18" cy="18" r="1" fill="red" />
-                  </Svg>
-                </View>
+              <View style={{ alignItems: 'center' }}>
                 <Image
                   source={{
                     uri: 'https://www.shareicon.net/data/128x128/2016/05/24/770137_man_512x512.png',
@@ -358,11 +326,7 @@ const Leaderboard = () => {
                   </Text>
                 </View>
               </View>
-              <View
-                style={[
-                  styles.topContainer,
-                  { justifyContent: 'center', marginTop: 25 },
-                ]}>
+              <View style={{ alignItems: 'center', top: 50 }}>
                 <Image
                   source={{
                     uri: 'https://www.shareicon.net/data/128x128/2016/09/15/829460_user_512x512.png',
@@ -380,12 +344,7 @@ const Leaderboard = () => {
               </View>
             </View>
           </View>
-          <View
-            style={{
-              height: Platform.OS == 'android' ? width * 0.7 : width * 0.67,
-              justifyContent: 'flex-end',
-            }}>
-            {/* Add the Boxes Image here */}
+          <View>
             <Image
               source={require('../../assets/images/boxes.png')}
               style={{
@@ -425,7 +384,7 @@ const styles = StyleSheet.create({
   },
   tabTitle: {
     marginTop: 10,
-    borderRadius: 15,
+    borderRadius: 20,
     paddingVertical: 5,
     paddingHorizontal: 30,
   },
@@ -445,12 +404,12 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
   },
   activeText: {
-    fontSize: 18,
+    fontSize: 16,
     color: primaryColor,
     fontWeight: 'bold',
   },
   inactiveText: {
-    fontSize: 18,
+    fontSize: 16,
     color: lightColor,
   },
   userInfo: {
@@ -472,14 +431,10 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     borderColor: primaryColor,
   },
-  topContainer: {
-    height: width / 2.5,
-    alignItems: 'center',
-  },
   indexText: {
     borderWidth: 1,
     borderRadius: 15,
-    paddingHorizontal: 6,
+    paddingHorizontal: 5,
     color: darkColor,
     backgroundColor: lightColor,
     fontWeight: 'bold',
@@ -490,13 +445,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   userDetails: {
-    fontSize: 12,
+    fontSize: 10,
     color: 'gray',
   },
   rankText: {
     borderRadius: 20,
-    paddingVertical: 2,
-    paddingHorizontal: 25,
-    backgroundColor: '#978EE7',
+    paddingHorizontal: 20,
+    backgroundColor: secondaryColor,
   },
 });

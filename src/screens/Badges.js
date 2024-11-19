@@ -51,7 +51,7 @@ const Badges = () => {
           {true && (
             <MaterialIcons
               name="lock"
-              size={50}
+              size={60}
               color="#000"
               style={styles.lockIcon}
             />
@@ -60,7 +60,7 @@ const Badges = () => {
             source={{
               uri: `${apiURL}/${item.image}`,
             }}
-            style={[styles.icon, true && { opacity: 0.4 }]}
+            style={[styles.icon, true && { opacity: 0.2 }]}
           />
         </View>
       </Animated.View>
@@ -81,6 +81,7 @@ const Badges = () => {
   if (!loading && !badges.length) {
     return (
       <Container>
+        <Header title="Badges" />
         <Animated.View entering={FadeInRight} style={styles.loadingContainer}>
           <Text style={styles.loadingText}>No Badges found</Text>
         </Animated.View>
@@ -155,6 +156,6 @@ const styles = StyleSheet.create({
     top: '50%',
     left: '50%',
     position: 'absolute',
-    transform: [{ translateX: -25 }, { translateY: -25 }],
+    transform: [{ translateX: -30 }, { translateY: -30 }],
   },
 });
