@@ -1,33 +1,71 @@
 import { width } from '../styles/sizes';
+import { apiURL } from '../config/config';
+import instance from '../services/services';
 import Container from '../components/Container';
-import React, { useEffect, useState } from 'react';
+import { ActivityIndicator } from 'react-native-paper';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import { Svg, Rect, Path, Circle } from 'react-native-svg';
-import { lightColor, secondaryColor } from '../styles/colors';
-import { Text, View, Image, StyleSheet } from 'react-native';
+import Animated, { ZoomIn } from 'react-native-reanimated';
+import React, { useCallback, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Text, View, Image, StyleSheet, FlatList } from 'react-native';
+import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
-
+  const [loading, setLoading] = useState(false);
+  const [achievments, setAchievements] = useState();
   useEffect(() => {
-    const fetchUserData = async () => {
+    (async () => {
       try {
-        const userData = await AsyncStorage.getItem('user');
-        if (userData) setUser(JSON.parse(userData));
+        const data = await AsyncStorage.getItem('user');
+        if (data) setUser(JSON.parse(data));
       } catch (error) {
         console.log('Failed to fetch user data:', error);
       }
-    };
-    fetchUserData();
+    })();
   }, []);
+
+  const fetchAchievements = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await instance.get('/achievements'); // Correct endpoint spelling
+      setAchievements(response.data.data); // Make sure this is the correct path
+    } catch (error) {
+      console.error('Error fetching achievements:', error); // Update error message
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAchievements();
+  }, []);
+
+  if (loading) {
+    return (
+      <Container>
+        <Animated.View entering={ZoomIn} style={styles.loadingContainer}>
+          <ActivityIndicator size={50} color={lightColor} />
+          <Text style={styles.loadingText}>Loading...</Text>
+        </Animated.View>
+      </Container>
+    );
+  }
 
   return (
     <Container>
-      <View style={styles.profileImageContainer}>
+      <View
+        style={{ alignSelf: 'center', marginVertical: 10, zIndex: 1, top: 30 }}>
         <Image
-          source={require('../../assets/images/avatar.png')}
-          style={styles.profileImage}
+          source={{
+            uri: `${apiURL}/${user?.avatar}`,
+          }}
+          style={{
+            width: width / 4,
+            height: width / 4,
+            borderRadius: width / 2,
+          }}
         />
       </View>
       <View style={styles.container}>
@@ -89,34 +127,43 @@ const Profile = () => {
               flexDirection: 'row',
               justifyContent: 'space-between',
             }}>
-            <View style={styles.badgeContainer}>
-              <Image
-                source={require('../../assets/images/bronze.png')}
-                style={styles.badgeIcon}
-              />
-              <Text style={styles.badgeText}>Bronze</Text>
-            </View>
-            <View style={styles.badgeContainer}>
-              <Image
-                source={require('../../assets/images/silver.png')}
-                style={styles.badgeIcon}
-              />
-              <Text style={styles.badgeText}>Silver</Text>
-            </View>
-            <View style={styles.badgeContainer}>
-              <Image
-                source={require('../../assets/images/gold.png')}
-                style={styles.badgeIcon}
-              />
-              <Text style={styles.badgeText}>Gold</Text>
-            </View>
-            <View style={styles.badgeContainer}>
-              <Image
-                source={require('../../assets/images/diamond.png')}
-                style={styles.badgeIcon}
-              />
-              <Text style={styles.badgeText}>Diamond</Text>
-            </View>
+            <FlatList
+              numColumns={4}
+              data={achievments}
+              renderItem={({ item, index }) => (
+                <View
+                  style={{
+                    margin: 5,
+                    padding: 5,
+                    borderRadius: 10,
+                    alignItems: 'center',
+                    backgroundColor: 'lemonchiffon',
+                  }}>
+                  <Image
+                    source={{
+                      uri: `${apiURL}/${item.badgeId.icon}`,
+                    }}
+                    style={{
+                      width: width / 8,
+                      height: width / 8,
+                      resizeMode: 'contain',
+                    }}
+                  />
+                  <Image
+                    source={{
+                      uri: `${apiURL}/${item.technologyId.image}`,
+                    }}
+                    style={{
+                      width: width / 12,
+                      height: width / 12,
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </View>
+              )}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={item => item._id.toString()}
+            />
           </View>
         </View>
       </View>
@@ -132,25 +179,12 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     backgroundColor: lightColor,
   },
-  profileImageContainer: {
-    top: 30,
-    zIndex: 1,
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    alignSelf: 'center',
-    backgroundColor: secondaryColor,
-  },
-  profileImage: {
-    width: '100%',
-    height: '100%',
-  },
   profileName: {
     fontSize: 25,
     marginTop: 30,
     marginBottom: 10,
-    color: '#333',
-    fontWeight: 'bold',
+    color: primaryColor,
+    fontFamily: 'Poppins-SemiBold',
   },
   rankContainer: {
     borderRadius: 10,
@@ -190,6 +224,30 @@ const styles = StyleSheet.create({
   badgeText: {
     marginTop: 5,
     color: '#fff',
+  },
+  loadingText: {
+    margin: 10,
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: primaryColor,
+  },
+  profileImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 30,
+    resizeMode: 'contain',
+    borderColor: primaryColor,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    margin: 10,
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: lightColor,
   },
 });
 

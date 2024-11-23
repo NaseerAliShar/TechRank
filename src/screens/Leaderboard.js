@@ -14,203 +14,93 @@ import {
   secondaryColor,
 } from '../styles/colors';
 import { width } from '../styles/sizes';
+import { apiURL } from '../config/config';
+import { useStore } from '../store/store';
+import instance from '../services/services';
 import Container from '../components/Container';
-import React, { useState, useEffect } from 'react';
+import { ActivityIndicator } from 'react-native-paper';
+import Animated, { ZoomIn } from 'react-native-reanimated';
 import { SelectList } from 'react-native-dropdown-select-list';
-
-const users = [
-  {
-    name: 'Alice Johnson',
-    email: 'alice@example.com',
-    password: 'password123',
-    mobile: '1234567890',
-    country: 'United States',
-    city: 'New York',
-    role: 'user',
-    avatar: 'alice.jpg',
-    weightage: [
-      { badgeId: 'bronze', technologyId: 'JavaScript', score: 70 },
-      { badgeId: 'silver', technologyId: 'HTML', score: 80 },
-    ],
-  },
-  {
-    name: 'Bob Smith',
-    email: 'bob@example.com',
-    password: 'password123',
-    mobile: '1234567891',
-    country: 'United Kingdom',
-    city: 'London',
-    role: 'user',
-    avatar: 'bob.jpg',
-    weightage: [
-      { badgeId: 'gold', technologyId: 'CSS', score: 88 },
-      { badgeId: 'diamond', technologyId: 'React', score: 95 },
-      { badgeId: 'silver', technologyId: 'Java', score: 82 },
-      { badgeId: 'gold', technologyId: 'Python', score: 90 },
-      { badgeId: 'bronze', technologyId: 'HTML', score: 65 },
-    ],
-  },
-  {
-    name: 'Charlies Davis',
-    email: 'charlie@example.com',
-    password: 'password123',
-    mobile: '1234567892',
-    country: 'Canada',
-    city: 'Toronto',
-    role: 'admin',
-    avatar: 'charlie.jpg',
-    weightage: [
-      { badgeId: 'silver', technologyId: 'JavaScript', score: 75 },
-      { badgeId: 'gold', technologyId: 'Python', score: 85 },
-      { badgeId: 'diamond', technologyId: 'Java', score: 92 },
-    ],
-  },
-  {
-    name: 'Daisy Brown',
-    email: 'daisy@example.com',
-    password: 'password123',
-    mobile: '1234567893',
-    country: 'Australia',
-    city: 'Sydney',
-    role: 'user',
-    avatar: 'daisy.jpg',
-    weightage: [
-      { badgeId: 'gold', technologyId: 'HTML', score: 85 },
-      { badgeId: 'bronze', technologyId: 'CSS', score: 60 },
-      { badgeId: 'silver', technologyId: 'JavaScript', score: 70 },
-      { badgeId: 'gold', technologyId: 'Java', score: 78 },
-      { badgeId: 'diamond', technologyId: 'React', score: 95 },
-      { badgeId: 'silver', technologyId: 'CSS', score: 78 },
-      { badgeId: 'diamond', technologyId: 'Java', score: 93 },
-    ],
-  },
-  {
-    name: 'Ethan Wilson',
-    email: 'ethan@example.com',
-    password: 'password123',
-    mobile: '1234567894',
-    country: 'India',
-    city: 'Mumbai',
-    role: 'admin',
-    avatar: 'ethan.jpg',
-    weightage: [
-      { badgeId: 'gold', technologyId: 'JavaScript', score: 88 },
-      { badgeId: 'silver', technologyId: 'Python', score: 82 },
-    ],
-  },
-  {
-    name: 'Fiona Green',
-    email: 'fiona@example.com',
-    password: 'password123',
-    mobile: '1234567895',
-    country: 'Germany',
-    city: 'Berlin',
-    role: 'user',
-    avatar: 'fiona.jpg',
-    weightage: [{ badgeId: 'bronze', technologyId: 'HTML', score: 65 }],
-  },
-  {
-    name: 'George Miller',
-    email: 'george@example.com',
-    password: 'password123',
-    mobile: '1234567896',
-    country: 'France',
-    city: 'Paris',
-    role: 'user',
-    avatar: 'george.jpg',
-    weightage: [
-      { badgeId: 'silver', technologyId: 'React', score: 82 },
-      { badgeId: 'gold', technologyId: 'HTML', score: 90 },
-      { badgeId: 'bronze', technologyId: 'Python', score: 68 },
-      { badgeId: 'bronze', technologyId: 'JavaScript', score: 70 },
-      { badgeId: 'diamond', technologyId: 'JavaScript', score: 94 },
-    ],
-  },
-  {
-    name: 'Hannah Scott',
-    email: 'hannah@example.com',
-    password: 'password123',
-    mobile: '1234567897',
-    country: 'Japan',
-    city: 'Tokyo',
-    role: 'user',
-    avatar: 'hannah.jpg',
-    weightage: [
-      { badgeId: 'gold', technologyId: 'CSS', score: 88 },
-      { badgeId: 'silver', technologyId: 'Python', score: 77 },
-    ],
-  },
-  {
-    name: 'Ian Taylor',
-    email: 'ian@example.com',
-    password: 'password123',
-    mobile: '1234567898',
-    country: 'Italy',
-    city: 'Rome',
-    role: 'user',
-    avatar: 'ian.jpg',
-    weightage: [
-      { badgeId: 'silver', technologyId: 'React', score: 85 },
-      { badgeId: 'gold', technologyId: 'Java', score: 91 },
-    ],
-  },
-  {
-    name: 'Jenny Evans',
-    email: 'jenny@example.com',
-    password: 'password123',
-    mobile: '1234567899',
-    country: 'Brazil',
-    city: 'São Paulo',
-    role: 'user',
-    avatar: 'jenny.jpg',
-    weightage: [
-      { badgeId: 'bronze', technologyId: 'CSS', score: 60 },
-      { badgeId: 'gold', technologyId: 'React', score: 89 },
-      { badgeId: 'silver', technologyId: 'Python', score: 75 },
-    ],
-  },
-];
+import React, { useState, useEffect, useCallback } from 'react';
 
 const Leaderboard = () => {
   const [activeTab, setActiveTab] = useState('All');
   const [selectedBadge, setSelectedBadge] = useState('');
   const [selectedTechnology, setSelectedTechnology] = useState('');
+  const { users, setUsers } = useStore(state => state);
+  const { loading, setLoading } = useStore(state => state);
+  const { badges, technologies } = useStore(state => state);
+
+  const fetchLeaderboardData = useCallback(async () => {
+    setLoading(true);
+    let endpoint = '';
+
+    switch (activeTab) {
+      case 'All':
+        endpoint = '/leaderboard/allUsers';
+        break;
+      case 'Country':
+        endpoint = '/leaderboard/byCountry';
+        break;
+      case 'City':
+        endpoint = '/leaderboard/byCity';
+        break;
+      case 'Badge':
+        endpoint = selectedBadge
+          ? `leaderboard/byBadge/${selectedBadge}`
+          : '/leaderboard/allUsers';
+        break;
+      case 'Technology':
+        endpoint = selectedTechnology
+          ? `leaderboard/byTechnology/${selectedTechnology}`
+          : '/leaderboard/allUsers';
+        break;
+      default:
+        setLoading(false);
+        return;
+    }
+
+    try {
+      const response = await instance.get(endpoint);
+      setUsers(response.data.data || response.data);
+    } catch (error) {
+      console.error('Error fetching leaderboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTab, selectedBadge, selectedTechnology, setLoading]);
+
+  useEffect(() => {
+    fetchLeaderboardData();
+  }, [fetchLeaderboardData]);
 
   useEffect(() => {
     setSelectedBadge('');
     setSelectedTechnology('');
   }, [activeTab]);
 
-  const renderItem = ({ item, index }) => {
-    if (item.name === 'Ian Taylor') {
-      console.log('Index of Current User:', index);
-      // return null;
-    }
-
-    return (
-      <View style={styles.itemContainer}>
-        <Text style={styles.indexText}>{index + 4}</Text>
-        <View style={styles.userInfo}>
-          <Image
-            source={{
-              uri: 'https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png',
-            }}
-            style={styles.profileImage}
-          />
-          <View>
-            <Text style={styles.userName}>{item.name}</Text>
-            <Text
-              style={
-                styles.userDetails
-              }>{`${item.country}, ${item.city}`}</Text>
-          </View>
+  const renderItem = ({ item, index }) => (
+    <View style={styles.itemContainer}>
+      <Text style={styles.indexText}>{index + 4}</Text>
+      <View style={styles.userInfo}>
+        <Image
+          source={{
+            uri: item.avatar
+              ? `${apiURL}/${item.avatar}`
+              : 'https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png',
+          }}
+          style={styles.profileImage}
+        />
+        <View>
+          <Text style={styles.userName}>{item.fname}</Text>
+          <Text style={styles.userDetails}>
+            {`${item.country || 'NA'}, ${item.city || 'NA'}`}
+          </Text>
         </View>
-        <Text>{item.weightage.length}</Text>
       </View>
-    );
-  };
-
-  console.log(activeTab, selectedBadge, selectedTechnology);
+      <Text>{item.weightage}</Text>
+    </View>
+  );
 
   return (
     <Container>
@@ -240,7 +130,7 @@ const Leaderboard = () => {
 
         {activeTab === 'Badge' && (
           <SelectList
-            setSelected={val => setSelectedBadge(val)}
+            setSelected={setSelectedBadge}
             inputStyles={{ color: primaryColor }}
             dropdownTextStyles={{ color: primaryColor }}
             boxStyles={{
@@ -253,17 +143,14 @@ const Leaderboard = () => {
               marginHorizontal: 10,
               backgroundColor: lightColor,
             }}
-            data={['Bronze', 'Silver', 'Gold', 'Diamond'].map(badge => ({
-              key: badge,
-              value: badge,
-            }))}
-            save="value"
+            data={badges.map(badge => ({ key: badge._id, value: badge.name }))}
+            save="key"
           />
         )}
 
         {activeTab === 'Technology' && (
           <SelectList
-            setSelected={val => setSelectedTechnology(val)}
+            setSelected={setSelectedTechnology}
             inputStyles={{ color: primaryColor }}
             dropdownTextStyles={{ color: primaryColor }}
             boxStyles={{
@@ -275,14 +162,19 @@ const Leaderboard = () => {
               marginHorizontal: 10,
               backgroundColor: lightColor,
             }}
-            data={['JavaScript', 'Python', 'Java', 'HTML', 'CSS'].map(
-              technology => ({
-                key: technology,
-                value: technology,
-              }),
-            )}
-            save="value"
+            data={technologies.map(technology => ({
+              key: technology._id,
+              value: technology.name,
+            }))}
+            save="key"
           />
+        )}
+
+        {loading && (
+          <Animated.View entering={ZoomIn} style={styles.loadingContainer}>
+            <ActivityIndicator size={50} color={lightColor} />
+            <Text style={styles.loadingText}>Loading...</Text>
+          </Animated.View>
         )}
 
         {/* Top 3 Users */}
@@ -294,78 +186,48 @@ const Leaderboard = () => {
                 flexDirection: 'row',
                 justifyContent: 'space-evenly',
               }}>
-              <View style={{ alignItems: 'center', top: 30 }}>
-                <Image
-                  source={{
-                    uri: 'https://www.shareicon.net/data/128x128/2016/09/15/829453_user_512x512.png',
-                  }}
-                  style={styles.profileImageTop}
-                />
-                <Text style={styles.inactiveText}>
-                  {users[1].name.substring(0, 3)}
-                </Text>
-                <View style={styles.rankText}>
-                  <Text style={[styles.inactiveText]}>
-                    {users[1].weightage.length}
-                  </Text>
+              {['1', '0', '2'].map(index => (
+                <View
+                  key={index}
+                  style={{
+                    alignItems: 'center',
+                    top: index === '0' ? 0 : index === '1' ? 40 : 60,
+                  }}>
+                  <Image
+                    source={{
+                      uri: users[index]?.avatar
+                        ? `${apiURL}/${users[index]?.avatar}`
+                        : 'https://www.shareicon.net/data/128x128/2016/09/15/829453_user_512x512.png',
+                    }}
+                    style={styles.profileImageTop}
+                  />
+                  <Text style={styles.inactiveText}>{users[index]?.fname}</Text>
+                  <View style={styles.rankText}>
+                    <Text style={[styles.inactiveText]}>
+                      {/* {users[index]?.weightage} */}
+                      {users[index]?.weightage ||
+                        users[index]?.achievements ||
+                        0}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-              <View style={{ alignItems: 'center' }}>
-                <Image
-                  source={{
-                    uri: 'https://www.shareicon.net/data/128x128/2016/05/24/770137_man_512x512.png',
-                  }}
-                  style={styles.profileImageTop}
-                />
-                <Text style={styles.inactiveText}>
-                  {users[0].name.substring(0, 5)}
-                </Text>
-                <View style={styles.rankText}>
-                  <Text style={[styles.inactiveText]}>
-                    {users[0].weightage.length}
-                  </Text>
-                </View>
-              </View>
-              <View style={{ alignItems: 'center', top: 50 }}>
-                <Image
-                  source={{
-                    uri: 'https://www.shareicon.net/data/128x128/2016/09/15/829460_user_512x512.png',
-                  }}
-                  style={styles.profileImageTop}
-                />
-                <Text style={styles.inactiveText}>
-                  {users[2].name.substring(0, 7)}
-                </Text>
-                <View style={styles.rankText}>
-                  <Text style={[styles.inactiveText]}>
-                    {users[2].weightage.length}
-                  </Text>
-                </View>
-              </View>
+              ))}
             </View>
           </View>
-          <View>
-            <Image
-              source={require('../../assets/images/boxes.png')}
-              style={{
-                width: width,
-                height: width / 2.5,
-                resizeMode: 'contain',
-              }}
-            />
-          </View>
+          <Image
+            source={require('../../assets/images/boxes.png')}
+            style={{ width: width, height: width / 2.5, resizeMode: 'contain' }}
+          />
         </View>
       </View>
 
       <View style={styles.container}>
-        <View style={{ alignItems: 'center' }}>
-          <FlatList
-            data={users.slice(3)}
-            renderItem={renderItem}
-            keyExtractor={item => item.email}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
+        <FlatList
+          data={users.slice(3)}
+          renderItem={renderItem}
+          keyExtractor={item => item.email}
+          showsVerticalScrollIndicator={false}
+        />
       </View>
     </Container>
   );
@@ -377,7 +239,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexGrow: 1,
-    paddingVertical: 10,
+    padding: 10,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: secondaryColor,
@@ -432,25 +294,35 @@ const styles = StyleSheet.create({
     borderColor: primaryColor,
   },
   indexText: {
+    fontSize: 16,
     borderWidth: 1,
     borderRadius: 15,
     paddingHorizontal: 5,
-    color: darkColor,
     backgroundColor: lightColor,
-    fontWeight: 'bold',
-    textAlign: 'center',
+  },
+  rankText: {
+    marginTop: 5,
+    marginBottom: 5,
+    borderRadius: 20,
+    paddingVertical: 5,
+    paddingHorizontal: 20,
+    backgroundColor: secondaryColor,
   },
   userName: {
-    color: '#000',
     fontWeight: 'bold',
   },
   userDetails: {
-    fontSize: 10,
-    color: 'gray',
+    fontSize: 12,
+    color: darkColor,
   },
-  rankText: {
-    borderRadius: 20,
-    paddingHorizontal: 20,
-    backgroundColor: secondaryColor,
+  loadingContainer: {
+    paddingVertical: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: lightColor,
   },
 });

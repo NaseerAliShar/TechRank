@@ -9,69 +9,104 @@ import {
 } from 'react-native';
 import { width } from '../styles/sizes';
 import { apiURL } from '../config/config';
+import { useStore } from '../store/store';
 import Header from '../components/Header';
 import instance from '../services/services';
 import Animated from 'react-native-reanimated';
 import Container from '../components/Container';
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
-import { darkColor, lightColor } from '../styles/colors';
+import { lightColor, primaryColor } from '../styles/colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ZoomIn, FadeIn, FadeInRight } from 'react-native-reanimated';
 
-const Badges = () => {
+const Badges = ({ route }) => {
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
-  const [badges, setBadges] = useState([]);
+  const { technology } = route.params;
+  const { _id: technologyId } = technology;
+  const [achievements, setAchievements] = useState([]);
+  const { badges, setBadges } = useStore(state => state);
+  const { loading, setLoading } = useStore(state => state);
 
-  const fetchBadges = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await instance.get('/badges');
-      setBadges(response.data);
+      const [badges, achievements] = await Promise.all([
+        instance.get('/badges'),
+        instance.get(`/achievements/${technologyId}`),
+      ]);
+      setBadges(badges.data);
+      setAchievements(achievements.data.data);
     } catch (error) {
-      console.error('Error fetching badges:', error);
+      console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [technologyId]);
 
   useEffect(() => {
-    fetchBadges();
-  }, []);
+    fetchData();
+  }, [fetchData]);
 
-  const renderItem = ({ item, index }) => (
-    <TouchableOpacity
-      style={styles.card}
-      activeOpacity={0.8}
-      onPress={() => true && navigation.navigate('Quiz')}
-      disabled={false}>
-      <Animated.View entering={ZoomIn.delay(index * 100)}>
-        <View>
-          {true && (
-            <MaterialIcons
-              name="lock"
-              size={60}
-              color="#000"
-              style={styles.lockIcon}
+  const toCheck = badge =>
+    Array.isArray(achievements) &&
+    Boolean(achievements.find(value => value.badgeId === badge._id));
+
+  const renderItem = ({ item, index }) => {
+    const isMatch = toCheck(item);
+    const isAchieved = badges.some(badge => badge.isPrimary && toCheck(badge));
+    const isNext = isAchieved
+      ? badges.findIndex(badge => !toCheck(badge) && !badge.isPrimary)
+      : -1;
+    const isUnlock = index === isNext;
+    const isLocked = !isMatch && !item.isPrimary && !isUnlock;
+
+    return (
+      <TouchableOpacity
+        style={[styles.card, isLocked && { opacity: 0.8 }]}
+        activeOpacity={0.8}
+        onPress={() =>
+          !isLocked && navigation.navigate('Quiz', { badge: item, technology })
+        }
+        disabled={isLocked}>
+        <Animated.View entering={ZoomIn.delay(index * 100)}>
+          <View>
+            {isLocked && (
+              <MaterialIcons
+                name="lock"
+                size={50}
+                color="#000"
+                style={styles.lockIcon}
+              />
+            )}
+            {isMatch && (
+              <MaterialIcons
+                name="check-circle"
+                size={60}
+                color="green"
+                style={styles.checkIcon}
+              />
+            )}
+            <Image
+              source={{
+                uri: `${apiURL}/${item.icon}`,
+              }}
+              style={[styles.icon, isLocked && { opacity: 0.4 }]}
             />
-          )}
-          <Image
-            source={{
-              uri: `${apiURL}/${item.image}`,
-            }}
-            style={[styles.icon, true && { opacity: 0.2 }]}
-          />
-        </View>
-      </Animated.View>
-    </TouchableOpacity>
-  );
+          </View>
+        </Animated.View>
+        <Text style={{ color: primaryColor, fontFamily: 'Poppins-SemiBold' }}>
+          {item.name}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   if (loading) {
     return (
       <Container>
         <Animated.View entering={ZoomIn} style={styles.loadingContainer}>
-          <ActivityIndicator size={50} color={darkColor} />
+          <ActivityIndicator size={50} color={lightColor} />
           <Text style={styles.loadingText}>Loading...</Text>
         </Animated.View>
       </Container>
@@ -99,9 +134,19 @@ const Badges = () => {
           height: width / 4,
           marginVertical: 20,
           alignItems: 'center',
-          flexDirection: 'row',
+          justifyContent: 'center',
           backgroundColor: lightColor,
-        }}></View>
+        }}>
+        <Image
+          source={{
+            uri: `${apiURL}/${technology.image}`,
+          }}
+          style={{ width: width / 6, height: width / 6, resizeMode: 'contain' }}
+        />
+        <Text style={{ color: primaryColor, fontFamily: 'Poppins-SemiBold' }}>
+          {technology.name}
+        </Text>
+      </View>
       <Animated.View entering={FadeIn} style={styles.container}>
         <View style={{ alignItems: 'center' }}>
           <FlatList
@@ -110,6 +155,7 @@ const Badges = () => {
             renderItem={renderItem}
             keyExtractor={item => item.name}
             showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ alignItems: 'center' }}
           />
         </View>
       </Animated.View>
@@ -137,8 +183,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'lemonchiffon',
   },
   icon: {
-    width: width / 4,
-    height: width / 4,
+    width: width / 5,
+    height: width / 5,
     resizeMode: 'contain',
   },
   loadingContainer: {
@@ -153,6 +199,14 @@ const styles = StyleSheet.create({
     color: lightColor,
   },
   lockIcon: {
+    zIndex: 1,
+    top: '50%',
+    left: '50%',
+    position: 'absolute',
+    transform: [{ translateX: -25 }, { translateY: -25 }],
+  },
+  checkIcon: {
+    zIndex: 1,
     top: '50%',
     left: '50%',
     position: 'absolute',

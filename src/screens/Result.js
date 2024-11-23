@@ -1,4 +1,7 @@
+import { useEffect } from 'react';
 import { width } from '../styles/sizes';
+import { apiURL } from '../config/config';
+import instance from '../services/services';
 import { Button } from 'react-native-paper';
 import Container from '../components/Container';
 import * as Progress from 'react-native-progress';
@@ -8,6 +11,8 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 const Result = ({
   time,
   score,
+  badge,
+  technology,
   questions,
   wrongAnswers,
   correctAnswers,
@@ -25,11 +30,39 @@ const Result = ({
     minutes: Math.floor(time / totalQuestions / 60),
   };
 
+  const submitResult = async () => {
+    if (totalPercentage >= 80) {
+      try {
+        const payload = {
+          level: badge.level,
+          badgeId: badge._id,
+          technologyId: technology._id,
+        };
+        await instance.post('/achievements/create', payload);
+        console.log('Result submitted successfully');
+      } catch (error) {
+        console.error('Error submitting quiz result:', error);
+      }
+    } else {
+      try {
+        const payload = { badgeId: badge._id, technologyId: technology._id };
+        await instance.post('/attempts/create', payload);
+        console.log('Result submitted successfully');
+      } catch (error) {
+        console.error('Error submitting quiz result:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    submitResult();
+  }, []);
+
   return (
     <Container>
       {totalPercentage >= 80 ? (
         <Image
-          source={require('../../assets/images/congrats.png')}
+          source={{ uri: `${apiURL}/${badge.icon}` }}
           style={styles.resultImage}
         />
       ) : (

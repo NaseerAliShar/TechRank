@@ -29,8 +29,8 @@ const Login = ({ navigation }) => {
         `${apiURL}/${apiVersion}/auth/login`,
         values,
       );
-      await AsyncStorage.setItem('token', response.data.token);
       await AsyncStorage.setItem('user', JSON.stringify(response.data.user));
+      await AsyncStorage.setItem('token', response.data.token);
       navigation.replace('Tab');
     } catch (error) {
       const message = error.response?.data?.message || 'Login failed';
@@ -77,6 +77,7 @@ const Login = ({ navigation }) => {
                 onBlur={handleBlur('email')}
                 onChangeText={handleChange('email')}
                 style={styles.input}
+                autoCapitalize="none"
                 keyboardType="email-address"
                 activeOutlineColor={primaryColor}
                 error={touched.email && errors.email}

@@ -27,7 +27,8 @@ const Register = ({ navigation }) => {
   };
 
   const registrationValidationSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
+    fname: Yup.string().required('First Name is required'),
+    lname: Yup.string().required('Last Name is required'),
     country: Yup.string().required('Country is required'),
     city: Yup.string().required('City is required'),
     mobile: Yup.string().required('Mobile number is required'),
@@ -46,7 +47,8 @@ const Register = ({ navigation }) => {
       <View style={styles.container}>
         <Formik
           initialValues={{
-            name: '',
+            fname: '',
+            lname: '',
             email: '',
             country: '',
             city: '',
@@ -67,19 +69,34 @@ const Register = ({ navigation }) => {
             errors,
           }) => (
             <ScrollView showsVerticalScrollIndicator={false}>
-              <TextInput
-                label="Name"
-                mode="outlined"
-                value={values.name}
-                onBlur={handleBlur('name')}
-                onChangeText={handleChange('name')}
-                style={styles.input}
-                activeOutlineColor={primaryColor}
-                error={touched.name && errors.name}
-              />
-              {touched.name && errors.name && (
-                <Text style={styles.errorText}>{errors.name}</Text>
-              )}
+              <View>
+                <TextInput
+                  label="First Name"
+                  mode="outlined"
+                  value={values.fname}
+                  onBlur={handleBlur('fname')}
+                  onChangeText={handleChange('fname')}
+                  style={styles.input}
+                  activeOutlineColor={primaryColor}
+                  error={touched.fname && errors.fname}
+                />
+                {touched.lname && errors.lname && (
+                  <Text style={styles.errorText}>{errors.lname}</Text>
+                )}
+                <TextInput
+                  label="Last Name"
+                  mode="outlined"
+                  value={values.lname}
+                  onBlur={handleBlur('lname')}
+                  onChangeText={handleChange('lname')}
+                  style={styles.input}
+                  activeOutlineColor={primaryColor}
+                  error={touched.lname && errors.lname}
+                />
+                {touched.lname && errors.lname && (
+                  <Text style={styles.errorText}>{errors.lname}</Text>
+                )}
+              </View>
 
               <TextInput
                 label="Email"
@@ -88,6 +105,7 @@ const Register = ({ navigation }) => {
                 onBlur={handleBlur('email')}
                 onChangeText={handleChange('email')}
                 style={styles.input}
+                autoCapitalize="none"
                 keyboardType="email-address"
                 activeOutlineColor={primaryColor}
                 error={touched.email && errors.email}

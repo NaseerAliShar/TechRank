@@ -15,7 +15,8 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
 import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
 
-const Quiz = () => {
+const Quiz = ({ route }) => {
+  const { badge, technology } = route.params;
   const [time, setTime] = useState(0);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -34,7 +35,6 @@ const Quiz = () => {
         const { data } = await instance.get(`questions`);
         setQuestions(data);
       } catch (error) {
-        console.log('Error fetching quizzes', error);
       } finally {
         setLoading(false);
       }
@@ -170,6 +170,8 @@ const Quiz = () => {
       <Result
         time={time}
         score={score}
+        badge={badge}
+        technology={technology}
         questions={questions}
         wrongAnswers={wrongAnswers}
         correctAnswers={correctAnswers}
@@ -199,11 +201,17 @@ const Quiz = () => {
         </View>
         <View>
           <Text style={styles.progressText}>Topic</Text>
-          <Text>JavaScript</Text>
+          <Text>{technology.name}</Text>
+        </View>
+        <View>
+          <Text style={styles.progressText}>Difficulty</Text>
+          <Text style={{ textAlign: 'center' }}>{badge.name}</Text>
         </View>
         <View>
           <Text style={styles.progressText}>Duration</Text>
-          <Text style={{ textAlign: 'center' }}>10 min</Text>
+          <Text style={{ textAlign: 'center' }}>
+            {questions.length} Minutes
+          </Text>
         </View>
       </View>
       {questions.length > 0 && (
@@ -212,14 +220,14 @@ const Quiz = () => {
             <CountdownCircleTimer
               isPlaying={!quizFinished}
               size={40}
-              duration={500}
+              duration={600}
               strokeWidth={4}
-              colorsTime={[60, 30, 15, 0]}
+              colors={['#5A6AE0', '#978EE7', '#FBDD40', '#A30000']}
+              colorsTime={[600, 450, 300, 0]}
               onComplete={() => {
                 setQuizFinished(true);
                 return { shouldRepeat: false, delay: 0 };
-              }}
-              colors={[primaryColor, secondaryColor, 'yellow', 'red']}>
+              }}>
               {({ remainingTime }) => {
                 const seconds = remainingTime % 60;
                 const minutes = Math.floor(remainingTime / 60);
