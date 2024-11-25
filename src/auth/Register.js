@@ -41,7 +41,7 @@ const Register = ({ navigation }) => {
   return (
     <Container>
       <Image
-        source={require('../../assets/images/logo1.png')}
+        source={require('../../assets/images/logo.png')}
         style={styles.logo}
       />
       <View style={styles.container}>
@@ -69,33 +69,41 @@ const Register = ({ navigation }) => {
             errors,
           }) => (
             <ScrollView showsVerticalScrollIndicator={false}>
-              <View>
-                <TextInput
-                  label="First Name"
-                  mode="outlined"
-                  value={values.fname}
-                  onBlur={handleBlur('fname')}
-                  onChangeText={handleChange('fname')}
-                  style={styles.input}
-                  activeOutlineColor={primaryColor}
-                  error={touched.fname && errors.fname}
-                />
-                {touched.lname && errors.lname && (
-                  <Text style={styles.errorText}>{errors.lname}</Text>
-                )}
-                <TextInput
-                  label="Last Name"
-                  mode="outlined"
-                  value={values.lname}
-                  onBlur={handleBlur('lname')}
-                  onChangeText={handleChange('lname')}
-                  style={styles.input}
-                  activeOutlineColor={primaryColor}
-                  error={touched.lname && errors.lname}
-                />
-                {touched.lname && errors.lname && (
-                  <Text style={styles.errorText}>{errors.lname}</Text>
-                )}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <View style={{ width: '48%' }}>
+                  <TextInput
+                    label="First Name"
+                    mode="outlined"
+                    value={values.fname}
+                    onBlur={handleBlur('fname')}
+                    onChangeText={handleChange('fname')}
+                    style={styles.input}
+                    activeOutlineColor={primaryColor}
+                    error={touched.fname && errors.fname}
+                  />
+                  {touched.fname && errors.fname && (
+                    <Text style={styles.errorText}>{errors.fname}</Text>
+                  )}
+                </View>
+                <View style={{ width: '48%' }}>
+                  <TextInput
+                    label="Last Name"
+                    mode="outlined"
+                    value={values.lname}
+                    onBlur={handleBlur('lname')}
+                    onChangeText={handleChange('lname')}
+                    style={styles.input}
+                    activeOutlineColor={primaryColor}
+                    error={touched.lname && errors.lname}
+                  />
+                  {touched.lname && errors.lname && (
+                    <Text style={styles.errorText}>{errors.lname}</Text>
+                  )}
+                </View>
               </View>
 
               <TextInput
@@ -163,6 +171,7 @@ const Register = ({ navigation }) => {
                 onBlur={handleBlur('password')}
                 onChangeText={handleChange('password')}
                 style={styles.input}
+                autoCapitalize="words"
                 secureTextEntry={eye}
                 activeOutlineColor={primaryColor}
                 error={touched.password && errors.password}
@@ -210,31 +219,28 @@ export default Register;
 const styles = {
   container: {
     flex: 1,
-    padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    backgroundColor: lightColor,
+    padding: 10,
   },
   logo: {
-    width: width,
-    height: width * 0.6,
+    width: width / 2,
+    height: width / 2,
     alignSelf: 'center',
     resizeMode: 'contain',
   },
   input: {
     marginTop: 10,
-    marginBottom: 5,
     backgroundColor: lightColor,
   },
   errorText: {
     color: 'red',
-    fontSize: 10,
+    fontSize: 12,
+    marginTop: 5,
   },
   button: {
-    marginVertical: 15,
+    marginVertical: 10,
   },
   buttonLabel: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   textContainer: {

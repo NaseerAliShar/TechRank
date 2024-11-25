@@ -1,22 +1,21 @@
 import Home from '../screens/Home';
 import Help from '../screens/Help';
-import { Alert } from 'react-native';
-import { width } from '../styles/sizes';
 import Profile from '../screens/Profile';
 import Leaderboard from '../screens/Leaderboard';
-import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { darkColor, lightColor, primaryColor } from '../styles/colors';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Alert } from 'react-native';
+import { width } from '../styles/sizes';
+import { useNavigation } from '@react-navigation/native';
+import { lightColor, primaryColor } from '../styles/colors';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigation() {
   const navigation = useNavigation();
-
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
       { text: 'Cancel', style: 'cancel' },
@@ -60,8 +59,8 @@ export default function TabNavigation() {
         ),
         tabBarShowLabel: false,
         headerTitleAlign: 'center',
-        tabBarActiveTintColor: darkColor,
-        tabBarInactiveTintColor: darkColor,
+        tabBarActiveTintColor: primaryColor,
+        tabBarInactiveTintColor: primaryColor,
         tabBarStyle: {
           left: 0,
           right: 0,

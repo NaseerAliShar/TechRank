@@ -1,5 +1,5 @@
-import { primaryColor } from '../styles/colors';
 import { View, StyleSheet, StatusBar } from 'react-native';
+import { lightColor, primaryColor } from '../styles/colors';
 
 const Container = ({ children }) => {
   return (
@@ -7,19 +7,6 @@ const Container = ({ children }) => {
       <StatusBar backgroundColor={primaryColor} />
       {children}
     </View>
-
-    // <LinearGradient
-    //   colors={backgroundColor}
-    //   style={styles.container}
-    //   start={{ x: 0, y: 1 }}
-    //   end={{ x: 1, y: 1 }}>
-    //   <ImageBackground
-    //     source={require('../../assets/images/bgImage.png')}
-    //     imageStyle={{ transform: [{ scale: 1.5 }] }}
-    //     style={styles.container}>
-    //     {children}
-    //   </ImageBackground
-    // </LinearGradient=
   );
 };
 
@@ -29,6 +16,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
-    backgroundColor: primaryColor,
+    backgroundColor: lightColor,
   },
 });

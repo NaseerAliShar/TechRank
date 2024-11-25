@@ -1,8 +1,9 @@
+import { useEffect } from 'react';
 import { width } from '../styles/sizes';
-import React, { useEffect } from 'react';
 import { Divider } from 'react-native-paper';
 import Container from '../components/Container';
 import * as Animatable from 'react-native-animatable';
+import { darkColor, primaryColor } from '../styles/colors';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -15,7 +16,7 @@ const Splash = ({ navigation }) => {
       } else {
         navigation.replace('Tab');
       }
-    }, 5000);
+    }, 3000);
   }, []);
 
   return (
@@ -27,21 +28,21 @@ const Splash = ({ navigation }) => {
           style={styles.container}>
           <Image
             style={styles.wwrLogo}
-            source={require('../../assets/images/logo1.png')}
+            source={require('../../assets/images/logo.png')}
           />
         </Animatable.View>
-        <View style={styles.footerContainer}>
+        <View style={{ alignItems: 'center' }}>
           <Animatable.View animation="fadeInUp" delay={1000}>
             <View style={styles.footer}>
               <Divider style={styles.divider} />
-              <Text style={{ color: '#fff' }}>Powered by</Text>
+              <Text style={{ color: darkColor }}>Powered by</Text>
               <Divider style={styles.divider} />
             </View>
           </Animatable.View>
           <Animatable.View animation="zoomIn" delay={1500}>
             <Image
-              source={require('../../assets/images/innovador1.png')}
-              style={styles.isLogo}
+              source={require('../../assets/images/innovador2.png')}
+              style={styles.innovadorLogo}
             />
           </Animatable.View>
         </View>
@@ -59,26 +60,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   wwrLogo: {
-    height: width,
-    width: width / 1.5,
+    width: width / 2,
     resizeMode: 'contain',
   },
-  footerContainer: {
-    marginBottom: 20,
-    alignItems: 'center',
+  innovadorLogo: {
+    height: width / 14,
+    resizeMode: 'contain',
   },
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   divider: {
-    width: width * 0.3,
+    height: 2,
+    width: width / 3,
     marginHorizontal: 5,
-    backgroundColor: '#fff',
-  },
-  isLogo: {
-    width: width * 0.2,
-    height: width * 0.1,
-    resizeMode: 'contain',
+    backgroundColor: primaryColor,
   },
 });

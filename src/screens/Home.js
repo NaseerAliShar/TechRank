@@ -5,7 +5,6 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  ActivityIndicator,
 } from 'react-native';
 import Animated, {
   ZoomIn,
@@ -13,50 +12,51 @@ import Animated, {
   FadeInUp,
   FadeOutDown,
 } from 'react-native-reanimated';
+import React from 'react';
+import Loader from '../components/Loader';
+import Container from '../components/Container';
+import Feather from 'react-native-vector-icons/Feather';
+import SubContainer from '../components/SubContainer';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { width } from '../styles/sizes';
 import { apiURL } from '../config/config';
 import { useStore } from '../store/store';
-import instance from '../services/services';
-import Container from '../components/Container';
-import Feather from 'react-native-vector-icons/Feather';
+import { instance } from '../services/services';
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useCallback, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
+import { lightColor, primaryColor } from '../styles/colors';
 
 const Home = () => {
   const navigation = useNavigation();
-  const [user, setUser] = useState(null);
-  const { loading, setLoading } = useStore(state => state);
-  const { technologies, setTechnologies } = useStore(state => state);
+  const {
+    user,
+    setUser,
+    loading,
+    setLoading,
+    setBadges,
+    technologies,
+    setTechnologies,
+  } = useStore(state => state);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem('user');
-        if (storedUser) setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    })();
-  }, []);
-
-  const fetchTechnologies = useCallback(async () => {
+  const fetchData = React.useCallback(async () => {
     setLoading(true);
     try {
-      const response = await instance.get('/technologies');
-      setTechnologies(response.data);
+      const [technologies, badges] = await Promise.all([
+        instance.get('/technologies'),
+        instance.get('/badges'),
+      ]);
+      setTechnologies(technologies.data);
+      setBadges(badges.data);
     } catch (error) {
-      console.error('Error fetching technologies:', error);
+      console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
-  }, [setTechnologies]);
+  }, [setTechnologies, setBadges]);
 
-  useEffect(() => {
-    fetchTechnologies();
-  }, [fetchTechnologies]);
+  React.useEffect(() => {
+    setUser();
+    fetchData();
+  }, [fetchData]);
 
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
@@ -72,30 +72,24 @@ const Home = () => {
             style={styles.icon}
           />
         </Animated.View>
-        <Text>{item.name}</Text>
+        <Text style={{ color: lightColor }}>{item.name}</Text>
       </View>
     </TouchableOpacity>
   );
 
   if (loading) {
-    return (
-      <Container>
-        <Animated.View entering={ZoomIn} style={styles.loadingContainer}>
-          <ActivityIndicator size={50} color={lightColor} />
-          <Text style={styles.loadingText}>Loading...</Text>
-        </Animated.View>
-      </Container>
-    );
+    return <Loader />;
   }
-  console.log(user);
 
   return (
     <Container>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.welcomeText}>Welcome, {user?.fname}</Text>
+        <Text style={styles.headerText}>
+          Welcome, {user?.fname} {user?.lname}
+        </Text>
         <Image
-          source={require('../../assets/images/logo1.png')}
+          source={require('../../assets/images/logo.png')}
           style={styles.logo}
         />
       </View>
@@ -144,7 +138,7 @@ const Home = () => {
       </View>
 
       {/* Technologies List */}
-      <View style={styles.container}>
+      <SubContainer>
         {technologies.length === 0 ? (
           <Text style={styles.loadingText}>No Technologies found</Text>
         ) : (
@@ -156,7 +150,7 @@ const Home = () => {
             keyExtractor={item => item._id.toString()}
           />
         )}
-      </View>
+      </SubContainer>
     </Container>
   );
 };
@@ -167,8 +161,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  welcomeText: {
-    color: '#fff',
+  headerText: {
+    color: primaryColor,
     fontFamily: 'Poppins-SemiBold',
   },
   logo: {
@@ -178,10 +172,11 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     padding: 10,
+    borderWidth: 1,
     borderRadius: 10,
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: lightColor,
+    borderColor: primaryColor,
   },
   userAvatar: {
     width: width / 6,
@@ -189,9 +184,9 @@ const styles = StyleSheet.create({
     borderRadius: width / 3,
   },
   userName: {
-    color: primaryColor,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
+    color: primaryColor,
   },
   greetingContainer: {
     paddingVertical: 5,
@@ -199,7 +194,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   greetingText: {
-    fontSize: 15,
     marginLeft: 5,
     color: primaryColor,
   },
@@ -213,7 +207,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     paddingHorizontal: 10,
-    backgroundColor: secondaryColor,
+    backgroundColor: primaryColor,
   },
   statValue: {
     color: '#fff',
@@ -221,11 +215,12 @@ const styles = StyleSheet.create({
   },
   didYouKnow: {
     padding: 10,
+    borderWidth: 1,
     borderRadius: 10,
     marginVertical: 20,
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: lightColor,
+    borderColor: primaryColor,
   },
   didYouKnowIcon: {
     width: width / 5,
@@ -238,14 +233,6 @@ const styles = StyleSheet.create({
     maxWidth: width / 1.5,
     fontFamily: 'Poppins-Regular',
   },
-  container: {
-    flex: 1,
-    padding: 10,
-    alignItems: 'center',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    backgroundColor: lightColor,
-  },
   card: {
     margin: 10,
     width: width / 6,
@@ -253,23 +240,12 @@ const styles = StyleSheet.create({
     borderRadius: width / 3,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'lemonchiffon',
+    backgroundColor: lightColor,
   },
   icon: {
     width: width / 7,
     height: width / 7,
     resizeMode: 'contain',
-  },
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingText: {
-    fontSize: 15,
-    marginTop: 10,
-    fontWeight: 'bold',
-    color: lightColor,
   },
 });
 

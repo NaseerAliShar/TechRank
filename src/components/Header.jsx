@@ -1,5 +1,4 @@
-import React from 'react';
-import { lightColor } from '../styles/colors';
+import { primaryColor } from '../styles/colors';
 import { useNavigation } from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
@@ -9,11 +8,11 @@ const Header = ({ title, icon, OnPress }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
-        <AntDesign name="arrowleft" size={25} color={lightColor} />
+        <AntDesign name="arrowleft" size={25} color={primaryColor} />
       </TouchableOpacity>
       <Text style={styles.text}>{title}</Text>
       <TouchableOpacity onPress={OnPress}>
-        <AntDesign name={icon || null} size={25} color={lightColor} />
+        <AntDesign name={icon || null} size={25} color={primaryColor} />
       </TouchableOpacity>
     </View>
   );
@@ -23,14 +22,14 @@ export default Header;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 10,
+    padding: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   text: {
     fontSize: 20,
-    color: lightColor,
+    color: primaryColor,
     fontWeight: 'bold',
     textAlign: 'center',
   },

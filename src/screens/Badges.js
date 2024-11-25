@@ -19,34 +19,31 @@ import { useCallback, useEffect, useState } from 'react';
 import { lightColor, primaryColor } from '../styles/colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ZoomIn, FadeIn, FadeInRight } from 'react-native-reanimated';
+import Loader from '../components/Loader';
 
 const Badges = ({ route }) => {
   const navigation = useNavigation();
   const { technology } = route.params;
   const { _id: technologyId } = technology;
   const [achievements, setAchievements] = useState([]);
-  const { badges, setBadges } = useStore(state => state);
+  const { badges } = useStore(state => state);
   const { loading, setLoading } = useStore(state => state);
 
-  const fetchData = useCallback(async () => {
+  const fetchAchievements = useCallback(async () => {
     setLoading(true);
     try {
-      const [badges, achievements] = await Promise.all([
-        instance.get('/badges'),
-        instance.get(`/achievements/${technologyId}`),
-      ]);
-      setBadges(badges.data);
-      setAchievements(achievements.data.data);
+      const { data } = await instance.get(`/achievements/${technologyId}`);
+      setAchievements(data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching technologies:', error);
     } finally {
       setLoading(false);
     }
   }, [technologyId]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    fetchAchievements();
+  }, [fetchAchievements]);
 
   const toCheck = badge =>
     Array.isArray(achievements) &&
@@ -103,14 +100,7 @@ const Badges = ({ route }) => {
   };
 
   if (loading) {
-    return (
-      <Container>
-        <Animated.View entering={ZoomIn} style={styles.loadingContainer}>
-          <ActivityIndicator size={50} color={lightColor} />
-          <Text style={styles.loadingText}>Loading...</Text>
-        </Animated.View>
-      </Container>
-    );
+    return <Loader />;
   }
 
   if (!loading && !badges.length) {

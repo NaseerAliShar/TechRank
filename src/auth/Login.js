@@ -1,12 +1,3 @@
-import {
-  View,
-  Text,
-  Image,
-  Alert,
-  Keyboard,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -17,6 +8,15 @@ import { apiURL, apiVersion } from '../config/config';
 import { TextInput, Button } from 'react-native-paper';
 import { lightColor, primaryColor } from '../styles/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  View,
+  Text,
+  Image,
+  Alert,
+  Keyboard,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 
 const Login = ({ navigation }) => {
   const [eye, setEye] = useState(true);
@@ -50,7 +50,7 @@ const Login = ({ navigation }) => {
   return (
     <Container>
       <Image
-        source={require('../../assets/images/logo1.png')}
+        source={require('../../assets/images/logo.png')}
         style={styles.logo}
       />
       <View style={styles.container}>
@@ -93,6 +93,7 @@ const Login = ({ navigation }) => {
                 onBlur={handleBlur('password')}
                 onChangeText={handleChange('password')}
                 style={styles.input}
+                autoCapitalize="words"
                 secureTextEntry={eye}
                 activeOutlineColor={primaryColor}
                 error={touched.password && errors.password}
@@ -108,8 +109,8 @@ const Login = ({ navigation }) => {
               )}
 
               <TouchableOpacity
-                style={{ marginVertical: 10, alignSelf: 'flex-end' }}
-                activeOpacity={0.85}>
+                style={{ marginTop: 10, alignSelf: 'flex-end' }}
+                activeOpacity={0.8}>
                 <Text style={styles.linkText}>Forgot Password?</Text>
               </TouchableOpacity>
 
@@ -160,11 +161,11 @@ const Login = ({ navigation }) => {
 
               <View style={styles.textContainer}>
                 <Text>By continuing, you agree to our</Text>
-                <TouchableOpacity activeOpacity={0.85}>
+                <TouchableOpacity activeOpacity={0.8}>
                   <Text style={styles.linkText}>Terms and Conditions</Text>
                 </TouchableOpacity>
                 <Text> and </Text>
-                <TouchableOpacity activeOpacity={0.85}>
+                <TouchableOpacity activeOpacity={0.8}>
                   <Text style={styles.linkText}>Privacy Policy</Text>
                 </TouchableOpacity>
               </View>
@@ -181,31 +182,28 @@ export default Login;
 const styles = {
   container: {
     flex: 1,
-    padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    backgroundColor: lightColor,
+    padding: 10,
   },
   logo: {
-    width: width,
-    height: width * 0.6,
+    width: width / 2,
+    height: width / 2,
     alignSelf: 'center',
     resizeMode: 'contain',
   },
   input: {
     marginTop: 10,
-    marginBottom: 5,
     backgroundColor: lightColor,
   },
   errorText: {
     color: 'red',
-    fontSize: 10,
+    fontSize: 12,
+    marginTop: 5,
   },
   button: {
-    marginVertical: 15,
+    marginVertical: 10,
   },
   buttonLabel: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   textContainer: {
@@ -213,8 +211,8 @@ const styles = {
     alignItems: 'center',
   },
   linkText: {
-    color: primaryColor,
     fontWeight: 'bold',
+    color: primaryColor,
   },
   iconsContainer: {
     gap: 15,
