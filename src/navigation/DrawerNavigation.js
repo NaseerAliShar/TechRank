@@ -1,14 +1,10 @@
-import Home from '../screens/Home';
-import Help from '../screens/Help';
-import Profile from '../screens/Profile';
-import Leaderboard from '../screens/Leaderboard';
-import Materials from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { MaterialIcons, FontAwesome } from '../utils/icons';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Help, Home, Profile, Leaderboard } from '../screens/index';
 
 const Drawer = createDrawerNavigator();
 
-export default function DrawerNavigation() {
+export const DrawerNavigation = () => {
   return (
     <Drawer.Navigator
       initialRouteName="Home"
@@ -34,7 +30,7 @@ export default function DrawerNavigation() {
         component={Leaderboard}
         options={{
           drawerIcon: ({ focused, size }) => (
-            <Materials
+            <MaterialIcons
               name="leaderboard"
               size={size}
               color={focused ? '#007AFF' : '#8e8e93'}
@@ -60,7 +56,7 @@ export default function DrawerNavigation() {
         component={Help}
         options={{
           drawerIcon: ({ focused, size }) => (
-            <Materials
+            <MaterialIcons
               name="help"
               size={size}
               color={focused ? '#007AFF' : '#8e8e93'}
@@ -70,4 +66,4 @@ export default function DrawerNavigation() {
       />
     </Drawer.Navigator>
   );
-}
+};

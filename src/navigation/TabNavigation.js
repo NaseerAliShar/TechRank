@@ -1,21 +1,15 @@
-import Home from '../screens/Home';
-import Help from '../screens/Help';
-import Profile from '../screens/Profile';
-import Leaderboard from '../screens/Leaderboard';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Alert } from 'react-native';
 import { width } from '../styles/sizes';
-import { useNavigation } from '@react-navigation/native';
+import { goBack, navigate } from '../utils/navigation';
 import { lightColor, primaryColor } from '../styles/colors';
+import { Home, Help, Profile, Leaderboard } from '../screens/index';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { AntDesign, Ionicons, MaterialCommunityIcons } from '../utils/icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator();
 
-export default function TabNavigation() {
-  const navigation = useNavigation();
+export const TabNavigation = () => {
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
       { text: 'Cancel', style: 'cancel' },
@@ -24,7 +18,7 @@ export default function TabNavigation() {
         onPress: async () => {
           try {
             await AsyncStorage.clear();
-            navigation.navigate('Login');
+            navigate('Login');
           } catch (error) {
             console.log('Failed to logout:', error);
           }
@@ -54,7 +48,7 @@ export default function TabNavigation() {
             size={25}
             color={lightColor}
             style={{ marginLeft: 20 }}
-            onPress={() => navigation.goBack()}
+            onPress={() => goBack()}
           />
         ),
         tabBarShowLabel: false,
@@ -138,4 +132,4 @@ export default function TabNavigation() {
       />
     </Tab.Navigator>
   );
-}
+};

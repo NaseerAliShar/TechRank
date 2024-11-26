@@ -5,24 +5,19 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  ActivityIndicator,
 } from 'react-native';
 import { width } from '../styles/sizes';
 import { apiURL } from '../config/config';
 import { useStore } from '../store/store';
-import Header from '../components/Header';
-import instance from '../services/services';
-import Animated from 'react-native-reanimated';
-import Container from '../components/Container';
-import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons } from '../utils/icons';
+import { instance } from '../services/services';
+import { navigate } from '../utils/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { lightColor, primaryColor } from '../styles/colors';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { ZoomIn, FadeIn, FadeInRight } from 'react-native-reanimated';
-import Loader from '../components/Loader';
+import Animated, { ZoomIn } from 'react-native-reanimated';
+import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
+import { Header, Loader, Container, SubContainer } from '../components/index';
 
 const Badges = ({ route }) => {
-  const navigation = useNavigation();
   const { technology } = route.params;
   const { _id: technologyId } = technology;
   const [achievements, setAchievements] = useState([]);
@@ -33,9 +28,13 @@ const Badges = ({ route }) => {
     setLoading(true);
     try {
       const { data } = await instance.get(`/achievements/${technologyId}`);
-      setAchievements(data);
+      if (data?.data) {
+        setAchievements(data.data);
+      } else {
+        console.warn('No achievements data found');
+      }
     } catch (error) {
-      console.error('Error fetching technologies:', error);
+      console.error('Error fetching achievements:', error.message);
     } finally {
       setLoading(false);
     }
@@ -60,10 +59,10 @@ const Badges = ({ route }) => {
 
     return (
       <TouchableOpacity
-        style={[styles.card, isLocked && { opacity: 0.8 }]}
+        style={[styles.card, isLocked && { opacity: 1 }]}
         activeOpacity={0.8}
         onPress={() =>
-          !isLocked && navigation.navigate('Quiz', { badge: item, technology })
+          !isLocked && navigate('Quiz', { badge: item, technology })
         }
         disabled={isLocked}>
         <Animated.View entering={ZoomIn.delay(index * 100)}>
@@ -88,7 +87,7 @@ const Badges = ({ route }) => {
               source={{
                 uri: `${apiURL}/${item.icon}`,
               }}
-              style={[styles.icon, isLocked && { opacity: 0.4 }]}
+              style={[styles.icon, isLocked && { opacity: 1 }]}
             />
           </View>
         </Animated.View>
@@ -103,17 +102,6 @@ const Badges = ({ route }) => {
     return <Loader />;
   }
 
-  if (!loading && !badges.length) {
-    return (
-      <Container>
-        <Header title="Badges" />
-        <Animated.View entering={FadeInRight} style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>No Badges found</Text>
-        </Animated.View>
-      </Container>
-    );
-  }
-
   return (
     <Container>
       <Header title="Badges" />
@@ -125,7 +113,7 @@ const Badges = ({ route }) => {
           marginVertical: 20,
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: lightColor,
+          backgroundColor: secondaryColor,
         }}>
         <Image
           source={{
@@ -137,8 +125,14 @@ const Badges = ({ route }) => {
           {technology.name}
         </Text>
       </View>
-      <Animated.View entering={FadeIn} style={styles.container}>
-        <View style={{ alignItems: 'center' }}>
+
+      {/* Badges List */}
+      <SubContainer>
+        {badges.length === 0 ? (
+          <Text style={{ color: lightColor, fontWeight: 'Bold', margin: 10 }}>
+            No Badges found
+          </Text>
+        ) : (
           <FlatList
             numColumns={2}
             data={badges}
@@ -147,8 +141,8 @@ const Badges = ({ route }) => {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ alignItems: 'center' }}
           />
-        </View>
-      </Animated.View>
+        )}
+      </SubContainer>
     </Container>
   );
 };
@@ -156,37 +150,19 @@ const Badges = ({ route }) => {
 export default Badges;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    backgroundColor: lightColor,
-  },
   card: {
-    margin: 5,
-    width: width / 2.6,
-    height: width / 2.6,
-    borderRadius: width / 1.3,
+    margin: 10,
+    width: width / 2.8,
+    height: width / 2.8,
+    borderRadius: width / 1.4,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'lemonchiffon',
+    backgroundColor: lightColor,
   },
   icon: {
     width: width / 5,
     height: width / 5,
     resizeMode: 'contain',
-  },
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingText: {
-    margin: 10,
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: lightColor,
   },
   lockIcon: {
     zIndex: 1,

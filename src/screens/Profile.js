@@ -1,38 +1,26 @@
 import { width } from '../styles/sizes';
 import { apiURL } from '../config/config';
-import instance from '../services/services';
-import Container from '../components/Container';
-import { ActivityIndicator } from 'react-native-paper';
-import Fontisto from 'react-native-vector-icons/Fontisto';
+import { Fontisto } from '../utils/icons';
+import { useStore } from '../store/store';
+import { instance } from '../services/services';
+import { Loader, Container } from '../components/index';
 import { Svg, Rect, Path, Circle } from 'react-native-svg';
-import Animated, { ZoomIn } from 'react-native-reanimated';
-import React, { useCallback, useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useCallback, useEffect, useState } from 'react';
 import { Text, View, Image, StyleSheet, FlatList } from 'react-native';
 import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
+  const { user } = useStore(state => state);
   const [loading, setLoading] = useState(false);
   const [achievments, setAchievements] = useState();
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await AsyncStorage.getItem('user');
-        if (data) setUser(JSON.parse(data));
-      } catch (error) {
-        console.log('Failed to fetch user data:', error);
-      }
-    })();
-  }, []);
 
   const fetchAchievements = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await instance.get('/achievements'); // Correct endpoint spelling
-      setAchievements(response.data.data); // Make sure this is the correct path
+      const response = await instance.get('/achievements');
+      setAchievements(response.data.data);
     } catch (error) {
-      console.error('Error fetching achievements:', error); // Update error message
+      console.error('Error fetching achievements:', error);
     } finally {
       setLoading(false);
     }
@@ -45,10 +33,7 @@ const Profile = () => {
   if (loading) {
     return (
       <Container>
-        <Animated.View entering={ZoomIn} style={styles.loadingContainer}>
-          <ActivityIndicator size={50} color={lightColor} />
-          <Text style={styles.loadingText}>Loading...</Text>
-        </Animated.View>
+        <Loader />
       </Container>
     );
   }

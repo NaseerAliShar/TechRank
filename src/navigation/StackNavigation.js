@@ -1,23 +1,21 @@
-import Tab from './TabNavigation';
 import Login from '../auth/Login';
 import Register from '../auth/Register';
-import Quiz from '../screens/Quiz';
-import Result from '../screens/Result';
-import Splash from '../screens/Splash';
-import Badges from '../screens/Badges';
+import { View, Text } from 'react-native';
+import { TabNavigation } from './TabNavigation';
 import { lightColor, primaryColor } from '../styles/colors';
+import { Quiz, Result, Splash, Badges } from '../screens/index';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
 
-export default function StackNavigation() {
+export const StackNavigation = () => {
   return (
     <Stack.Navigator
       initialRouteName="Splash"
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="Tab" component={Tab} />
+      <Stack.Screen name="Tab" component={TabNavigation} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="Quiz" component={Quiz} />
@@ -34,9 +32,13 @@ export default function StackNavigation() {
           headerStyle: {
             backgroundColor: primaryColor,
           },
-          headerTitle: () => <Text>Badges</Text>,
+          headerTitle: () => (
+            <View>
+              <Text>Badges</Text>
+            </View>
+          ),
         }}
       />
     </Stack.Navigator>
   );
-}
+};

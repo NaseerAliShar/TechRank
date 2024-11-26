@@ -16,12 +16,10 @@ import {
 import { width } from '../styles/sizes';
 import { apiURL } from '../config/config';
 import { useStore } from '../store/store';
-import instance from '../services/services';
-import Container from '../components/Container';
-import { ActivityIndicator } from 'react-native-paper';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import { instance } from '../services/services';
+import { Loader, Container } from '../components/index';
+import { useState, useEffect, useCallback } from 'react';
 import { SelectList } from 'react-native-dropdown-select-list';
-import React, { useState, useEffect, useCallback } from 'react';
 
 const Leaderboard = () => {
   const [activeTab, setActiveTab] = useState('All');
@@ -170,12 +168,7 @@ const Leaderboard = () => {
           />
         )}
 
-        {loading && (
-          <Animated.View entering={ZoomIn} style={styles.loadingContainer}>
-            <ActivityIndicator size={50} color={lightColor} />
-            <Text style={styles.loadingText}>Loading...</Text>
-          </Animated.View>
-        )}
+        {loading && <Loader />}
 
         {/* Top 3 Users */}
         <View style={{ marginVertical: 10, alignItems: 'center' }}>

@@ -6,10 +6,10 @@ import {
   ProgressBar,
   ActivityIndicator,
 } from 'react-native-paper';
-import Result from './Result';
 import { width } from '../styles/sizes';
-import instance from '../services/services';
-import Container from '../components/Container';
+import { Result } from '../screens/index';
+import { instance } from '../services/services';
+import { Container } from '../components/index';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';

@@ -1,12 +1,11 @@
 import { width } from '../styles/sizes';
-import Header from '../components/Header';
 import { Card } from 'react-native-paper';
-import Container from '../components/Container';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { MaterialIcons } from '../utils/icons';
+import { Header, Container } from '../components/index';
 import { lightColor, primaryColor } from '../styles/colors';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
-const Answers = ({ route }) => {
+const Analytics = ({ route }) => {
   const { questions, wrongAnswers, correctAnswers, userSelections } =
     route.params;
 
@@ -42,7 +41,7 @@ const Answers = ({ route }) => {
           <View style={styles.questionContainer}>
             <Text style={styles.questionText}>{item.questionText}</Text>
             {iconName && (
-              <Icon
+              <MaterialIcons
                 size={24}
                 name={iconName}
                 color={iconColor}
@@ -112,7 +111,7 @@ const Answers = ({ route }) => {
   );
 };
 
-export default Answers;
+export default Analytics;
 
 const styles = StyleSheet.create({
   container: {

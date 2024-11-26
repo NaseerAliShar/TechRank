@@ -13,20 +13,16 @@ import Animated, {
   FadeOutDown,
 } from 'react-native-reanimated';
 import React from 'react';
-import Loader from '../components/Loader';
-import Container from '../components/Container';
-import Feather from 'react-native-vector-icons/Feather';
-import SubContainer from '../components/SubContainer';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { width } from '../styles/sizes';
 import { apiURL } from '../config/config';
 import { useStore } from '../store/store';
+import { navigate } from '../utils/navigation';
 import { instance } from '../services/services';
-import { useNavigation } from '@react-navigation/native';
+import { Feather, SimpleLineIcons } from '../utils/icons';
 import { lightColor, primaryColor } from '../styles/colors';
+import { Loader, Container, SubContainer } from '../components/index';
 
 const Home = () => {
-  const navigation = useNavigation();
   const {
     user,
     setUser,
@@ -37,7 +33,7 @@ const Home = () => {
     setTechnologies,
   } = useStore(state => state);
 
-  const fetchData = React.useCallback(async () => {
+  const setData = React.useCallback(async () => {
     setLoading(true);
     try {
       const [technologies, badges] = await Promise.all([
@@ -55,13 +51,13 @@ const Home = () => {
 
   React.useEffect(() => {
     setUser();
-    fetchData();
-  }, [fetchData]);
+    setData();
+  }, [setUser, setData]);
 
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
       activeOpacity={0.8}
-      onPress={() => navigation.navigate('Badges', { technology: item })}>
+      onPress={() => navigate('Badges', { technology: item })}>
       <View style={{ alignItems: 'center' }}>
         <Animated.View
           entering={BounceIn.delay(index * 100)}
@@ -104,9 +100,11 @@ const Home = () => {
           <Text style={styles.userName}>Hello, {user?.fname}</Text>
           <View style={styles.greetingContainer}>
             <Feather name="sun" size={15} color="orange" />
-            <Text style={styles.greetingText}>Good Morning</Text>
+            <Text style={{ color: primaryColor, marginLeft: 5 }}>
+              Good Morning
+            </Text>
           </View>
-          <View style={styles.userStats}>
+          <View style={{ flexDirection: 'row', gap: 5 }}>
             {[
               { icon: 'trophy', value: user?.weightage },
               { icon: 'badge', value: 50 },
@@ -114,7 +112,9 @@ const Home = () => {
             ].map((stat, idx) => (
               <View key={idx} style={styles.statBadge}>
                 <SimpleLineIcons name={stat.icon} size={15} color="white" />
-                <Text style={styles.statValue}>{stat.value}</Text>
+                <Text style={{ color: lightColor, marginLeft: 5 }}>
+                  {stat.value}
+                </Text>
               </View>
             ))}
           </View>
@@ -140,7 +140,9 @@ const Home = () => {
       {/* Technologies List */}
       <SubContainer>
         {technologies.length === 0 ? (
-          <Text style={styles.loadingText}>No Technologies found</Text>
+          <Text style={{ color: lightColor, fontWeight: 'Bold', margin: 10 }}>
+            No Technologies found
+          </Text>
         ) : (
           <FlatList
             numColumns={4}
@@ -148,6 +150,7 @@ const Home = () => {
             renderItem={renderItem}
             showsVerticalScrollIndicator={false}
             keyExtractor={item => item._id.toString()}
+            contentContainerStyle={{ alignItems: 'flex-start' }}
           />
         )}
       </SubContainer>
@@ -193,28 +196,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
-  greetingText: {
-    marginLeft: 5,
-    color: primaryColor,
-  },
-  userStats: {
-    gap: 5,
-    flexDirection: 'row',
-  },
   statBadge: {
     borderRadius: 15,
     paddingVertical: 5,
+    paddingHorizontal: 10,
     alignItems: 'center',
     flexDirection: 'row',
-    paddingHorizontal: 10,
     backgroundColor: primaryColor,
   },
-  statValue: {
-    color: '#fff',
-    marginLeft: 5,
-  },
   didYouKnow: {
-    padding: 10,
+    padding: 5,
     borderWidth: 1,
     borderRadius: 10,
     marginVertical: 20,

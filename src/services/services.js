@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { navigate } from '../utils/navigation';
+import { replace } from '../utils/navigation';
 import { apiURL, apiVersion } from '../config/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -39,7 +39,7 @@ instance.interceptors.response.use(
       const statusCode = error.response.status;
       if (statusCode === 401) {
         AsyncStorage.clear();
-        navigate('Login');
+        replace('Login');
       }
     }
     console.warn('Response interceptor error:', error);

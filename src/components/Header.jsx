@@ -1,7 +1,7 @@
+import { AntDesign } from '../utils/icons';
 import { primaryColor } from '../styles/colors';
 import { useNavigation } from '@react-navigation/native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 const Header = ({ title, icon, OnPress }) => {
   const navigation = useNavigation();

@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { width } from '../styles/sizes';
-import { Text } from 'react-native-paper';
-import Container from '../components/Container';
+import { Container } from '../components/index';
 import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
-import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 
 const Help = () => {
   const [expandedIndex, setExpandedIndex] = useState(null);

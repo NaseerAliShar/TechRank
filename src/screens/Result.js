@@ -1,13 +1,14 @@
-import { useEffect } from 'react';
+import React from 'react';
 import { width } from '../styles/sizes';
 import { apiURL } from '../config/config';
-import instance from '../services/services';
 import { Button } from 'react-native-paper';
-import Container from '../components/Container';
+import { navigate } from '../utils/navigation';
+import { instance } from '../services/services';
+import { Container } from '../components/index';
 import * as Progress from 'react-native-progress';
-import { useNavigation } from '@react-navigation/native';
 import { lightColor, primaryColor } from '../styles/colors';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+
 const Result = ({
   time,
   score,
@@ -18,7 +19,6 @@ const Result = ({
   correctAnswers,
   userSelections,
 }) => {
-  const navigation = useNavigation();
   const totalQuestions = questions.length;
   const totalPercentage = (score / totalQuestions) * 100;
   const totalTime = {
@@ -54,7 +54,7 @@ const Result = ({
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     submitResult();
   }, []);
 
@@ -166,19 +166,19 @@ const Result = ({
                 style={styles.analyticsButton}
                 mode="outlined"
                 onPress={() =>
-                  navigation.navigate('Analytics', {
+                  navigate('Leaderboard', {
                     questions,
                     wrongAnswers,
                     correctAnswers,
                     userSelections,
                   })
                 }>
-                <Text style={styles.analyticsButtonText}>View Analytics</Text>
+                <Text style={styles.analyticsButtonText}>Leaderboard</Text>
               </Button>
               <Button
                 style={styles.backButton}
                 mode="outlined"
-                onPress={() => navigation.navigate('Home')}>
+                onPress={() => navigate('Home')}>
                 <Text style={styles.backButtonText}>Try Again</Text>
               </Button>
             </View>

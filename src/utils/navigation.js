@@ -1,9 +1,26 @@
-import { createNavigationContainerRef } from '@react-navigation/native';
+import {
+  StackActions,
+  createNavigationContainerRef,
+} from '@react-navigation/native';
 
 export const navigationRef = createNavigationContainerRef();
 
-export function navigate(name, params) {
+function navigate(name, params) {
   if (navigationRef.isReady()) {
     navigationRef.navigate(name, params);
   }
 }
+
+function replace(name, params) {
+  if (navigationRef.isReady()) {
+    navigationRef.dispatch(StackActions.replace(name, params));
+  }
+}
+
+function goBack() {
+  if (navigationRef.isReady() && navigationRef.canGoBack()) {
+    navigationRef.goBack();
+  }
+}
+
+export { navigate, replace, goBack };

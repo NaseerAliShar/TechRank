@@ -1,20 +1,21 @@
-import { useEffect } from 'react';
+import React from 'react';
 import { width } from '../styles/sizes';
 import { Divider } from 'react-native-paper';
-import Container from '../components/Container';
+import { replace } from '../utils/navigation';
+import { Container } from '../components/index';
 import * as Animatable from 'react-native-animatable';
 import { darkColor, primaryColor } from '../styles/colors';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Splash = ({ navigation }) => {
-  useEffect(() => {
+const Splash = () => {
+  React.useEffect(() => {
     setTimeout(async () => {
       const token = await AsyncStorage.getItem('token');
       if (!token) {
-        navigation.replace('Login');
+        replace('Login');
       } else {
-        navigation.replace('Tab');
+        replace('Tab');
       }
     }, 3000);
   }, []);
