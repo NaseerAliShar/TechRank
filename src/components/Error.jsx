@@ -1,18 +1,16 @@
 import { primaryColor } from '../styles/colors';
 import { Text, StyleSheet } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 
-const Loader = () => {
+const Error = ({ children }) => {
   return (
     <Animated.View entering={ZoomIn} style={styles.container}>
-      <ActivityIndicator size={50} color={primaryColor} />
-      <Text style={styles.text}>Loading...</Text>
+      <Text style={styles.text}>{children}</Text>
     </Animated.View>
   );
 };
 
-export default Loader;
+export default Error;
 
 const styles = StyleSheet.create({
   container: {
@@ -22,7 +20,7 @@ const styles = StyleSheet.create({
   },
   text: {
     margin: 10,
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 'bold',
     color: primaryColor,
   },

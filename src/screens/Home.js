@@ -7,52 +7,46 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Animated, {
-  ZoomIn,
   BounceIn,
   FadeInUp,
   FadeOutDown,
 } from 'react-native-reanimated';
-import React from 'react';
+import { useEffect } from 'react';
 import { width } from '../styles/sizes';
 import { apiURL } from '../config/config';
 import { useStore } from '../store/store';
 import { navigate } from '../utils/navigation';
-import { instance } from '../services/services';
 import { Feather, SimpleLineIcons } from '../utils/icons';
 import { lightColor, primaryColor } from '../styles/colors';
-import { Loader, Container, SubContainer } from '../components/index';
+import {
+  Card,
+  Error,
+  Loader,
+  Container,
+  SubContainer,
+} from '../components/index';
 
 const Home = () => {
   const {
     user,
     setUser,
+    error,
     loading,
-    setLoading,
+    badges,
     setBadges,
     technologies,
     setTechnologies,
-  } = useStore(state => state);
+  } = useStore();
 
-  const setData = React.useCallback(async () => {
-    setLoading(true);
-    try {
-      const [technologies, badges] = await Promise.all([
-        instance.get('/technologies'),
-        instance.get('/badges'),
-      ]);
-      setTechnologies(technologies.data);
-      setBadges(badges.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (technologies.length === 0) {
+      setTechnologies();
     }
-  }, [setTechnologies, setBadges]);
-
-  React.useEffect(() => {
+    if (badges.length === 0) {
+      setBadges();
+    }
     setUser();
-    setData();
-  }, [setUser, setData]);
+  }, [user]);
 
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
@@ -73,25 +67,18 @@ const Home = () => {
     </TouchableOpacity>
   );
 
-  if (loading) {
+  if (loading && technologies.length === 0) {
     return <Loader />;
+  }
+
+  if (error) {
+    return <Error>{error}</Error>;
   }
 
   return (
     <Container>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>
-          Welcome, {user?.fname} {user?.lname}
-        </Text>
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={styles.logo}
-        />
-      </View>
-
       {/* User Info */}
-      <View style={styles.userInfo}>
+      <Card>
         <Image
           source={{ uri: `${apiURL}/${user?.avatar}` }}
           style={styles.userAvatar}
@@ -100,7 +87,7 @@ const Home = () => {
           <Text style={styles.userName}>Hello, {user?.fname}</Text>
           <View style={styles.greetingContainer}>
             <Feather name="sun" size={15} color="orange" />
-            <Text style={{ color: primaryColor, marginLeft: 5 }}>
+            <Text style={{ color: lightColor, marginLeft: 5 }}>
               Good Morning
             </Text>
           </View>
@@ -119,68 +106,39 @@ const Home = () => {
             ))}
           </View>
         </View>
-      </View>
+      </Card>
 
       {/* "Did You Know" Section */}
-      <View style={styles.didYouKnow}>
-        <Animated.View style={{ marginRight: 10 }} entering={ZoomIn}>
-          <Image
-            source={require('../../assets/images/didyouknow.png')}
-            style={styles.didYouKnowIcon}
-          />
-        </Animated.View>
+      <Card>
         <Animated.View entering={FadeInUp}>
-          <Text style={styles.didYouKnowText}>
-            JavaScript has a built-in function to randomly shuffle items in an
-            array, helping you mix things up with ease.
-          </Text>
+          <Text style={styles.didYouKnowText}>Here is Tip of the day!</Text>
         </Animated.View>
-      </View>
+      </Card>
 
       {/* Technologies List */}
       <SubContainer>
-        {technologies.length === 0 ? (
-          <Text style={{ color: lightColor, fontWeight: 'Bold', margin: 10 }}>
-            No Technologies found
-          </Text>
-        ) : (
-          <FlatList
-            numColumns={4}
-            data={technologies}
-            renderItem={renderItem}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={item => item._id.toString()}
-            contentContainerStyle={{ alignItems: 'flex-start' }}
-          />
-        )}
+        <View style={{ alignItems: 'center' }}>
+          {technologies.length === 0 ? (
+            <Text style={{ color: lightColor, fontWeight: 'bold', margin: 10 }}>
+              No Technologies found
+            </Text>
+          ) : (
+            <FlatList
+              numColumns={4}
+              data={technologies}
+              renderItem={renderItem}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={item => item._id.toString()}
+              contentContainerStyle={{ alignItems: 'flex-start' }}
+            />
+          )}
+        </View>
       </SubContainer>
     </Container>
   );
 };
 
 const styles = StyleSheet.create({
-  header: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  headerText: {
-    color: primaryColor,
-    fontFamily: 'Poppins-SemiBold',
-  },
-  logo: {
-    width: width / 8,
-    height: width / 8,
-    resizeMode: 'contain',
-  },
-  userInfo: {
-    padding: 10,
-    borderWidth: 1,
-    borderRadius: 10,
-    alignItems: 'center',
-    flexDirection: 'row',
-    borderColor: primaryColor,
-  },
   userAvatar: {
     width: width / 6,
     height: width / 6,
@@ -189,10 +147,10 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: primaryColor,
+    color: lightColor,
   },
   greetingContainer: {
-    paddingVertical: 5,
+    marginBottom: 5,
     alignItems: 'center',
     flexDirection: 'row',
   },
@@ -204,24 +162,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: primaryColor,
   },
-  didYouKnow: {
-    padding: 5,
-    borderWidth: 1,
-    borderRadius: 10,
-    marginVertical: 20,
-    alignItems: 'center',
-    flexDirection: 'row',
-    borderColor: primaryColor,
-  },
-  didYouKnowIcon: {
-    width: width / 5,
-    height: width / 5,
-    resizeMode: 'contain',
-  },
   didYouKnowText: {
     color: primaryColor,
     textAlign: 'justify',
-    maxWidth: width / 1.5,
     fontFamily: 'Poppins-Regular',
   },
   card: {

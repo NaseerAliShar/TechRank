@@ -4,20 +4,19 @@ import { apiURL } from '../config/config';
 import { Button } from 'react-native-paper';
 import { navigate } from '../utils/navigation';
 import { instance } from '../services/services';
-import { Container } from '../components/index';
 import * as Progress from 'react-native-progress';
+import { Card, Container } from '../components/index';
 import { lightColor, primaryColor } from '../styles/colors';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 
 const Result = ({
   time,
   score,
   badge,
-  technology,
   questions,
+  technology,
   wrongAnswers,
   correctAnswers,
-  userSelections,
 }) => {
   const totalQuestions = questions.length;
   const totalPercentage = (score / totalQuestions) * 100;
@@ -71,124 +70,106 @@ const Result = ({
           style={styles.resultImage}
         />
       )}
-      <View style={styles.container}>
-        {totalPercentage >= 80 ? (
-          <View>
-            <View style={styles.resultCard}>
-              <View style={styles.resultProgress}>
-                <Progress.Pie
-                  size={30}
-                  progress={totalPercentage / 100}
-                  color={primaryColor}
-                />
-                <Text>{totalPercentage}%</Text>
-              </View>
-              <View style={styles.resultMessage}>
-                <Text style={[styles.scoreMessage, { color: 'green' }]}>
-                  Congratulations! You did great.
-                </Text>
-                <Text style={styles.scoreMessage}>
-                  You scored {score} out of {questions.length}
-                </Text>
-              </View>
-            </View>
+      {totalPercentage >= 80 ? (
+        <Card>
+          <View style={styles.resultProgress}>
+            <Progress.Pie
+              size={40}
+              progress={totalPercentage / 100}
+              color={lightColor}
+            />
+            <Text style={styles.text}>{totalPercentage}%</Text>
           </View>
-        ) : (
-          <View>
-            <View style={styles.resultCard}>
-              <View style={styles.resultProgress}>
-                <Progress.Pie
-                  size={30}
-                  color={primaryColor}
-                  progress={totalPercentage / 100}
-                />
-                <Text style={{ color: 'blue' }}>{totalPercentage}%</Text>
-              </View>
-              <View style={styles.resultMessage}>
-                <Text style={[styles.scoreMessage, { color: 'red' }]}>
-                  Oops! Better luck next time.
-                </Text>
-                <Text style={styles.scoreMessage}>
-                  You scored {score} out of {questions.length}
-                </Text>
-              </View>
-            </View>
-          </View>
-        )}
-        <View style={{ flex: 1, justifyContent: 'space-between' }}>
-          <View>
-            <View style={styles.boxContainer}>
-              <TouchableOpacity
-                activeOpacity={1}
-                style={[styles.box, { backgroundColor: '#0E81B4' }]}>
-                <Text style={styles.boxText}>Total Time</Text>
-                <Text style={styles.boxText}>
-                  {totalTime.minutes < 10
-                    ? `0${totalTime.minutes}`
-                    : totalTime.minutes}
-                  :
-                  {totalTime.seconds < 10
-                    ? `0${totalTime.seconds}`
-                    : totalTime.seconds}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={1}
-                style={[styles.box, { backgroundColor: '#F2954D' }]}>
-                <Text style={styles.boxText}>Avg Time</Text>
-                <Text style={styles.boxText}>
-                  {avgTime.minutes < 10
-                    ? `0${avgTime.minutes}`
-                    : avgTime.minutes}
-                  :
-                  {avgTime.seconds < 10
-                    ? `0${avgTime.seconds}`
-                    : avgTime.seconds}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.boxContainer}>
-              <TouchableOpacity
-                activeOpacity={0.85}
-                style={[styles.box, { backgroundColor: '#27AE60' }]}>
-                <Text style={styles.boxText}>Correct Answers</Text>
-                <Text style={styles.boxText}>{correctAnswers.length}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.85}
-                style={[styles.box, { backgroundColor: '#EB5757' }]}>
-                <Text style={styles.boxText}>Wrong Answers</Text>
-                <Text style={styles.boxText}>{wrongAnswers.length}</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={{ alignItems: 'center' }}>
-              <Button
-                style={styles.analyticsButton}
-                mode="outlined"
-                onPress={() =>
-                  navigate('Leaderboard', {
-                    questions,
-                    wrongAnswers,
-                    correctAnswers,
-                    userSelections,
-                  })
-                }>
-                <Text style={styles.analyticsButtonText}>Leaderboard</Text>
-              </Button>
-              <Button
-                style={styles.backButton}
-                mode="outlined"
-                onPress={() => navigate('Home')}>
-                <Text style={styles.backButtonText}>Try Again</Text>
-              </Button>
-            </View>
-          </View>
-          <View>
-            <Text
-              style={{ margin: 10, color: primaryColor, textAlign: 'center' }}>
-              *Analytics are available for premium users only.
+          <View style={styles.resultMessage}>
+            <Text style={[styles.text, { color: 'green' }]}>
+              Congratulations! You did great.
+            </Text>
+            <Text style={styles.text}>
+              You scored {score} out of {questions.length}
             </Text>
           </View>
+        </Card>
+      ) : (
+        <Card>
+          <View style={styles.resultProgress}>
+            <Progress.Pie
+              size={40}
+              color={lightColor}
+              progress={totalPercentage / 100}
+            />
+            <Text style={{ color: primaryColor }}>{totalPercentage}%</Text>
+          </View>
+          <View style={styles.resultMessage}>
+            <Text style={[styles.text, { color: 'red' }]}>
+              Oops! Better luck next time.
+            </Text>
+            <Text style={styles.text}>
+              You scored {score} out of {questions.length}
+            </Text>
+          </View>
+        </Card>
+      )}
+      <View>
+        <View style={styles.cardRow}>
+          <Card style={styles.card}>
+            <Text style={styles.text}>Total Time</Text>
+            <Text style={styles.text}>
+              {totalTime.minutes < 10
+                ? `0${totalTime.minutes}`
+                : totalTime.minutes}
+              :
+              {totalTime.seconds < 10
+                ? `0${totalTime.seconds}`
+                : totalTime.seconds}
+            </Text>
+          </Card>
+          <Card style={styles.card}>
+            <Text style={styles.text}>Avg Time</Text>
+            <Text style={styles.text}>
+              {avgTime.minutes < 10 ? `0${avgTime.minutes}` : avgTime.minutes}:
+              {avgTime.seconds < 10 ? `0${avgTime.seconds}` : avgTime.seconds}
+            </Text>
+          </Card>
+        </View>
+        <View style={styles.cardRow}>
+          <Card style={styles.card}>
+            <Text style={styles.text}>Correct Answers</Text>
+            <Text style={styles.text}>{correctAnswers.length}</Text>
+          </Card>
+          <Card style={styles.card}>
+            <Text style={styles.text}>Wrong Answers</Text>
+            <Text style={styles.text}>{wrongAnswers.length}</Text>
+          </Card>
+        </View>
+        <View style={{ alignItems: 'center' }}>
+          <Button
+            style={styles.leaderboardBtn}
+            mode="outlined"
+            onPress={() => navigate('Leaderboard')}>
+            <Text style={[styles.text, { color: primaryColor }]}>
+              Leaderboard
+            </Text>
+          </Button>
+
+          {totalPercentage >= 80 ? (
+            <Card style={styles.button}>
+              <Button
+                style={{ borderWidth: 0, padding: 0 }}
+                mode="outlined"
+                onPress={() => navigate('Home')}>
+                <Text style={styles.text}>Home</Text>
+              </Button>
+            </Card>
+          ) : (
+            <Card style={styles.button}>
+              <Button
+                style={{ borderWidth: 0, padding: 0 }}
+                mode="outlined"
+                onPress={() => navigate('Badges', { technology })}>
+                <Text style={styles.text}>Try Again</Text>
+              </Button>
+            </Card>
+          )}
         </View>
       </View>
     </Container>
@@ -198,13 +179,6 @@ const Result = ({
 export default Result;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    backgroundColor: lightColor,
-  },
   resultImage: {
     marginVertical: 20,
     width: width * 0.8,
@@ -212,66 +186,42 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     resizeMode: 'contain',
   },
-  resultCard: {
-    borderWidth: 2,
-    borderRadius: 10,
-    height: width / 4,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: primaryColor,
-  },
   resultProgress: {
     width: '20%',
     alignItems: 'center',
     borderRightWidth: 2,
-    borderColor: primaryColor,
-  },
-  scoreMessage: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: primaryColor,
   },
   resultMessage: {
     width: '80%',
     alignItems: 'center',
   },
-  analyticsButton: {
+  leaderboardBtn: {
     marginTop: 20,
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: 30,
     borderColor: primaryColor,
+    backgroundColor: lightColor,
   },
-  analyticsButtonText: {
-    color: primaryColor,
-    fontWeight: 'bold',
-  },
-  boxContainer: {
+  cardRow: {
     marginTop: 20,
-    paddingHorizontal: 10,
+    marginHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  box: {
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingVertical: 20,
+  card: {
     width: '48%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: primaryColor,
+    paddingVertical: 20,
+    flexDirection: 'column',
   },
-  boxText: {
+  text: {
     fontSize: 16,
-    color: '#fff',
+    color: lightColor,
     fontWeight: 'bold',
   },
-  backButton: {
+  button: {
+    padding: 0,
     marginTop: 20,
     borderRadius: 30,
     backgroundColor: primaryColor,
-  },
-  backButtonText: {
-    color: lightColor,
-    fontWeight: 'bold',
   },
 });

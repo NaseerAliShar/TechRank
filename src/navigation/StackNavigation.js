@@ -1,6 +1,5 @@
 import Login from '../auth/Login';
 import Register from '../auth/Register';
-import { View, Text } from 'react-native';
 import { TabNavigation } from './TabNavigation';
 import { lightColor, primaryColor } from '../styles/colors';
 import { Quiz, Result, Splash, Badges } from '../screens/index';
@@ -25,18 +24,18 @@ export const StackNavigation = () => {
         name="Badges"
         component={Badges}
         options={{
-          headerShown: false,
-          headerTintColor: lightColor,
-          headerShadowVisible: false,
+          headerShown: true,
           headerTitleAlign: 'center',
+          headerShadowVisible: false,
+          headerTintColor: lightColor,
           headerStyle: {
             backgroundColor: primaryColor,
           },
-          headerTitle: () => (
-            <View>
-              <Text>Badges</Text>
-            </View>
-          ),
+          headerTitleStyle: {
+            fontSize: 20,
+            color: lightColor,
+            fontWeight: 'bold',
+          },
         }}
       />
     </Stack.Navigator>

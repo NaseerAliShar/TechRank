@@ -1,27 +1,19 @@
-import { StyleSheet } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { primaryColor, secondaryColor } from '../styles/colors';
+import { primaryColor } from '../styles/colors';
+import { View, StyleSheet } from 'react-native';
 
 const SubContainer = ({ children }) => {
-  return (
-    <LinearGradient
-      colors={[primaryColor, secondaryColor]}
-      style={styles.container}
-      start={{ x: 1, y: 0 }}
-      end={{ x: 0, y: 1 }}>
-      {children}
-    </LinearGradient>
-  );
+  return <View style={styles.container}>{children}</View>;
 };
 
 export default SubContainer;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 10,
-    alignItems: 'center',
+    marginHorizontal: 10,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    backgroundColor: primaryColor,
   },
 });

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { width } from '../styles/sizes';
 import { Divider } from 'react-native-paper';
 import { replace } from '../utils/navigation';
@@ -9,7 +9,7 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Splash = () => {
-  React.useEffect(() => {
+  useEffect(() => {
     setTimeout(async () => {
       const token = await AsyncStorage.getItem('token');
       if (!token) {
@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   innovadorLogo: {
+    marginBottom: 20,
     height: width / 14,
     resizeMode: 'contain',
   },

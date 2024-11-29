@@ -1,5 +1,4 @@
 import { Alert } from 'react-native';
-import { width } from '../styles/sizes';
 import { goBack, navigate } from '../utils/navigation';
 import { lightColor, primaryColor } from '../styles/colors';
 import { Home, Help, Profile, Leaderboard } from '../screens/index';
@@ -32,9 +31,9 @@ export const TabNavigation = () => {
       initialRouteName="Home"
       screenOptions={{
         headerShown: true,
-        headerShadowVisible: true,
+        headerTitleAlign: 'center',
+        headerShadowVisible: false,
         headerStyle: {
-          height: width / 8,
           backgroundColor: primaryColor,
         },
         headerTitleStyle: {
@@ -52,7 +51,6 @@ export const TabNavigation = () => {
           />
         ),
         tabBarShowLabel: false,
-        headerTitleAlign: 'center',
         tabBarActiveTintColor: primaryColor,
         tabBarInactiveTintColor: primaryColor,
         tabBarStyle: {
@@ -109,7 +107,7 @@ export const TabNavigation = () => {
             ),
           headerRight: () => (
             <AntDesign
-              name="poweroff"
+              name="setting"
               size={20}
               color={lightColor}
               style={{ marginRight: 20 }}

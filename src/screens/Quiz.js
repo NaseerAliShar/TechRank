@@ -1,25 +1,25 @@
 import {
-  Card,
   Button,
   Checkbox,
-  RadioButton,
   ProgressBar,
-  ActivityIndicator,
+  RadioButton,
+  Card as Box,
 } from 'react-native-paper';
 import { width } from '../styles/sizes';
 import { Result } from '../screens/index';
+import { apiURL } from '../config/config';
 import { instance } from '../services/services';
-import { Container } from '../components/index';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { lightColor, primaryColor } from '../styles/colors';
 import { useEffect, useState, useCallback, useMemo } from 'react';
+import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
-import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
+import { Card, Container, Loader, SubContainer } from '../components/index';
 
 const Quiz = ({ route }) => {
   const { badge, technology } = route.params;
   const [time, setTime] = useState(0);
   const [score, setScore] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState([]);
@@ -31,9 +31,11 @@ const Quiz = ({ route }) => {
 
   useEffect(() => {
     const fetchQuestions = async () => {
+      setLoading(true);
       try {
         const { data } = await instance.get(`questions`);
         setQuestions(data);
+        setLoading(false);
       } catch (error) {
       } finally {
         setLoading(false);
@@ -117,7 +119,7 @@ const Quiz = ({ route }) => {
       : selectedOptions.includes(item);
 
     return (
-      <Card style={styles.optionCard}>
+      <Box style={styles.optionCard}>
         {isMultiChoice ? (
           <RadioButton.Group
             onValueChange={option => setSelectedOption(option)}
@@ -140,29 +142,12 @@ const Quiz = ({ route }) => {
             status={isSelected ? 'checked' : 'unchecked'}
           />
         )}
-      </Card>
+      </Box>
     );
   };
 
-  if (loading) {
-    return (
-      <Container>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator animating={true} size={50} color={lightColor} />
-          <Text style={styles.loadingText}>Loading...</Text>
-        </View>
-      </Container>
-    );
-  }
-
-  if (!questions.length) {
-    return (
-      <Container>
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>No questions found</Text>
-        </View>
-      </Container>
-    );
+  if (loading && questions.length === 0) {
+    return <Loader />;
   }
 
   if (quizFinished) {
@@ -171,8 +156,8 @@ const Quiz = ({ route }) => {
         time={time}
         score={score}
         badge={badge}
-        technology={technology}
         questions={questions}
+        technology={technology}
         wrongAnswers={wrongAnswers}
         correctAnswers={correctAnswers}
         userSelections={userSelections}
@@ -182,120 +167,132 @@ const Quiz = ({ route }) => {
 
   return (
     <Container>
-      <View
-        style={{
-          padding: 10,
-          borderRadius: 10,
-          height: width / 4,
-          marginVertical: 20,
-          alignItems: 'center',
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          backgroundColor: lightColor,
-        }}>
+      <Card style={{ justifyContent: 'space-around' }}>
         <View>
-          <Text style={styles.progressText}>Questions</Text>
-          <Text style={{ textAlign: 'center' }}>
-            {currentIndex + 1}/{questions.length}
-          </Text>
-        </View>
-        <View>
-          <Text style={styles.progressText}>Topic</Text>
-          <Text>{technology.name}</Text>
-        </View>
-        <View>
-          <Text style={styles.progressText}>Difficulty</Text>
-          <Text style={{ textAlign: 'center' }}>{badge.name}</Text>
-        </View>
-        <View>
-          <Text style={styles.progressText}>Duration</Text>
-          <Text style={{ textAlign: 'center' }}>
-            {questions.length} Minutes
-          </Text>
-        </View>
-      </View>
-      {questions.length > 0 && (
-        <View style={styles.container}>
-          <View style={{ alignSelf: 'center' }}>
-            <CountdownCircleTimer
-              isPlaying={!quizFinished}
-              size={40}
-              duration={600}
-              strokeWidth={4}
-              colors={['#5A6AE0', '#978EE7', '#FBDD40', '#A30000']}
-              colorsTime={[600, 450, 300, 0]}
-              onComplete={() => {
-                setQuizFinished(true);
-                return { shouldRepeat: false, delay: 0 };
-              }}>
-              {({ remainingTime }) => {
-                const seconds = remainingTime % 60;
-                const minutes = Math.floor(remainingTime / 60);
-                if (remainingTime === 0) {
-                  setQuizFinished(true);
-                }
-
-                return (
-                  <View>
-                    <View style={{ flexDirection: 'row' }}>
-                      <Text style={{ fontSize: 12 }}>{minutes}:</Text>
-                      <Text style={{ fontSize: 12 }}>
-                        {seconds < 10 ? `0${seconds}` : seconds}
-                      </Text>
-                    </View>
-                  </View>
-                );
-              }}
-            </CountdownCircleTimer>
-          </View>
-          <ProgressBar
-            color={primaryColor}
-            progress={progress}
-            style={styles.progressBar}
-          />
-          <Text style={styles.questionText}>
-            {questions[currentIndex].questionText}
-          </Text>
-          <FlatList
-            data={questions[currentIndex].options}
-            keyExtractor={(_, index) => index.toString()}
-            renderItem={renderItem}
-          />
-
-          <View
+          <Image
+            source={{
+              uri: `${apiURL}/${technology.image}`,
+            }}
             style={{
-              margin: 10,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
+              width: width / 8,
+              height: width / 8,
+              resizeMode: 'contain',
+            }}
+          />
+        </View>
+        <View>
+          <CountdownCircleTimer
+            isPlaying={!quizFinished}
+            size={40}
+            duration={600}
+            strokeWidth={5}
+            colors={['#4F08AF', '#4F08AF', '#A30000', '#A30000']}
+            colorsTime={[60, 30, 15, 0]}
+            onComplete={() => {
+              setQuizFinished(true);
+              return { shouldRepeat: false, delay: 0 };
             }}>
-            <View>
-              <Button
-                icon="arrow-left"
-                mode="contained"
-                textColor={lightColor}
-                buttonColor={primaryColor}
-                loading={loading}
-                onPress={() => setCurrentIndex(prevIndex => prevIndex - 1)}
-                disabled={currentIndex === 0}>
-                Prev
-              </Button>
-            </View>
-            <View>
-              <Button
-                icon="arrow-right"
-                mode="contained"
-                textColor={lightColor}
-                buttonColor={primaryColor}
-                loading={loading}
-                onPress={handleNext}
-                contentStyle={{ flexDirection: 'row-reverse' }}
-                disabled={!selectedOption && !selectedOptions.length}>
-                {currentIndex + 1 >= questions.length ? 'Finish' : 'Next'}
-              </Button>
+            {({ remainingTime }) => {
+              const seconds = remainingTime % 60;
+              const minutes = Math.floor(remainingTime / 60);
+              if (remainingTime === 0) {
+                setQuizFinished(true);
+              }
+
+              return (
+                <View>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={{ fontSize: 13, color: lightColor }}>
+                      {minutes}:
+                    </Text>
+                    <Text style={{ fontSize: 13, color: lightColor }}>
+                      {seconds < 10 ? `0${seconds}` : seconds}
+                    </Text>
+                  </View>
+                </View>
+              );
+            }}
+          </CountdownCircleTimer>
+        </View>
+        <View>
+          <Image
+            source={{
+              uri: `${apiURL}/${badge.icon}`,
+            }}
+            style={{
+              width: width / 8,
+              height: width / 8,
+              resizeMode: 'contain',
+            }}
+          />
+        </View>
+      </Card>
+      <View style={{ marginBottom: 10, alignSelf: 'center' }}>
+        <Text
+          style={{
+            fontSize: 20,
+            color: primaryColor,
+            fontFamily: 'Poppins-SemiBold',
+          }}>
+          {currentIndex + 1}/{questions.length}
+        </Text>
+      </View>
+      <SubContainer>
+        {questions.length === 0 ? (
+          <Text style={{ color: lightColor, fontWeight: 'Bold', margin: 10 }}>
+            No Badges found
+          </Text>
+        ) : (
+          <View style={{ flex: 1 }}>
+            <ProgressBar
+              color={primaryColor}
+              progress={progress}
+              style={styles.progressBar}
+            />
+            <Text style={styles.questionText}>
+              {questions[currentIndex].questionText}
+            </Text>
+            <FlatList
+              data={questions[currentIndex].options}
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={renderItem}
+            />
+
+            <View
+              style={{
+                margin: 10,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <View>
+                <Button
+                  icon="arrow-left"
+                  mode="contained"
+                  textColor={lightColor}
+                  buttonColor={primaryColor}
+                  loading={loading}
+                  onPress={() => setCurrentIndex(prevIndex => prevIndex - 1)}
+                  disabled={currentIndex === 0}>
+                  Prev
+                </Button>
+              </View>
+              <View>
+                <Button
+                  icon="arrow-right"
+                  mode="contained"
+                  textColor={lightColor}
+                  buttonColor={primaryColor}
+                  loading={loading}
+                  onPress={handleNext}
+                  contentStyle={{ flexDirection: 'row-reverse' }}
+                  disabled={!selectedOption && !selectedOptions.length}>
+                  {currentIndex + 1 >= questions.length ? 'Finish' : 'Next'}
+                </Button>
+              </View>
             </View>
           </View>
-        </View>
-      )}
+        )}
+      </SubContainer>
     </Container>
   );
 };
@@ -303,13 +300,6 @@ const Quiz = ({ route }) => {
 export default Quiz;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    backgroundColor: lightColor,
-  },
   progressText: {
     fontSize: 15,
     fontWeight: 'bold',
@@ -320,12 +310,12 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     marginVertical: 10,
-    backgroundColor: secondaryColor,
+    backgroundColor: lightColor,
   },
   questionText: {
     fontSize: 18,
     marginVertical: 5,
-    color: primaryColor,
+    color: lightColor,
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -336,23 +326,10 @@ const styles = StyleSheet.create({
   },
   optionCard: {
     margin: 5,
-    borderWidth: 1,
     borderRadius: 30,
-    borderColor: primaryColor,
   },
   optionText: {
     fontSize: 16,
     color: primaryColor,
-  },
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingText: {
-    margin: 10,
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: lightColor,
   },
 });

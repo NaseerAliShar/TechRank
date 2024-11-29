@@ -14,8 +14,8 @@ import { Formik } from 'formik';
 import { useState } from 'react';
 import { width } from '../styles/sizes';
 import { useStore } from '../store/store';
-import { Container } from '../components/index';
 import { instance } from '../services/services';
+import { SubContainer } from '../components/index';
 import { apiURL, apiVersion } from '../config/config';
 import { TextInput, Button } from 'react-native-paper';
 import { navigate, replace } from '../utils/navigation';
@@ -51,192 +51,196 @@ const Register = () => {
   });
 
   return (
-    <Container>
+    <View style={{ flex: 1 }}>
+      <Image
+        source={require('../../assets/images/logo.png')}
+        style={styles.logo}
+      />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView
-          style={styles.container}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <Image
-            source={require('../../assets/images/logo.png')}
-            style={styles.logo}
-          />
-          <Formik
-            initialValues={{
-              fname: '',
-              lname: '',
-              email: '',
-              country: '',
-              city: '',
-              mobile: '',
-              password: '',
-            }}
-            validationSchema={registrationValidationSchema}
-            onSubmit={values => {
-              Keyboard.dismiss();
-              handleRegister(values);
-            }}>
-            {({
-              handleChange,
-              handleSubmit,
-              handleBlur,
-              touched,
-              values,
-              errors,
-            }) => (
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <View style={{ width: '48%' }}>
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1 }}>
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}>
+            <SubContainer>
+              <Formik
+                initialValues={{
+                  fname: '',
+                  lname: '',
+                  email: '',
+                  country: '',
+                  city: '',
+                  mobile: '',
+                  password: '',
+                }}
+                validationSchema={registrationValidationSchema}
+                onSubmit={values => {
+                  Keyboard.dismiss();
+                  handleRegister(values);
+                }}>
+                {({
+                  handleChange,
+                  handleSubmit,
+                  handleBlur,
+                  touched,
+                  values,
+                  errors,
+                }) => (
+                  <>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}>
+                      <View style={{ width: '48%' }}>
+                        <TextInput
+                          label="First Name"
+                          mode="outlined"
+                          value={values.fname}
+                          onBlur={handleBlur('fname')}
+                          onChangeText={handleChange('fname')}
+                          style={styles.input}
+                          activeOutlineColor={primaryColor}
+                          error={touched.fname && errors.fname}
+                        />
+                        {touched.fname && errors.fname && (
+                          <Text style={styles.errorText}>{errors.fname}</Text>
+                        )}
+                      </View>
+                      <View style={{ width: '48%' }}>
+                        <TextInput
+                          label="Last Name"
+                          mode="outlined"
+                          value={values.lname}
+                          onBlur={handleBlur('lname')}
+                          onChangeText={handleChange('lname')}
+                          style={styles.input}
+                          activeOutlineColor={primaryColor}
+                          error={touched.lname && errors.lname}
+                        />
+                        {touched.lname && errors.lname && (
+                          <Text style={styles.errorText}>{errors.lname}</Text>
+                        )}
+                      </View>
+                    </View>
+
                     <TextInput
-                      label="First Name"
+                      label="Email"
                       mode="outlined"
-                      value={values.fname}
-                      onBlur={handleBlur('fname')}
-                      onChangeText={handleChange('fname')}
+                      value={values.email}
+                      onBlur={handleBlur('email')}
+                      onChangeText={handleChange('email')}
+                      style={styles.input}
+                      autoCapitalize="none"
+                      keyboardType="email-address"
+                      activeOutlineColor={primaryColor}
+                      error={touched.email && errors.email}
+                    />
+                    {touched.email && errors.email && (
+                      <Text style={styles.errorText}>{errors.email}</Text>
+                    )}
+
+                    <TextInput
+                      label="Country"
+                      mode="outlined"
+                      value={values.country}
+                      onBlur={handleBlur('country')}
+                      onChangeText={handleChange('country')}
                       style={styles.input}
                       activeOutlineColor={primaryColor}
-                      error={touched.fname && errors.fname}
+                      error={touched.country && errors.country}
                     />
-                    {touched.fname && errors.fname && (
-                      <Text style={styles.errorText}>{errors.fname}</Text>
+                    {touched.country && errors.country && (
+                      <Text style={styles.errorText}>{errors.country}</Text>
                     )}
-                  </View>
-                  <View style={{ width: '48%' }}>
+
                     <TextInput
-                      label="Last Name"
+                      label="City"
                       mode="outlined"
-                      value={values.lname}
-                      onBlur={handleBlur('lname')}
-                      onChangeText={handleChange('lname')}
+                      value={values.city}
+                      onBlur={handleBlur('city')}
+                      onChangeText={handleChange('city')}
                       style={styles.input}
                       activeOutlineColor={primaryColor}
-                      error={touched.lname && errors.lname}
+                      error={touched.city && errors.city}
                     />
-                    {touched.lname && errors.lname && (
-                      <Text style={styles.errorText}>{errors.lname}</Text>
+                    {touched.city && errors.city && (
+                      <Text style={styles.errorText}>{errors.city}</Text>
                     )}
-                  </View>
-                </View>
 
-                <TextInput
-                  label="Email"
-                  mode="outlined"
-                  value={values.email}
-                  onBlur={handleBlur('email')}
-                  onChangeText={handleChange('email')}
-                  style={styles.input}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  activeOutlineColor={primaryColor}
-                  error={touched.email && errors.email}
-                />
-                {touched.email && errors.email && (
-                  <Text style={styles.errorText}>{errors.email}</Text>
-                )}
-
-                <TextInput
-                  label="Country"
-                  mode="outlined"
-                  value={values.country}
-                  onBlur={handleBlur('country')}
-                  onChangeText={handleChange('country')}
-                  style={styles.input}
-                  activeOutlineColor={primaryColor}
-                  error={touched.country && errors.country}
-                />
-                {touched.country && errors.country && (
-                  <Text style={styles.errorText}>{errors.country}</Text>
-                )}
-
-                <TextInput
-                  label="City"
-                  mode="outlined"
-                  value={values.city}
-                  onBlur={handleBlur('city')}
-                  onChangeText={handleChange('city')}
-                  style={styles.input}
-                  activeOutlineColor={primaryColor}
-                  error={touched.city && errors.city}
-                />
-                {touched.city && errors.city && (
-                  <Text style={styles.errorText}>{errors.city}</Text>
-                )}
-                <TextInput
-                  label="Mobile"
-                  mode="outlined"
-                  value={values.mobile}
-                  onBlur={handleBlur('mobile')}
-                  onChangeText={handleChange('mobile')}
-                  style={styles.input}
-                  keyboardType="phone-pad"
-                  activeOutlineColor={primaryColor}
-                  error={touched.mobile && errors.mobile}
-                />
-                {touched.mobile && errors.mobile && (
-                  <Text style={styles.errorText}>{errors.mobile}</Text>
-                )}
-
-                <TextInput
-                  label="Password"
-                  mode="outlined"
-                  value={values.password}
-                  onBlur={handleBlur('password')}
-                  onChangeText={handleChange('password')}
-                  style={styles.input}
-                  autoCapitalize="words"
-                  secureTextEntry={eye}
-                  activeOutlineColor={primaryColor}
-                  error={touched.password && errors.password}
-                  right={
-                    <TextInput.Icon
-                      icon={eye ? 'eye' : 'eye-off'}
-                      onPress={() => setEye(!eye)}
+                    <TextInput
+                      label="Mobile"
+                      mode="outlined"
+                      value={values.mobile}
+                      onBlur={handleBlur('mobile')}
+                      onChangeText={handleChange('mobile')}
+                      style={styles.input}
+                      keyboardType="phone-pad"
+                      activeOutlineColor={primaryColor}
+                      error={touched.mobile && errors.mobile}
                     />
-                  }
-                />
-                {touched.password && errors.password && (
-                  <Text style={styles.errorText}>{errors.password}</Text>
+                    {touched.mobile && errors.mobile && (
+                      <Text style={styles.errorText}>{errors.mobile}</Text>
+                    )}
+
+                    <TextInput
+                      label="Password"
+                      mode="outlined"
+                      value={values.password}
+                      onBlur={handleBlur('password')}
+                      onChangeText={handleChange('password')}
+                      style={styles.input}
+                      autoCapitalize="none"
+                      secureTextEntry={eye}
+                      activeOutlineColor={primaryColor}
+                      error={touched.password && errors.password}
+                      right={
+                        <TextInput.Icon
+                          icon={eye ? 'eye' : 'eye-off'}
+                          onPress={() => setEye(!eye)}
+                        />
+                      }
+                    />
+                    {touched.password && errors.password && (
+                      <Text style={styles.errorText}>{errors.password}</Text>
+                    )}
+
+                    <Button
+                      mode="contained"
+                      loading={loading}
+                      onPress={handleSubmit}
+                      style={styles.button}
+                      labelStyle={styles.buttonLabel}
+                      buttonColor={primaryColor}>
+                      {!loading && 'Register'}
+                    </Button>
+
+                    <View style={styles.textContainer}>
+                      <Text style={styles.text}>
+                        Already have an account?{' '}
+                        <Text
+                          style={styles.linkText}
+                          onPress={() => navigate('Login')}>
+                          Login
+                        </Text>
+                      </Text>
+                    </View>
+                  </>
                 )}
-
-                <Button
-                  mode="contained"
-                  loading={loading}
-                  onPress={handleSubmit}
-                  style={styles.button}
-                  labelStyle={styles.buttonLabel}
-                  buttonColor={primaryColor}>
-                  {!loading && 'Register'}
-                </Button>
-
-                <View style={styles.textContainer}>
-                  <Text style={styles.text}>
-                    Already have an account?{' '}
-                    <Text
-                      style={styles.linkText}
-                      onPress={() => navigate('Login')}>
-                      Login
-                    </Text>
-                  </Text>
-                </View>
-              </ScrollView>
-            )}
-          </Formik>
+              </Formik>
+            </SubContainer>
+          </ScrollView>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
-    </Container>
+    </View>
   );
 };
 
 export default Register;
 
 const styles = {
-  container: {
-    flex: 1,
-    padding: 10,
-  },
   logo: {
     width: width / 2,
     height: width / 2,

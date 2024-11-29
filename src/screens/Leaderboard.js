@@ -1,4 +1,10 @@
 import {
+  darkColor,
+  lightColor,
+  primaryColor,
+  secondaryColor,
+} from '../styles/colors';
+import {
   View,
   Text,
   Image,
@@ -7,27 +13,23 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {
-  darkColor,
-  lightColor,
-  primaryColor,
-  secondaryColor,
-} from '../styles/colors';
 import { width } from '../styles/sizes';
 import { apiURL } from '../config/config';
 import { useStore } from '../store/store';
 import { instance } from '../services/services';
-import { Loader, Container } from '../components/index';
 import { useState, useEffect, useCallback } from 'react';
+import LinearGradient from 'react-native-linear-gradient';
 import { SelectList } from 'react-native-dropdown-select-list';
+import { Loader, Container, SubContainer } from '../components/index';
 
 const Leaderboard = () => {
   const [activeTab, setActiveTab] = useState('All');
   const [selectedBadge, setSelectedBadge] = useState('');
   const [selectedTechnology, setSelectedTechnology] = useState('');
-  const { users, setUsers } = useStore(state => state);
+  // const { users, setUsers } = useStore(state => state);
+  const [users, setUsers] = useState([]);
   const { loading, setLoading } = useStore(state => state);
-  const { badges, technologies } = useStore(state => state);
+  const { badges, technologies } = useStore();
 
   const fetchLeaderboardData = useCallback(async () => {
     setLoading(true);
@@ -79,7 +81,13 @@ const Leaderboard = () => {
 
   const renderItem = ({ item, index }) => (
     <View style={styles.itemContainer}>
-      <Text style={styles.indexText}>{index + 4}</Text>
+      <LinearGradient
+        colors={[primaryColor, secondaryColor]}
+        style={{ borderRadius: 20, paddingHorizontal: 6 }}
+        start={{ x: 1, y: 0 }}
+        end={{ x: 0, y: 0.5 }}>
+        <Text style={styles.indexText}>{index + 4}</Text>
+      </LinearGradient>
       <View style={styles.userInfo}>
         <Image
           source={{
@@ -96,7 +104,7 @@ const Leaderboard = () => {
           </Text>
         </View>
       </View>
-      <Text>{item.weightage}</Text>
+      <Text style={styles.userName}>{item.weightage}</Text>
     </View>
   );
 
@@ -175,7 +183,7 @@ const Leaderboard = () => {
           <View style={{ width: '100%' }}>
             <View
               style={{
-                marginBottom: 10,
+                marginBottom: 5,
                 flexDirection: 'row',
                 justifyContent: 'space-evenly',
               }}>
@@ -184,7 +192,7 @@ const Leaderboard = () => {
                   key={index}
                   style={{
                     alignItems: 'center',
-                    top: index === '0' ? 0 : index === '1' ? 40 : 60,
+                    top: index === '0' ? 5 : index === '1' ? 35 : 55,
                   }}>
                   <Image
                     source={{
@@ -196,8 +204,7 @@ const Leaderboard = () => {
                   />
                   <Text style={styles.inactiveText}>{users[index]?.fname}</Text>
                   <View style={styles.rankText}>
-                    <Text style={[styles.inactiveText]}>
-                      {/* {users[index]?.weightage} */}
+                    <Text style={[styles.inactiveText, { color: lightColor }]}>
                       {users[index]?.weightage ||
                         users[index]?.achievements ||
                         0}
@@ -213,15 +220,14 @@ const Leaderboard = () => {
           />
         </View>
       </View>
-
-      <View style={styles.container}>
+      <SubContainer>
         <FlatList
           data={users.slice(3)}
           renderItem={renderItem}
           keyExtractor={item => item.email}
           showsVerticalScrollIndicator={false}
         />
-      </View>
+      </SubContainer>
     </Container>
   );
 };
@@ -229,19 +235,10 @@ const Leaderboard = () => {
 export default Leaderboard;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexGrow: 1,
-    padding: 10,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    backgroundColor: secondaryColor,
-  },
   tabTitle: {
-    marginTop: 10,
     borderRadius: 20,
     paddingVertical: 5,
-    paddingHorizontal: 30,
+    paddingHorizontal: 25,
   },
   itemContainer: {
     padding: 10,
@@ -253,19 +250,20 @@ const styles = StyleSheet.create({
     backgroundColor: lightColor,
   },
   active: {
-    backgroundColor: lightColor,
+    backgroundColor: primaryColor,
   },
   inactive: {
-    backgroundColor: primaryColor,
+    backgroundColor: lightColor,
   },
   activeText: {
     fontSize: 16,
-    color: primaryColor,
+    color: lightColor,
     fontWeight: 'bold',
   },
   inactiveText: {
     fontSize: 16,
-    color: lightColor,
+    fontWeight: 'bold',
+    color: primaryColor,
   },
   userInfo: {
     width: '80%',
@@ -288,10 +286,7 @@ const styles = StyleSheet.create({
   },
   indexText: {
     fontSize: 16,
-    borderWidth: 1,
-    borderRadius: 15,
-    paddingHorizontal: 5,
-    backgroundColor: lightColor,
+    color: lightColor,
   },
   rankText: {
     marginTop: 5,
@@ -299,9 +294,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingVertical: 5,
     paddingHorizontal: 20,
-    backgroundColor: secondaryColor,
+    backgroundColor: primaryColor,
   },
   userName: {
+    color: primaryColor,
     fontWeight: 'bold',
   },
   userDetails: {
