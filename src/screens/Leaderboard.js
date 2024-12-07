@@ -1,10 +1,4 @@
 import {
-  darkColor,
-  lightColor,
-  primaryColor,
-  secondaryColor,
-} from '../styles/colors';
-import {
   View,
   Text,
   Image,
@@ -15,97 +9,57 @@ import {
 } from 'react-native';
 import { width } from '../styles/sizes';
 import { apiURL } from '../config/config';
-import { useStore } from '../store/store';
-import { instance } from '../services/services';
-import { useState, useEffect, useCallback } from 'react';
-import LinearGradient from 'react-native-linear-gradient';
+import { Card } from 'react-native-paper';
+import { useState, useEffect } from 'react';
+import { useBadgeStore } from '../store/badgeStore';
+import { useLeaderboardStore } from '../store/usersStore';
+import { useTechnologyStore } from '../store/technologyStore';
 import { SelectList } from 'react-native-dropdown-select-list';
-import { Loader, Container, SubContainer } from '../components/index';
+import { darkColor, lightColor, primaryColor } from '../styles/colors';
+import { Loader, Container, SubContainer, Gradient } from '../components/index';
 
 const Leaderboard = () => {
   const [activeTab, setActiveTab] = useState('All');
   const [selectedBadge, setSelectedBadge] = useState('');
   const [selectedTechnology, setSelectedTechnology] = useState('');
-  // const { users, setUsers } = useStore(state => state);
-  const [users, setUsers] = useState([]);
-  const { loading, setLoading } = useStore(state => state);
-  const { badges, technologies } = useStore();
-
-  const fetchLeaderboardData = useCallback(async () => {
-    setLoading(true);
-    let endpoint = '';
-
-    switch (activeTab) {
-      case 'All':
-        endpoint = '/leaderboard/allUsers';
-        break;
-      case 'Country':
-        endpoint = '/leaderboard/byCountry';
-        break;
-      case 'City':
-        endpoint = '/leaderboard/byCity';
-        break;
-      case 'Badge':
-        endpoint = selectedBadge
-          ? `leaderboard/byBadge/${selectedBadge}`
-          : '/leaderboard/allUsers';
-        break;
-      case 'Technology':
-        endpoint = selectedTechnology
-          ? `leaderboard/byTechnology/${selectedTechnology}`
-          : '/leaderboard/allUsers';
-        break;
-      default:
-        setLoading(false);
-        return;
-    }
-
-    try {
-      const response = await instance.get(endpoint);
-      setUsers(response.data.data || response.data);
-    } catch (error) {
-      console.error('Error fetching leaderboard data:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [activeTab, selectedBadge, selectedTechnology, setLoading]);
+  const { badges } = useBadgeStore();
+  const { technologies } = useTechnologyStore();
+  const { users, error, loading, fetchData, clearCache } =
+    useLeaderboardStore();
 
   useEffect(() => {
-    fetchLeaderboardData();
-  }, [fetchLeaderboardData]);
+    fetchData(activeTab, selectedBadge, selectedTechnology);
+  }, [activeTab, selectedBadge, selectedTechnology]);
 
   useEffect(() => {
     setSelectedBadge('');
     setSelectedTechnology('');
   }, [activeTab]);
-
   const renderItem = ({ item, index }) => (
-    <View style={styles.itemContainer}>
-      <LinearGradient
-        colors={[primaryColor, secondaryColor]}
-        style={{ borderRadius: 20, paddingHorizontal: 6 }}
-        start={{ x: 1, y: 0 }}
-        end={{ x: 0, y: 0.5 }}>
-        <Text style={styles.indexText}>{index + 4}</Text>
-      </LinearGradient>
-      <View style={styles.userInfo}>
-        <Image
-          source={{
-            uri: item.avatar
-              ? `${apiURL}/${item.avatar}`
-              : 'https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png',
-          }}
-          style={styles.profileImage}
-        />
-        <View>
-          <Text style={styles.userName}>{item.fname}</Text>
-          <Text style={styles.userDetails}>
-            {`${item.country || 'NA'}, ${item.city || 'NA'}`}
-          </Text>
+    <Card style={{ marginBottom: 5 }}>
+      <View style={styles.itemContainer}>
+        <Gradient style={{ paddingVertical: 4, borderRadius: 20 }}>
+          <Text style={styles.indexText}>{index + 4}</Text>
+        </Gradient>
+        <View style={styles.userInfo}>
+          <Image
+            source={{
+              uri: item.avatar
+                ? `${apiURL}/${item.avatar}`
+                : 'https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png',
+            }}
+            style={styles.profileImage}
+          />
+          <View>
+            <Text style={styles.userName}>{item.fname}</Text>
+            <Text style={styles.userDetails}>
+              {`${item.country || 'NA'}, ${item.city || 'NA'}`}
+            </Text>
+          </View>
         </View>
+        <Text style={styles.userName}>{item.weightage}</Text>
       </View>
-      <Text style={styles.userName}>{item.weightage}</Text>
-    </View>
+    </Card>
   );
 
   return (
@@ -176,10 +130,8 @@ const Leaderboard = () => {
           />
         )}
 
-        {loading && <Loader />}
-
         {/* Top 3 Users */}
-        <View style={{ marginVertical: 10, alignItems: 'center' }}>
+        <View style={{ marginTop: 10, alignItems: 'center' }}>
           <View style={{ width: '100%' }}>
             <View
               style={{
@@ -205,8 +157,8 @@ const Leaderboard = () => {
                   <Text style={styles.inactiveText}>{users[index]?.fname}</Text>
                   <View style={styles.rankText}>
                     <Text style={[styles.inactiveText, { color: lightColor }]}>
-                      {users[index]?.weightage ||
-                        users[index]?.achievements ||
+                      {users[index]?.achievements ||
+                        users[index]?.weightage ||
                         0}
                     </Text>
                   </View>
@@ -220,13 +172,24 @@ const Leaderboard = () => {
           />
         </View>
       </View>
-      <SubContainer>
-        <FlatList
-          data={users.slice(3)}
-          renderItem={renderItem}
-          keyExtractor={item => item.email}
-          showsVerticalScrollIndicator={false}
-        />
+      <SubContainer style={{ alignItems: 'center' }}>
+        {loading ? (
+          <Loader />
+        ) : error ? (
+          <Error>{error}</Error>
+        ) : (
+          <FlatList
+            data={users.slice(3)}
+            refreshing={loading}
+            renderItem={renderItem}
+            keyExtractor={item => item.email}
+            onRefresh={() => {
+              clearCache();
+              fetchData(activeTab);
+            }}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </SubContainer>
     </Container>
   );
@@ -236,18 +199,17 @@ export default Leaderboard;
 
 const styles = StyleSheet.create({
   tabTitle: {
+    marginLeft: 10,
     borderRadius: 20,
     paddingVertical: 5,
     paddingHorizontal: 25,
   },
   itemContainer: {
-    padding: 10,
-    borderRadius: 10,
-    marginVertical: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: lightColor,
   },
   active: {
     backgroundColor: primaryColor,
@@ -257,8 +219,8 @@ const styles = StyleSheet.create({
   },
   activeText: {
     fontSize: 16,
-    color: lightColor,
     fontWeight: 'bold',
+    color: lightColor,
   },
   inactiveText: {
     fontSize: 16,
@@ -297,21 +259,11 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
   },
   userName: {
-    color: primaryColor,
     fontWeight: 'bold',
+    color: primaryColor,
   },
   userDetails: {
     fontSize: 12,
     color: darkColor,
-  },
-  loadingContainer: {
-    paddingVertical: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: lightColor,
   },
 });

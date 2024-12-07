@@ -13,17 +13,16 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { useState } from 'react';
 import { width } from '../styles/sizes';
-import { useStore } from '../store/store';
 import { instance } from '../services/services';
-import { SubContainer } from '../components/index';
 import { apiURL, apiVersion } from '../config/config';
 import { TextInput, Button } from 'react-native-paper';
 import { navigate, replace } from '../utils/navigation';
 import { lightColor, primaryColor } from '../styles/colors';
+import { Container, SubContainer } from '../components/index';
 
 const Register = () => {
   const [eye, setEye] = useState(true);
-  const { loading, setLoading } = useStore(state => state);
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async values => {
     setLoading(true);
@@ -51,7 +50,7 @@ const Register = () => {
   });
 
   return (
-    <View style={{ flex: 1 }}>
+    <Container>
       <Image
         source={require('../../assets/images/logo.png')}
         style={styles.logo}
@@ -234,7 +233,7 @@ const Register = () => {
           </ScrollView>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
-    </View>
+    </Container>
   );
 };
 

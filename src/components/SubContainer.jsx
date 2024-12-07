@@ -1,19 +1,20 @@
-import { primaryColor } from '../styles/colors';
-import { View, StyleSheet } from 'react-native';
+import { Card } from 'react-native-paper';
+import { StyleSheet } from 'react-native';
+import { lightColor } from '../styles/colors';
 
-const SubContainer = ({ children }) => {
-  return <View style={styles.container}>{children}</View>;
+const SubContainer = ({ children, style }) => {
+  return <Card style={[styles.container, style]}>{children}</Card>;
 };
 
 export default SubContainer;
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     padding: 10,
-    marginHorizontal: 10,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    backgroundColor: primaryColor,
+    marginTop: 10,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    backgroundColor: lightColor,
   },
 });

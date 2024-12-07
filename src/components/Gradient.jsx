@@ -1,26 +1,26 @@
 import { StyleSheet } from 'react-native';
-import { lightColor, primaryColor } from '../styles/colors';
 import LinearGradient from 'react-native-linear-gradient';
+import { primaryColor, secondaryColor } from '../styles/colors';
 
-const Card = ({ children, style }) => {
+const Gradient = ({ children, style }) => {
   return (
     <LinearGradient
-      colors={[primaryColor, primaryColor]}
+      colors={[primaryColor, secondaryColor]}
       style={[styles.container, style]}
-      start={{ x: 1, y: 0 }}
-      end={{ x: 0, y: 0 }}>
+      start={{ x: 1, y: 0.5 }}
+      end={{ x: 0.5, y: 1 }}>
       {children}
     </LinearGradient>
   );
 };
 
-export default Card;
+export default Gradient;
 
 const styles = StyleSheet.create({
   container: {
     padding: 10,
     borderRadius: 10,
-    marginBottom: 10,
+    marginVertical: 10,
     alignItems: 'center',
     flexDirection: 'row',
   },

@@ -1,27 +1,21 @@
 import { Alert } from 'react-native';
-import { goBack, navigate } from '../utils/navigation';
+import { goBack } from '../utils/navigation';
+import { useUserStore } from '../store/userStore';
 import { lightColor, primaryColor } from '../styles/colors';
 import { Home, Help, Profile, Leaderboard } from '../screens/index';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign, Ionicons, MaterialCommunityIcons } from '../utils/icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator();
 
 export const TabNavigation = () => {
+  const { setUser } = useUserStore();
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Yes',
-        onPress: async () => {
-          try {
-            await AsyncStorage.clear();
-            navigate('Login');
-          } catch (error) {
-            console.log('Failed to logout:', error);
-          }
-        },
+        onPress: () => setUser(),
       },
     ]);
   };

@@ -14,19 +14,19 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { useState } from 'react';
 import { width } from '../styles/sizes';
-import { useStore } from '../store/store';
-import { SubContainer } from '../components';
 import { instance } from '../services/services';
+import { useUserStore } from '../store/userStore';
 import { apiURL, apiVersion } from '../config/config';
 import { TextInput, Button } from 'react-native-paper';
 import { navigate, replace } from '../utils/navigation';
+import { Container, SubContainer } from '../components';
 import { lightColor, primaryColor } from '../styles/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
+  const { setUser } = useUserStore();
   const [eye, setEye] = useState(true);
   const [loading, setLoading] = useState(false);
-  const { setUser } = useStore(state => state);
 
   const handleLogin = async values => {
     setLoading(true);
@@ -54,7 +54,7 @@ const Login = () => {
   });
 
   return (
-    <View style={{ flex: 1 }}>
+    <Container>
       <Image
         source={require('../../assets/images/logo.png')}
         style={styles.logo}
@@ -191,7 +191,7 @@ const Login = () => {
           </ScrollView>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
-    </View>
+    </Container>
   );
 };
 

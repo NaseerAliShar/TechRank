@@ -1,24 +1,32 @@
 import {
-  Button,
-  Checkbox,
-  ProgressBar,
-  RadioButton,
-  Card as Box,
-} from 'react-native-paper';
+  View,
+  Text,
+  Image,
+  FlatList,
+  StyleSheet,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import {
+  Container,
+  Error,
+  Loader,
+  NotFound,
+  SubContainer,
+} from '../components/index';
 import { width } from '../styles/sizes';
 import { Result } from '../screens/index';
 import { apiURL } from '../config/config';
 import { instance } from '../services/services';
-import { lightColor, primaryColor } from '../styles/colors';
-import { useEffect, useState, useCallback, useMemo } from 'react';
-import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
+import { useEffect, useState, useCallback } from 'react';
+import { Card, Button, Checkbox, RadioButton } from 'react-native-paper';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
-import { Card, Container, Loader, SubContainer } from '../components/index';
+import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
 
 const Quiz = ({ route }) => {
   const { badge, technology } = route.params;
   const [time, setTime] = useState(0);
   const [score, setScore] = useState(0);
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -29,18 +37,21 @@ const Quiz = ({ route }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [userSelections, setUserSelections] = useState([]);
 
+  const fetchQuestions = async () => {
+    setLoading(true);
+    try {
+      const { data } = await instance.get(`questions`);
+      setQuestions(data);
+      setError(null);
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+      setError(error?.response?.data?.message || 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchQuestions = async () => {
-      setLoading(true);
-      try {
-        const { data } = await instance.get(`questions`);
-        setQuestions(data);
-        setLoading(false);
-      } catch (error) {
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchQuestions();
   }, []);
 
@@ -49,17 +60,11 @@ const Quiz = ({ route }) => {
     if (!quizFinished) {
       const startTime = Date.now();
       timer = setInterval(() => {
-        const elapsedTime = Math.round((Date.now() - startTime) / 1000);
-        setTime(elapsedTime);
+        setTime(Math.round((Date.now() - startTime) / 1000));
       }, 1000);
     }
     return () => clearInterval(timer);
   }, [quizFinished]);
-
-  const progress = useMemo(
-    () => currentIndex / questions.length,
-    [currentIndex, questions.length],
-  );
 
   const handleNext = useCallback(() => {
     const currentQuestion = questions[currentIndex];
@@ -78,11 +83,13 @@ const Quiz = ({ route }) => {
       setWrongAnswers(prev => [...prev, currentQuestion]);
     }
 
-    const updatedSelections = [...userSelections];
-    updatedSelections[currentIndex] = isMultiChoice
-      ? [selectedOption]
-      : selectedOptions;
-    setUserSelections(updatedSelections);
+    setUserSelections(prevSelections => {
+      const updatedSelections = [...prevSelections];
+      updatedSelections[currentIndex] = isMultiChoice
+        ? [selectedOption]
+        : selectedOptions;
+      return updatedSelections;
+    });
 
     if (currentIndex + 1 >= questions.length) {
       setQuizFinished(true);
@@ -90,65 +97,97 @@ const Quiz = ({ route }) => {
       setCurrentIndex(prevIndex => prevIndex + 1);
     }
 
+    // Reset selections
     setSelectedOptions([]);
     setSelectedOption(null);
-  }, [
-    questions,
-    currentIndex,
-    selectedOption,
-    selectedOptions,
-    userSelections,
-  ]);
+  }, [questions, currentIndex, selectedOption, selectedOptions]);
 
-  const handleMultiSelect = useCallback(
-    item => {
-      const isSelected = selectedOptions.includes(item);
-      const newSelectedOptions = isSelected
-        ? selectedOptions.filter(option => option !== item)
-        : [...selectedOptions, item];
-      setSelectedOptions(newSelectedOptions);
-    },
-    [selectedOptions],
-  );
+  const handlePrev = useCallback(() => {
+    if (currentIndex > 0) {
+      const previousIndex = currentIndex - 1;
+      const previousSelections = userSelections[previousIndex] || [];
+      const previousQuestion = questions[previousIndex];
+
+      const isMultiChoice = previousQuestion.questionType === 'MultiChoice';
+      const previousIsCorrect = isMultiChoice
+        ? previousSelections[0]?.isCorrect
+        : previousSelections.every(option => option.isCorrect) &&
+          previousSelections.length ===
+            previousQuestion.options.filter(option => option.isCorrect).length;
+
+      // Update score and answers
+      if (previousIsCorrect) {
+        setScore(prevScore => prevScore - 1);
+        setCorrectAnswers(prev => prev.filter(q => q !== previousQuestion));
+      } else {
+        setWrongAnswers(prev => prev.filter(q => q !== previousQuestion));
+      }
+
+      // Restore selections
+      if (Array.isArray(previousSelections)) {
+        setSelectedOptions(previousSelections);
+        setSelectedOption(null);
+      } else {
+        setSelectedOption(previousSelections[0] || null);
+        setSelectedOptions([]);
+      }
+      setCurrentIndex(previousIndex);
+    }
+  }, [currentIndex, userSelections, questions]);
+
+  const handleMultiSelect = useCallback(item => {
+    setSelectedOptions(prevOptions =>
+      prevOptions.includes(item)
+        ? prevOptions.filter(option => option !== item)
+        : [...prevOptions, item],
+    );
+  }, []);
 
   const renderItem = ({ item }) => {
-    const isMultiChoice =
-      questions[currentIndex].questionType === 'MultiChoice';
+    const currentQuestion = questions[currentIndex];
+    if (!currentQuestion) return null;
+
+    const isMultiChoice = currentQuestion.questionType === 'MultiChoice';
     const isSelected = isMultiChoice
       ? selectedOption === item
       : selectedOptions.includes(item);
 
     return (
-      <Box style={styles.optionCard}>
-        {isMultiChoice ? (
-          <RadioButton.Group
-            onValueChange={option => setSelectedOption(option)}
-            value={selectedOption}>
-            <View style={styles.optionContainer}>
-              <RadioButton
-                value={item}
+      <TouchableWithoutFeedback
+        onPress={() => {
+          if (isMultiChoice) {
+            setSelectedOption(item);
+          } else {
+            handleMultiSelect(item);
+          }
+        }}>
+        <Card style={styles.optionCard}>
+          <View>
+            {isMultiChoice ? (
+              <View style={styles.optionContainer}>
+                <RadioButton
+                  value={item}
+                  status={isSelected ? 'checked' : 'unchecked'}
+                  onPress={() => setSelectedOption(item)}
+                  theme={{ colors: { primary: primaryColor } }}
+                />
+                <Text style={styles.optionText}>{item.text}</Text>
+              </View>
+            ) : (
+              <Checkbox.Item
+                label={item.text}
+                position="leading"
                 theme={{ colors: { primary: primaryColor } }}
+                labelStyle={[styles.optionText, { textAlign: 'left' }]}
+                onPress={() => handleMultiSelect(item)}
+                status={isSelected ? 'checked' : 'unchecked'}
               />
-              <Text style={styles.optionText}>{item.text}</Text>
-            </View>
-          </RadioButton.Group>
-        ) : (
-          <Checkbox.Item
-            label={item.text}
-            position="leading"
-            theme={{ colors: { primary: primaryColor } }}
-            labelStyle={[styles.optionText, { textAlign: 'left' }]}
-            onPress={() => handleMultiSelect(item)}
-            status={isSelected ? 'checked' : 'unchecked'}
-          />
-        )}
-      </Box>
+            )}
+          </View>
+        </Card>
+      </TouchableWithoutFeedback>
     );
   };
-
-  if (loading && questions.length === 0) {
-    return <Loader />;
-  }
 
   if (quizFinished) {
     return (
@@ -165,10 +204,13 @@ const Quiz = ({ route }) => {
     );
   }
 
+  if (loading) return <Loader />;
+  if (error) return <Error>{error}</Error>;
+
   return (
     <Container>
-      <Card style={{ justifyContent: 'space-around' }}>
-        <View>
+      <Card>
+        <View style={styles.topCard}>
           <Image
             source={{
               uri: `${apiURL}/${technology.image}`,
@@ -179,8 +221,7 @@ const Quiz = ({ route }) => {
               resizeMode: 'contain',
             }}
           />
-        </View>
-        <View>
+
           <CountdownCircleTimer
             isPlaying={!quizFinished}
             size={40}
@@ -202,10 +243,10 @@ const Quiz = ({ route }) => {
               return (
                 <View>
                   <View style={{ flexDirection: 'row' }}>
-                    <Text style={{ fontSize: 13, color: lightColor }}>
+                    <Text style={{ fontSize: 13, color: primaryColor }}>
                       {minutes}:
                     </Text>
-                    <Text style={{ fontSize: 13, color: lightColor }}>
+                    <Text style={{ fontSize: 13, color: primaryColor }}>
                       {seconds < 10 ? `0${seconds}` : seconds}
                     </Text>
                   </View>
@@ -213,8 +254,7 @@ const Quiz = ({ route }) => {
               );
             }}
           </CountdownCircleTimer>
-        </View>
-        <View>
+
           <Image
             source={{
               uri: `${apiURL}/${badge.icon}`,
@@ -227,7 +267,7 @@ const Quiz = ({ route }) => {
           />
         </View>
       </Card>
-      <View style={{ marginBottom: 10, alignSelf: 'center' }}>
+      <View style={{ marginTop: 10, alignSelf: 'center' }}>
         <Text
           style={{
             fontSize: 20,
@@ -238,31 +278,24 @@ const Quiz = ({ route }) => {
         </Text>
       </View>
       <SubContainer>
-        {questions.length === 0 ? (
-          <Text style={{ color: lightColor, fontWeight: 'Bold', margin: 10 }}>
-            No Badges found
-          </Text>
+        {!questions ? (
+          <NotFound>No Questions found</NotFound>
         ) : (
-          <View style={{ flex: 1 }}>
-            <ProgressBar
-              color={primaryColor}
-              progress={progress}
-              style={styles.progressBar}
-            />
+          <View>
             <Text style={styles.questionText}>
-              {questions[currentIndex].questionText}
+              {questions[currentIndex]?.questionText}
             </Text>
             <FlatList
-              data={questions[currentIndex].options}
+              data={questions[currentIndex]?.options}
               keyExtractor={(_, index) => index.toString()}
               renderItem={renderItem}
             />
 
             <View
               style={{
-                margin: 10,
+                marginTop: width / 2,
                 flexDirection: 'row',
-                justifyContent: 'space-between',
+                justifyContent: 'space-around',
               }}>
               <View>
                 <Button
@@ -271,7 +304,7 @@ const Quiz = ({ route }) => {
                   textColor={lightColor}
                   buttonColor={primaryColor}
                   loading={loading}
-                  onPress={() => setCurrentIndex(prevIndex => prevIndex - 1)}
+                  onPress={handlePrev}
                   disabled={currentIndex === 0}>
                   Prev
                 </Button>
@@ -300,6 +333,12 @@ const Quiz = ({ route }) => {
 export default Quiz;
 
 const styles = StyleSheet.create({
+  topCard: {
+    padding: 10,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
   progressText: {
     fontSize: 15,
     fontWeight: 'bold',
@@ -310,12 +349,12 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     marginVertical: 10,
-    backgroundColor: lightColor,
+    backgroundColor: secondaryColor,
   },
   questionText: {
     fontSize: 18,
     marginVertical: 5,
-    color: lightColor,
+    color: primaryColor,
     fontWeight: 'bold',
     textAlign: 'center',
   },

@@ -1,7 +1,3 @@
-import { useState } from 'react';
-import { width } from '../styles/sizes';
-import { Container } from '../components/index';
-import { lightColor, primaryColor, secondaryColor } from '../styles/colors';
 import {
   View,
   Text,
@@ -9,6 +5,9 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import { useState } from 'react';
+import { Container } from '../components/index';
+import { lightColor, primaryColor } from '../styles/colors';
 
 const Help = () => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -40,16 +39,6 @@ const Help = () => {
 
   return (
     <Container>
-      <View
-        style={{
-          padding: 10,
-          borderRadius: 10,
-          height: width / 4,
-          marginVertical: 20,
-          alignItems: 'center',
-          flexDirection: 'row',
-          backgroundColor: lightColor,
-        }}></View>
       <View style={styles.container}>
         <ScrollView>
           {data.map((item, index) => (
@@ -86,17 +75,16 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   header: {
-    padding: 20,
+    padding: 10,
     backgroundColor: primaryColor,
   },
   headerText: {
     fontSize: 18,
     color: lightColor,
-    fontWeight: '400',
   },
   content: {
     padding: 10,
-    backgroundColor: secondaryColor,
+    backgroundColor: '#cb9dea',
   },
   contentText: {
     fontSize: 15,
