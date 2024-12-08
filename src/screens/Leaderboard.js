@@ -7,6 +7,14 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import {
+  Error,
+  Loader,
+  Gradient,
+  NotFound,
+  Container,
+  SubContainer,
+} from '../components/index';
 import { width } from '../styles/sizes';
 import { apiURL } from '../config/config';
 import { Card } from 'react-native-paper';
@@ -16,7 +24,6 @@ import { useLeaderboardStore } from '../store/usersStore';
 import { useTechnologyStore } from '../store/technologyStore';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { darkColor, lightColor, primaryColor } from '../styles/colors';
-import { Loader, Container, SubContainer, Gradient } from '../components/index';
 
 const Leaderboard = () => {
   const [activeTab, setActiveTab] = useState('All');
@@ -46,7 +53,7 @@ const Leaderboard = () => {
             source={{
               uri: item.avatar
                 ? `${apiURL}/${item.avatar}`
-                : 'https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png',
+                : `${apiURL}/user.png`,
             }}
             style={styles.profileImage}
           />
@@ -61,6 +68,9 @@ const Leaderboard = () => {
       </View>
     </Card>
   );
+
+  if (loading) return <Loader />;
+  if (error) return <Error>{error}</Error>;
 
   return (
     <Container>
@@ -173,23 +183,18 @@ const Leaderboard = () => {
         </View>
       </View>
       <SubContainer style={{ alignItems: 'center' }}>
-        {loading ? (
-          <Loader />
-        ) : error ? (
-          <Error>{error}</Error>
-        ) : (
-          <FlatList
-            data={users.slice(3)}
-            refreshing={loading}
-            renderItem={renderItem}
-            keyExtractor={item => item.email}
-            onRefresh={() => {
-              clearCache();
-              fetchData(activeTab);
-            }}
-            showsVerticalScrollIndicator={false}
-          />
-        )}
+        <FlatList
+          data={users.slice(3)}
+          refreshing={loading}
+          renderItem={renderItem}
+          keyExtractor={item => item.email}
+          onRefresh={() => {
+            clearCache();
+            fetchData(activeTab);
+          }}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={<NotFound>No Users found</NotFound>}
+        />
       </SubContainer>
     </Container>
   );

@@ -28,17 +28,15 @@ import Animated, { FadeInLeft, FadeOutDown } from 'react-native-reanimated';
 
 const Home = () => {
   const { fetchBadges } = useBadgeStore();
-  const { user, fetchUser, fetchData, allRank, achievements, tip } =
-    useUserStore();
+  const { fetchData, user, allRank, achievements, tip } = useUserStore();
   const { technologies, loading, error, fetchTechnologies } =
     useTechnologyStore();
 
   useEffect(() => {
     fetchData();
-    fetchUser();
     fetchBadges();
     fetchTechnologies();
-  }, [fetchUser, fetchBadges, fetchTechnologies]);
+  }, [fetchData, fetchBadges, fetchTechnologies]);
 
   const renderItem = ({ item, _ }) => (
     <Gradient style={{ margin: 10 }}>
@@ -69,7 +67,11 @@ const Home = () => {
       {/* User Info */}
       <Gradient>
         <Image
-          source={{ uri: `${apiURL}/${user?.avatar}` }}
+          source={{
+            uri: user?.avatar
+              ? `${apiURL}/${user.avatar}`
+              : `${apiURL}/profile.png`,
+          }}
           style={styles.avatar}
         />
         <View style={{ marginLeft: 10 }}>
@@ -103,27 +105,27 @@ const Home = () => {
           }}>
           Tip of the Day!
         </Text>
-
         <Text style={{ textAlign: 'justify' }}>{tip}</Text>
       </Card>
 
       {/* Technologies List */}
       <SubContainer>
-        <NotFound>Technologies</NotFound>
-        {!technologies ? (
-          <NotFound>No Technologies found</NotFound>
-        ) : (
-          <FlatList
-            numColumns={3}
-            data={technologies}
-            renderItem={renderItem}
-            keyExtractor={item => item._id.toString()}
-            refreshing={loading}
-            onRefresh={() => fetchTechnologies()}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ alignItems: 'center' }}
-          />
-        )}
+        <FlatList
+          numColumns={3}
+          data={technologies}
+          renderItem={renderItem}
+          keyExtractor={item => item._id.toString()}
+          refreshing={loading}
+          onRefresh={() => fetchTechnologies()}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ alignItems: 'center' }}
+          ListEmptyComponent={<NotFound>No Technologies found</NotFound>}
+          ListHeaderComponent={
+            <View>
+              <NotFound>Technologies</NotFound>
+            </View>
+          }
+        />
       </SubContainer>
     </Container>
   );
@@ -152,13 +154,6 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 5,
     color: lightColor,
-  },
-  title: {
-    fontSize: 16,
-    marginVertical: 10,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: primaryColor,
   },
   card: {
     marginBottom: 10,

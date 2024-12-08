@@ -7,8 +7,8 @@ export const useTechnologyStore = create((set, get) => ({
   error: null,
 
   fetchTechnologies: async () => {
-    // const { technologies } = get();
-    // if (technologies.length > 0) return;
+    const { technologies } = get();
+    if (technologies.length > 0) return;
 
     set({ loading: true, error: null });
     try {

@@ -29,7 +29,7 @@ const Splash = () => {
           style={styles.container}>
           <Image
             style={styles.wwrLogo}
-            source={require('../../assets/images/logo.png')}
+            source={require('../../assets/images/wwrLogo.png')}
           />
         </Animatable.View>
         <View style={{ alignItems: 'center' }}>
@@ -42,7 +42,7 @@ const Splash = () => {
           </Animatable.View>
           <Animatable.View animation="zoomIn" delay={1500}>
             <Image
-              source={require('../../assets/images/innovador2.png')}
+              source={require('../../assets/images/isLogo.png')}
               style={styles.innovadorLogo}
             />
           </Animatable.View>

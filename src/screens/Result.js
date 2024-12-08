@@ -69,72 +69,53 @@ const Result = ({
   }
   return (
     <Container>
-      {totalPercentage >= 80 ? (
-        <Image
-          source={{ uri: `${apiURL}/${badge.icon}` }}
-          style={styles.logo}
-        />
-      ) : (
-        <Image
-          source={require('../../assets/images/testfaild.png')}
-          style={styles.logo}
-        />
-      )}
-      {totalPercentage >= 80 ? (
-        <Card style={{ marginTop: 10 }}>
-          <View
-            style={{
-              padding: 10,
-              flexDirection: 'row',
-              alignContent: 'center',
-            }}>
-            <View style={styles.resultProgress}>
-              <Progress.Pie
-                size={40}
-                progress={totalPercentage / 100}
-                color={primaryColor}
-              />
-              <Text style={[styles.text, { color: primaryColor }]}>
-                {totalPercentage}%
-              </Text>
-            </View>
+      <Image
+        source={{
+          uri:
+            totalPercentage >= 80
+              ? `${apiURL}/${badge.icon}`
+              : `${apiURL}/failed.png`,
+        }}
+        style={styles.avatar}
+      />
+
+      <Card>
+        <View
+          style={{
+            padding: 10,
+            flexDirection: 'row',
+            alignContent: 'center',
+          }}>
+          <View style={styles.resultProgress}>
+            <Progress.Pie
+              size={40}
+              progress={totalPercentage / 100}
+              color={primaryColor}
+            />
+            <Text style={[styles.text, { color: primaryColor }]}>
+              {totalPercentage}%
+            </Text>
+          </View>
+          {totalPercentage >= 80 ? (
             <View style={styles.resultMessage}>
               <Text style={[styles.text, { color: 'green' }]}>
                 Congratulations! You did great.
               </Text>
-              <Text style={[styles.text, { color: primaryColor }]}>
-                You scored {score} out of {questions.length}
-              </Text>
             </View>
-          </View>
-        </Card>
-      ) : (
-        <Card>
-          <View
-            style={{
-              padding: 10,
-              flexDirection: 'row',
-              alignContent: 'center',
-            }}>
-            <View style={styles.resultProgress}>
-              <Progress.Pie
-                size={40}
-                color={primaryColor}
-                progress={totalPercentage / 100}
-              />
-              <Text style={{ color: primaryColor }}>{totalPercentage}%</Text>
-            </View>
+          ) : (
             <View style={styles.resultMessage}>
               <Text style={[styles.text, { color: 'red' }]}>
                 Oops! Better luck next time.
               </Text>
-              <Text style={[styles.text, { color: primaryColor }]}>
-                You scored {score} out of {questions.length}
-              </Text>
             </View>
-          </View>
-        </Card>
-      )}
+          )}
+
+          <Text style={[styles.text, { color: primaryColor }]}>
+            You scored {score} out of {questions.length}
+          </Text>
+        </View>
+      </Card>
+
       <View>
         <View style={styles.cardContainer}>
           <Gradient style={styles.card}>

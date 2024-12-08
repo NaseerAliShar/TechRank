@@ -52,7 +52,7 @@ const Register = () => {
   return (
     <Container>
       <Image
-        source={require('../../assets/images/logo.png')}
+        source={require('../../assets/images/wwrLogo.png')}
         style={styles.logo}
       />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

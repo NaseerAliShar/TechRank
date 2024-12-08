@@ -286,21 +286,22 @@ const Badges = ({ route }) => {
 
       {/* Badges List */}
       <SubContainer>
-        <NotFound>Badges</NotFound>
-        {!badges ? (
-          <NotFound>No Badges found</NotFound>
-        ) : (
-          <FlatList
-            numColumns={2}
-            data={badges}
-            refreshing={loading}
-            renderItem={renderItem}
-            keyExtractor={item => item.name}
-            showsVerticalScrollIndicator={false}
-            onRefresh={() => fetchAchievements()}
-            contentContainerStyle={{ alignItems: 'center' }}
-          />
-        )}
+        <FlatList
+          numColumns={2}
+          data={badges}
+          refreshing={loading}
+          renderItem={renderItem}
+          keyExtractor={item => item.name}
+          showsVerticalScrollIndicator={false}
+          onRefresh={() => fetchAchievements()}
+          contentContainerStyle={{ alignItems: 'center' }}
+          ListEmptyComponent={<NotFound text="No badges found" />}
+          ListHeaderComponent={
+            <View>
+              <NotFound>Achievements</NotFound>
+            </View>
+          }
+        />
       </SubContainer>
     </Container>
   );

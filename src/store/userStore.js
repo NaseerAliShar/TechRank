@@ -3,82 +3,90 @@ import { replace } from '../utils/navigation';
 import { instance } from '../services/services';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const useUserStore = create((set, get) => ({
+export const useUserStore = create(set => ({
   user: null,
   loading: false,
   error: null,
+  allRank: null,
+  cityRank: null,
+  countryRank: null,
+  achievements: null,
+  tip: null,
 
-  setError: error => set({ error }), // Set error state
-  setLoading: loading => set({ loading }), // Set loading state
+  setError: error => set({ error }),
+  setLoading: loading => set({ loading }),
 
+  // Set or clear user
   setUser: async user => {
-    set({ loading: true, error: null }); // Start loading
+    set({ loading: true, error: null });
     try {
       if (user) {
-        // Save user to AsyncStorage
         await AsyncStorage.setItem('user', JSON.stringify(user));
-        set({ user }); // Update user in the store
+        set({ user });
       } else {
-        // Remove user from AsyncStorage
         await AsyncStorage.clear();
-        set({ user: null }); // Clear user in the store
+        set({ user: null });
         replace('Login');
       }
     } catch (error) {
       set({ error: error.message });
     } finally {
-      set({ loading: false }); // Stop loading
+      set({ loading: false });
     }
   },
 
-  fetchUser: async () => {
-    set({ loading: true, error: null }); // Start loading
-    try {
-      const storedUser = await AsyncStorage.getItem('user');
-      set({ user: storedUser ? JSON.parse(storedUser) : null }); // Load user into the store
-    } catch (error) {
-      set({ error: error.message });
-    } finally {
-      set({ loading: false }); // Stop loading
-    }
-  },
-
+  // Fetch all necessary data
   fetchData: async () => {
-    // const { allRank, cityRank, countryRank, achievements, user, tip } = get();
-    // if (allRank || cityRank || countryRank || achievements || user || tip)
-    //   return
+    const { user, allRank, cityRank, countryRank, achievements, tip } = get();
+    if (user || allRank || cityRank || countryRank || achievements || tip)
+      return;
 
     set({ loading: true, error: null });
     try {
-      const [allRes, cityRes, countryRes, achievementsRes, userRes, tipRes] =
-        await Promise.all([
-          instance.get('/leaderboard/allRank'),
-          instance.get('/leaderboard/cityRank'),
-          instance.get('/leaderboard/countryRank'),
-          instance.get('/achievements/c/count'),
-          instance.get('/auth/me'),
-          instance.get('/tip'),
-        ]);
-      set({ allRank: allRes.data.rank });
-      set({ cityRank: cityRes.data.rank });
-      set({ countryRank: countryRes.data.rank });
-      set({ achievements: achievementsRes.data.count });
-      set({ user: userRes.data });
-      set({ tip: tipRes.data.data.title });
-      set({ loading: false, error: null });
+      const [
+        { data: user },
+        {
+          data: { rank: allRank },
+        },
+        {
+          data: { rank: cityRank },
+        },
+        {
+          data: { rank: countryRank },
+        },
+        {
+          data: { count: achievements },
+        },
+        {
+          data: {
+            data: { title: tip },
+          },
+        },
+      ] = await Promise.all([
+        instance.get('/auth/me'),
+        instance.get('/leaderboard/allRank'),
+        instance.get('/leaderboard/cityRank'),
+        instance.get('/leaderboard/countryRank'),
+        instance.get('/achievements/c/count'),
+        instance.get('/tip'),
+      ]);
+
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+      set({ user, allRank, cityRank, countryRank, achievements, tip });
     } catch (error) {
-      set({
-        error: error?.response?.data?.message || error.message,
-        loading: false,
-      });
+      set({ error: error?.response?.data?.message || error.message });
+    } finally {
+      set({ loading: false });
     }
   },
 
-  // clearUser: () => {
-  //   set({ allRank: null });
-  //   set({ cityRank: null });
-  //   set({ countryRank: null });
-  //   set({ achievements: null });
-  //   set({ user: null });
-  // },
+  // Clear user data
+  clearUser: () =>
+    set({
+      user: null,
+      allRank: null,
+      cityRank: null,
+      countryRank: null,
+      achievements: null,
+    }),
 }));

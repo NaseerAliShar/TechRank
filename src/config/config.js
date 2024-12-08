@@ -1,4 +1,4 @@
-const apiURL = 'https://ktb9p9fr-3000.euw.devtunnels.ms';
+const apiURL = 'https://9jzpq83z-3000.uks1.devtunnels.ms';
 // const apiURL = 'http://localhost:3000';
 const apiVersion = 'api/v1';
 
